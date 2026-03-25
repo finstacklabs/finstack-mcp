@@ -158,12 +158,9 @@ Its role is:
 
 The paid wedge currently being built on top of this engine is the Indian market daily brief.
 
-Reference docs:
+Reference doc:
 
-- Strategy: [docs/PARTNER_PLAN.md](docs/PARTNER_PLAN.md)
-- Launch guide: [docs/LAUNCH_GUIDE.md](docs/LAUNCH_GUIDE.md)
-- Daily brief: [docs/DAILY_BRIEF.md](docs/DAILY_BRIEF.md)
-- Worklog: [docs/WORKLOG.md](docs/WORKLOG.md)
+- Operating manual: [docs/FINSTACK_OPERATING_MANUAL.md](docs/FINSTACK_OPERATING_MANUAL.md)
 
 ## Data Sources
 
