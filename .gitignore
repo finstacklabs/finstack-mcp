@@ -40,3 +40,5 @@ pytest-cache-files-*/
 # Secrets
 *.pem
 *.key
+.mcpregistry_*
+mcp-publisher.exe
