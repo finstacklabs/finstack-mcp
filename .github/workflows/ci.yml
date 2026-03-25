@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-check:
+    name: Lint & Import Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev]"
+
+      - name: Check syntax (all Python files compile)
+        run: |
+          find src -name "*.py" -exec python -m py_compile {} +
+          echo "All files compiled successfully"
+
+      - name: Ruff lint
+        run: ruff check src/
+
+      - name: Run tests
+        env:
+          PYTHONPATH: src
+        run: pytest tests -q -p no:cacheprovider
+
+      - name: Verify server imports
+        run: |
+          python -c "from finstack.server import mcp; print('Server OK')"
+
+      - name: Verify all tool modules load
+        run: |
+          python -c "
+          from finstack.tools.indian import register_indian_tools
+          from finstack.tools.global_ import register_global_tools
+          from finstack.tools.fundamentals import register_fundamental_tools
+          from finstack.tools.analytics import register_analytics_tools
+          print('All tool modules OK')
+          "

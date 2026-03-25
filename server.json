@@ -1,0 +1,50 @@
+{
+  "name": "finstack-mcp",
+  "display_name": "FinStack MCP",
+  "description": "India-first MCP server for NSE/BSE, global market data, fundamentals, analytics, and daily research workflows.",
+  "version": "0.3.0",
+  "author": "SpawnAgent",
+  "license": "MIT",
+  "repository": "https://github.com/SpawnAgent/finstack-mcp",
+  "homepage": "https://finstack.dev",
+  "icon": "chart",
+  "categories": ["finance", "stocks", "trading", "data", "analytics"],
+  "tags": [
+    "nse",
+    "bse",
+    "indian-stocks",
+    "market-brief",
+    "us-stocks",
+    "crypto",
+    "forex",
+    "technical-analysis",
+    "fundamentals",
+    "options"
+  ],
+  "runtime": "python",
+  "install": {
+    "pip": "pip install finstack-mcp",
+    "uv": "uv pip install finstack-mcp"
+  },
+  "transports": [
+    {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "finstack.server"]
+    },
+    {
+      "type": "streamable-http",
+      "url": "https://api.finstack.dev/mcp"
+    }
+  ],
+  "tools_count": 39,
+  "pricing": {
+    "free_tools": 33,
+    "pro_tools": 5,
+    "pro_price": "TBD"
+  },
+  "notes": {
+    "oss_role": "Open-source distribution layer",
+    "paid_wedge": "Indian market daily brief"
+  }
+}
