@@ -23,6 +23,9 @@
 - Replaced stale `server.json` copy with current metadata and counts
 - Rebuilt the landing page for mobile with a hamburger menu, responsive sections, and stronger cinematic styling
 - Corrected public links and contact details on the landing page to use `finstacklabs`
+- Expanded the README into a fuller public product document with overview, coverage, setup, and daily-brief direction
+- Added more trust and conversion detail to the landing page, including demo link, use-case sections, and pricing CTAs
+- Removed the not-yet-live hosted transport claim from `server.json`
 
 ### Product Build
 

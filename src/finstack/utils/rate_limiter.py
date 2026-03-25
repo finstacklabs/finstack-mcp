@@ -63,7 +63,7 @@ class RateLimiter:
                 "reset_at": reset_at,
                 "tier": tier.value,
                 "error": f"Rate limit exceeded. {limit} requests/day for {tier.value} tier. "
-                         f"Upgrade to Pro for 5,000/day: https://finstack.dev/pricing"
+                         f"Upgrade options: https://finstacklabs.github.io/#pricing"
             }
 
         # Record this request
