@@ -1,0 +1,60 @@
+[project]
+name = "finstack-mcp"
+version = "0.3.0"
+description = "Open-source MCP server for Indian (NSE/BSE) + Global financial data with built-in AI analytics"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "SpawnAgent", email = "spawnagent@proton.me"}
+]
+keywords = ["mcp", "finance", "nse", "bse", "stocks", "trading", "ai-agents", "claude", "cursor"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Office/Business :: Financial",
+]
+
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "httpx>=0.27.0",
+    "yfinance>=0.2.40",
+    "pandas>=2.0.0",
+    "numpy>=1.26.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+hosted = [
+    "uvicorn>=0.30.0",
+    "stripe>=8.0.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/SpawnAgent/finstack-mcp"
+Repository = "https://github.com/SpawnAgent/finstack-mcp"
+Issues = "https://github.com/SpawnAgent/finstack-mcp/issues"
+
+[project.scripts]
+finstack-mcp = "finstack.server:main"
+finstack-brief = "finstack.briefs:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/finstack"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100

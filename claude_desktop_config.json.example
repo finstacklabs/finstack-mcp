@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "finstack": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/ABSOLUTE/PATH/TO/finstack-mcp",
+        "run",
+        "python",
+        "-m",
+        "finstack.server"
+      ]
+    }
+  }
+}
