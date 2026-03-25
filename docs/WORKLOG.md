@@ -28,6 +28,9 @@
 - Added CLI entry point: `finstack-brief`
 - Added tests for the brief generator
 - Updated CI to run the test suite
+- Fixed daily brief summary status mapping
+- Fixed market-mover loser filtering so positive stocks do not appear as losers
+- Fixed quarterly result enrichment bug caused by mutating a dict during iteration
 
 ### Documentation
 

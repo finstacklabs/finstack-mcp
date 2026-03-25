@@ -74,7 +74,7 @@ def _narrative(
     losers: list[dict],
     watchlist: list[dict],
 ) -> str:
-    status = market_status.get("status", "UNKNOWN")
+    status = market_status.get("nse_status") or market_status.get("status", "UNKNOWN")
     lines = [f"Indian market brief for {datetime.now().strftime('%Y-%m-%d')}."]
     lines.append(f"Market status: {status}.")
 
