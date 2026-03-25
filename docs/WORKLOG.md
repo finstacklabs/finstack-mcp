@@ -26,6 +26,7 @@
 - Expanded the README into a fuller public product document with overview, coverage, setup, and daily-brief direction
 - Added more trust and conversion detail to the landing page, including demo link, use-case sections, and pricing CTAs
 - Removed the not-yet-live hosted transport claim from `server.json`
+- Converted `server.json` to the official MCP Registry schema and published `io.github.finstacklabs/finstack-mcp`
 
 ### Product Build
 
