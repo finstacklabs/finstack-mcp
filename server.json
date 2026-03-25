@@ -3,10 +3,10 @@
   "display_name": "FinStack MCP",
   "description": "India-first MCP server for NSE/BSE, global market data, fundamentals, analytics, and daily research workflows.",
   "version": "0.3.1",
-  "author": "SpawnAgent",
+  "author": "finstacklabs",
   "license": "MIT",
-  "repository": "https://github.com/SpawnAgent/finstack-mcp",
-  "homepage": "https://finstack.dev",
+  "repository": "https://github.com/finstacklabs/finstack-mcp",
+  "homepage": "https://finstacklabs.github.io/",
   "icon": "chart",
   "categories": ["finance", "stocks", "trading", "data", "analytics"],
   "tags": [
@@ -31,10 +31,6 @@
       "type": "stdio",
       "command": "python",
       "args": ["-m", "finstack.server"]
-    },
-    {
-      "type": "streamable-http",
-      "url": "https://api.finstack.dev/mcp"
     }
   ],
   "tools_count": 39,

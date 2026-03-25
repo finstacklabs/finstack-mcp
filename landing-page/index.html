@@ -420,6 +420,13 @@
       line-height: 1.7;
     }
 
+    .section-note {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
     .dual-grid,
     .three-grid,
     .pricing-grid {
@@ -458,6 +465,13 @@
     .panel ul {
       padding-left: 18px;
       margin: 0;
+    }
+
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
     }
 
     .flow {
@@ -692,6 +706,12 @@
             rel="noopener noreferrer"
           >Open GitHub</a>
           <a class="button secondary" href="#brief">See the daily brief angle</a>
+          <a
+            class="button secondary"
+            href="https://drive.google.com/file/d/1sWKAB2K62oUG14YtS5YqEo72Unr9xfq3/view?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Watch demo</a>
         </div>
         <div class="command">
           <code id="install-command">pip install finstack-mcp</code>
@@ -738,6 +758,10 @@
           This repo stays public. It is the engine, the credibility layer, and the top of the funnel.
           It should win on usefulness and clarity, not on hype.
         </p>
+        <p class="section-note">
+          Public does not mean shallow. The job of this page is to show exactly what exists, how it installs,
+          why Indian-market users should care, and how the future paid layer fits on top without pretending the hosted stack is already finished.
+        </p>
       </div>
       <div class="dual-grid">
         <article class="panel">
@@ -769,6 +793,10 @@
           This is the fastest bridge from the current repo to revenue. It is easier to ship, easier to explain,
           and easier to repeat daily than a broad portfolio platform or a sales-heavy advisor suite.
         </p>
+        <p class="section-note">
+          The brief is meant for people who care about usable output, not raw data dumps: morning market context,
+          watchlist triggers, earnings dates, corporate actions, and a compact written summary delivered daily.
+        </p>
       </div>
       <div class="flow">
         <article class="step">
@@ -798,6 +826,10 @@
       <div class="section-title">
         <span class="pill">Who it is for</span>
         <h2>Target users for the first launch.</h2>
+        <p>
+          These are the three user groups most likely to pay first because they benefit from repeatable daily output,
+          not because they want another generic finance dashboard.
+        </p>
       </div>
       <div class="three-grid">
         <article class="panel">
@@ -819,6 +851,10 @@
       <div class="section-title">
         <span class="pill">Pricing path</span>
         <h2>Start free in OSS. Charge for delivery and workflow.</h2>
+        <p>
+          The public site shows pricing direction, but not a fake self-serve checkout. Until billing and delivery are ready,
+          the right CTA is GitHub, waitlist, or direct contact.
+        </p>
       </div>
       <div class="pricing-grid">
         <article class="panel">
@@ -830,6 +866,14 @@
             <li>Use 33 free tools locally</li>
             <li>Acts as trust and discovery layer</li>
           </ul>
+          <div class="panel-actions">
+            <a
+              class="button secondary"
+              href="https://github.com/finstacklabs/finstack-mcp"
+              target="_blank"
+              rel="noopener noreferrer"
+            >View repo</a>
+          </div>
         </article>
         <article class="panel featured">
           <span class="tag">Best first product</span>
@@ -841,6 +885,12 @@
             <li>Earnings and action tracking</li>
             <li>Email or Telegram delivery</li>
           </ul>
+          <div class="panel-actions">
+            <a
+              class="button primary"
+              href="mailto:arunodayya32@gmail.com?subject=FinStack%20Brief%20waitlist"
+            >Join waitlist</a>
+          </div>
         </article>
         <article class="panel">
           <span class="tag">Desk tier</span>
@@ -851,6 +901,64 @@
             <li>Multiple watchlists</li>
             <li>Custom delivery workflow</li>
             <li>Higher-touch support</li>
+          </ul>
+          <div class="panel-actions">
+            <a
+              class="button secondary"
+              href="mailto:arunodayya32@gmail.com?subject=FinStack%20Desk%20plan"
+            >Request access</a>
+          </div>
+        </article>
+      </div>
+      <p class="section-note">
+        Reason for no direct payment button yet: hosted delivery, billing, and onboarding are not public self-serve right now.
+        Showing a fake checkout would reduce trust more than it helps.
+      </p>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span class="pill">Why trust it</span>
+        <h2>What makes this credible to a public visitor.</h2>
+      </div>
+      <div class="three-grid">
+        <article class="panel">
+          <h3>Live package and repo</h3>
+          <p>The engine is already live on GitHub and PyPI, not just a landing page concept or waitlist mockup.</p>
+        </article>
+        <article class="panel">
+          <h3>Clear product split</h3>
+          <p>The public OSS engine and the future paid brief are separated clearly so the business story is believable.</p>
+        </article>
+        <article class="panel">
+          <h3>Concrete workflow</h3>
+          <p>This is not "AI for finance" in the abstract. It is a repeatable market-brief workflow tied to real Indian-market data.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span class="pill">Use cases</span>
+        <h2>What people should actually do with FinStack.</h2>
+      </div>
+      <div class="dual-grid">
+        <article class="panel">
+          <h3>Research inside MCP clients</h3>
+          <ul>
+            <li>check NSE/BSE prices, indices, and market status</li>
+            <li>compare stocks on valuation, profitability, and growth</li>
+            <li>pull corporate actions, quarterly results, and earnings context</li>
+            <li>scan movers, sectors, and watchlist names quickly</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h3>Daily brief delivery later</h3>
+          <ul>
+            <li>generate an India-focused market brief every morning</li>
+            <li>summarize watchlist triggers for retail users or creators</li>
+            <li>reuse one engine for email, Telegram, or advisor workflows</li>
+            <li>turn raw market tools into a repeatable paid product</li>
           </ul>
         </article>
       </div>
