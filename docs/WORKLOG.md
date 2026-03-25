@@ -33,6 +33,7 @@
 - Fixed daily brief summary status mapping
 - Fixed market-mover loser filtering so positive stocks do not appear as losers
 - Fixed quarterly result enrichment bug caused by mutating a dict during iteration
+- Cleaned AI-looking banner comments in core server/config files and replaced stale backend project links
 
 ### Documentation
 
