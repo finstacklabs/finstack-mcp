@@ -53,6 +53,10 @@
       text-decoration: none;
     }
 
+    button {
+      font: inherit;
+    }
+
     .shell {
       width: min(1180px, calc(100vw - 32px));
       margin: 0 auto;
@@ -136,6 +140,79 @@
       color: #fff;
       font-size: 14px;
       font-weight: 700;
+    }
+
+    .nav-toggle {
+      display: none;
+      width: 52px;
+      height: 52px;
+      border: 1px solid var(--line-strong);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.62);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      padding: 0;
+    }
+
+    .nav-toggle span {
+      width: 20px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--ink);
+      transition: transform 0.22s ease, opacity 0.22s ease;
+    }
+
+    .nav-toggle.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      inset: 82px 12px auto;
+      z-index: 35;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 252, 246, 0.94);
+      box-shadow: 0 30px 90px rgba(32, 26, 18, 0.18);
+      backdrop-filter: blur(20px);
+      display: grid;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-12px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .mobile-menu a {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.66);
+      border: 1px solid rgba(23, 20, 17, 0.08);
+      font-weight: 600;
+    }
+
+    .mobile-menu a.mobile-cta {
+      background: var(--ink);
+      color: #fff;
     }
 
     .hero {
@@ -250,7 +327,6 @@
       padding: 14px 16px;
       background: var(--accent-soft);
       color: var(--accent);
-      font-family: "JetBrains Mono", monospace;
       cursor: pointer;
     }
 
@@ -498,12 +574,15 @@
       }
 
       .nav {
-        flex-wrap: wrap;
+        padding: 16px 0;
       }
 
       .nav-links {
-        width: 100%;
-        justify-content: space-between;
+        display: none;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
       }
     }
 
@@ -523,13 +602,34 @@
         padding: 20px;
       }
 
+      .hero {
+        padding-top: 36px;
+        gap: 22px;
+      }
+
+      h1 {
+        font-size: clamp(40px, 16vw, 62px);
+      }
+
+      .hero-sub {
+        font-size: 16px;
+      }
+
       .hero-grid {
         grid-template-columns: 1fr;
       }
 
-      .nav-links {
-        gap: 10px;
-        font-size: 13px;
+      .hero-actions,
+      .command {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .button,
+      .command button,
+      .command code {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -548,13 +648,31 @@
         <a href="#launch">Launch</a>
         <a
           class="nav-cta"
-          href="https://github.com/SpawnAgent/finstack-mcp"
+          href="https://github.com/finstacklabs/finstack-mcp"
           target="_blank"
           rel="noopener noreferrer"
         >GitHub</a>
       </nav>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </header>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#engine">OSS Engine</a>
+    <a href="#brief">Daily Brief</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#launch">Launch</a>
+    <a
+      class="mobile-cta"
+      href="https://github.com/finstacklabs/finstack-mcp"
+      target="_blank"
+      rel="noopener noreferrer"
+    >Open GitHub</a>
+  </div>
 
   <main class="shell">
     <section class="hero">
@@ -569,7 +687,7 @@
         <div class="hero-actions">
           <a
             class="button primary"
-            href="https://github.com/SpawnAgent/finstack-mcp"
+            href="https://github.com/finstacklabs/finstack-mcp"
             target="_blank"
             rel="noopener noreferrer"
           >Open GitHub</a>
@@ -635,7 +753,7 @@
           <h3>What the OSS repo does not try to be</h3>
           <ul>
             <li>Not the whole SaaS business on its own</li>
-            <li>Not a generic “finance MCP but with more tools” story</li>
+            <li>Not a generic "finance MCP but with more tools" story</li>
             <li>Not the place for billing, private customer logic, or closed dashboards</li>
             <li>Not dependent on large marketing spend to be useful</li>
           </ul>
@@ -716,7 +834,7 @@
         <article class="panel featured">
           <span class="tag">Best first product</span>
           <h3>FinStack Brief</h3>
-          <div class="price"><strong>₹499-999</strong><span>per month</span></div>
+          <div class="price"><strong>Rs 499-999</strong><span>per month</span></div>
           <ul>
             <li>Daily Indian market brief</li>
             <li>Watchlist updates</li>
@@ -727,7 +845,7 @@
         <article class="panel">
           <span class="tag">Desk tier</span>
           <h3>Creator / Desk</h3>
-          <div class="price"><strong>₹2,999+</strong><span>per month</span></div>
+          <div class="price"><strong>Rs 2,999+</strong><span>per month</span></div>
           <ul>
             <li>Branded briefs</li>
             <li>Multiple watchlists</li>
@@ -746,7 +864,7 @@
       <div class="launch-card">
         <div>
           <p>
-            Today’s launch is not “full SaaS live.” It is a clean public release of `finstack-mcp` plus a clear
+            Today's launch is not "full SaaS live." It is a clean public release of `finstack-mcp` plus a clear
             product narrative that the paid layer is the Indian market daily brief. That gives us a real story for
             GitHub, PyPI, MCP registries, and early users.
           </p>
@@ -754,11 +872,16 @@
         <div class="hero-actions">
           <a
             class="button primary"
-            href="https://github.com/SpawnAgent/finstack-mcp"
+            href="https://github.com/finstacklabs/finstack-mcp"
             target="_blank"
             rel="noopener noreferrer"
           >Launch GitHub</a>
-          <a class="button secondary" href="../docs/LAUNCH_TODAY.md">Open checklist</a>
+          <a
+            class="button secondary"
+            href="https://github.com/finstacklabs/finstack-mcp/blob/main/docs/LAUNCH_TODAY.md"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Open checklist</a>
         </div>
       </div>
     </section>
@@ -768,8 +891,8 @@
     <div class="footer-grid">
       <span>MIT licensed. Open-source engine first. Not investment advice.</span>
       <div class="footer-links">
-        <a href="https://github.com/SpawnAgent/finstack-mcp" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="mailto:spawnagent@proton.me">Contact</a>
+        <a href="https://github.com/finstacklabs/finstack-mcp" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="mailto:arunodayya32@gmail.com">Contact</a>
       </div>
     </div>
   </footer>
@@ -777,6 +900,9 @@
   <script>
     const copyButton = document.getElementById("copy-button");
     const installCommand = document.getElementById("install-command").textContent;
+    const navToggle = document.getElementById("nav-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const mobileLinks = mobileMenu.querySelectorAll("a");
 
     copyButton.addEventListener("click", async () => {
       try {
@@ -787,6 +913,30 @@
         }, 1800);
       } catch (error) {
         copyButton.textContent = "failed";
+      }
+    });
+
+    function closeMobileMenu() {
+      navToggle.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      mobileMenu.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    navToggle.addEventListener("click", () => {
+      const isOpen = mobileMenu.classList.toggle("open");
+      navToggle.classList.toggle("open", isOpen);
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+      document.body.style.overflow = isOpen ? "hidden" : "";
+    });
+
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 980) {
+        closeMobileMenu();
       }
     });
   </script>
