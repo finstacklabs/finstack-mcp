@@ -33,4 +33,4 @@ def test_generate_daily_brief_shapes_output(monkeypatch):
     assert brief["brief_date"] == "2026-03-25"
     assert brief["indices"]["nifty50"]["index"] == "NIFTY50"
     assert len(brief["watchlist"]) == 2
-    assert "Market status" in brief["summary"]
+    assert "Market status: OPEN." in brief["summary"]

@@ -340,7 +340,7 @@ def get_market_movers(mover_type: str = "gainers") -> dict:
         "RELIANCE.NS", "TCS.NS", "HDFCBANK.NS", "INFY.NS", "ICICIBANK.NS",
         "HINDUNILVR.NS", "SBIN.NS", "BHARTIARTL.NS", "ITC.NS", "KOTAKBANK.NS",
         "LT.NS", "AXISBANK.NS", "BAJFINANCE.NS", "ASIANPAINT.NS", "MARUTI.NS",
-        "TITAN.NS", "SUNPHARMA.NS", "TATAMOTORS.NS", "WIPRO.NS", "HCLTECH.NS",
+        "TITAN.NS", "SUNPHARMA.NS", "M&M.NS", "WIPRO.NS", "HCLTECH.NS",
         "ONGC.NS", "NTPC.NS", "POWERGRID.NS", "TATASTEEL.NS", "ADANIENT.NS",
         "ADANIPORTS.NS", "BAJAJFINSV.NS", "TECHM.NS", "NESTLEIND.NS", "ULTRACEMCO.NS",
     ]
@@ -391,9 +391,11 @@ def get_market_movers(mover_type: str = "gainers") -> dict:
 
         # Sort based on type
         if mover_type == "gainers":
+            results = [item for item in results if item["change_pct"] > 0]
             results.sort(key=lambda x: x["change_pct"], reverse=True)
             results = results[:10]
         elif mover_type == "losers":
+            results = [item for item in results if item["change_pct"] < 0]
             results.sort(key=lambda x: x["change_pct"])
             results = results[:10]
         elif mover_type == "active":

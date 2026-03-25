@@ -2,7 +2,7 @@
   "name": "finstack-mcp",
   "display_name": "FinStack MCP",
   "description": "India-first MCP server for NSE/BSE, global market data, fundamentals, analytics, and daily research workflows.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "SpawnAgent",
   "license": "MIT",
   "repository": "https://github.com/SpawnAgent/finstack-mcp",

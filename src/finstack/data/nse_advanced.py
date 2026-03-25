@@ -32,6 +32,18 @@ NSE_HEADERS = {
 }
 
 
+def _format_calendar_value(value: Any) -> Any:
+    """Convert pandas/yfinance calendar values into JSON-friendly strings."""
+    if isinstance(value, (list, tuple)):
+        return [str(item) for item in value]
+    if hasattr(value, "strftime"):
+        try:
+            return value.strftime("%Y-%m-%d")
+        except Exception:  # pragma: no cover
+            return str(value)
+    return value
+
+
 def _nse_session() -> httpx.Client:
     """Create an NSE session with cookies (NSE requires session cookies)."""
     client = httpx.Client(headers=NSE_HEADERS, timeout=15, follow_redirects=True)
@@ -315,7 +327,7 @@ def get_quarterly_results(symbol: str) -> dict:
 
         # QoQ growth
         if len(quarters) >= 2:
-            for key in quarters[0]:
+            for key in list(quarters[0].keys()):
                 if key == "quarter":
                     continue
                 curr = quarters[0].get(key)
@@ -358,11 +370,11 @@ def get_earnings_calendar(symbol: str = "") -> dict:
             if isinstance(cal, dict):
                 return clean_nan({
                     "symbol": symbol.replace(".NS", ""),
-                    "earnings_date": str(cal.get("Earnings Date", ["Not available"])),
-                    "earnings_avg": cal.get("Earnings Average"),
-                    "earnings_low": cal.get("Earnings Low"),
-                    "earnings_high": cal.get("Earnings High"),
-                    "revenue_avg": cal.get("Revenue Average"),
+                    "earnings_date": _format_calendar_value(cal.get("Earnings Date", ["Not available"])),
+                    "earnings_avg": _format_calendar_value(cal.get("Earnings Average")),
+                    "earnings_low": _format_calendar_value(cal.get("Earnings Low")),
+                    "earnings_high": _format_calendar_value(cal.get("Earnings High")),
+                    "revenue_avg": _format_calendar_value(cal.get("Revenue Average")),
                     "timestamp": datetime.now().isoformat(),
                 })
             else:
