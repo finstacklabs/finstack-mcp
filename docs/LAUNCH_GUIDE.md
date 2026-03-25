@@ -28,7 +28,7 @@ Push commands:
 ```bash
 git init
 git add .
-git commit -m "Launch finstack-mcp v0.3.1"
+git commit -m "Launch finstack-mcp v0.3.2"
 git branch -M main
 git remote add origin https://github.com/<your-username>/finstack-mcp.git
 git push -u origin main
