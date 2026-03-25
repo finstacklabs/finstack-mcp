@@ -21,6 +21,8 @@
 - Linked the README to the partner plan and worklog
 - Rewrote `landing-page/index.html` around the OSS engine plus paid daily brief story
 - Replaced stale `server.json` copy with current metadata and counts
+- Rebuilt the landing page for mobile with a hamburger menu, responsive sections, and stronger cinematic styling
+- Corrected public links and contact details on the landing page to use `finstacklabs`
 
 ### Product Build
 
