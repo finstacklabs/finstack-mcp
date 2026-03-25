@@ -75,7 +75,7 @@ class FinStackConfig:
     )
     sec_user_agent: str = field(
         default_factory=lambda: os.getenv(
-            "SEC_EDGAR_USER_AGENT", "FinStack/0.3.1 arunodayya32@gmail.com"
+            "SEC_EDGAR_USER_AGENT", "FinStack/0.3.2 arunodayya32@gmail.com"
         )
     )
 
