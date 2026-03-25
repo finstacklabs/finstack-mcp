@@ -1,14 +1,10 @@
-"""
-FinStack Configuration & Tier Management
+"""Configuration helpers for FinStack."""
 
-Handles all settings, API keys, caching config, and user tier logic.
-Tiers: free (default), pro ($19/mo), api ($49/mo), enterprise ($199/mo)
-"""
-
-import os
 import logging
-from enum import Enum
+import os
 from dataclasses import dataclass, field
+from enum import Enum
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,7 +19,7 @@ class UserTier(str, Enum):
     ENTERPRISE = "enterprise"
 
 
-# Rate limits per tier (requests per day)
+# Daily request caps by plan.
 TIER_RATE_LIMITS = {
     UserTier.FREE: 100,
     UserTier.PRO: 5000,
@@ -31,31 +27,28 @@ TIER_RATE_LIMITS = {
     UserTier.ENTERPRISE: 500000,
 }
 
-# Which tools are available per tier
-# "all" means all tools are available
-# Otherwise, list specific tool name prefixes that are LOCKED for free users
+# Free users can call most tools, but these stay paid-only.
 FREE_TIER_LOCKED_TOOLS = {
-    "nse_options_chain",      # Pro+
-    "backtest_strategy",      # Pro+
-    "portfolio_analysis",     # Pro+
-    "stock_screener",         # Pro+ (basic version free, advanced locked)
-    "support_resistance",     # Pro+
+    "nse_options_chain",
+    "backtest_strategy",
+    "portfolio_analysis",
+    "stock_screener",
+    "support_resistance",
 }
 
-PRO_TIER_LOCKED_TOOLS = set()  # Pro users get everything except enterprise features
+PRO_TIER_LOCKED_TOOLS = set()
 
 ENTERPRISE_ONLY_TOOLS = {
-    "custom_screener",        # Enterprise
-    "bulk_export",            # Enterprise
-    "webhook_alerts",         # Enterprise
+    "custom_screener",
+    "bulk_export",
+    "webhook_alerts",
 }
 
 
 @dataclass
 class FinStackConfig:
-    """Central configuration for the FinStack MCP server."""
+    """Central configuration for the server and hosted add-ons."""
 
-    # Server
     host: str = field(default_factory=lambda: os.getenv("FINSTACK_HOST", "127.0.0.1"))
     port: int = field(default_factory=lambda: int(os.getenv("FINSTACK_PORT", "8000")))
     log_level: str = field(default_factory=lambda: os.getenv("FINSTACK_LOG_LEVEL", "INFO"))
@@ -63,7 +56,6 @@ class FinStackConfig:
         default_factory=lambda: UserTier(os.getenv("FINSTACK_MODE", "free"))
     )
 
-    # Cache TTLs (seconds)
     cache_ttl_quotes: int = field(
         default_factory=lambda: int(os.getenv("FINSTACK_CACHE_TTL_QUOTES", "300"))
     )
@@ -74,7 +66,7 @@ class FinStackConfig:
         default_factory=lambda: int(os.getenv("FINSTACK_CACHE_TTL_HISTORICAL", "86400"))
     )
 
-    # API Keys (all optional — core works without them)
+    # These integrations are optional. The package should still work without them.
     alpha_vantage_key: str = field(
         default_factory=lambda: os.getenv("ALPHA_VANTAGE_API_KEY", "")
     )
@@ -83,11 +75,10 @@ class FinStackConfig:
     )
     sec_user_agent: str = field(
         default_factory=lambda: os.getenv(
-            "SEC_EDGAR_USER_AGENT", "FinStack/0.1.0 finstack@spawnagent.com"
+            "SEC_EDGAR_USER_AGENT", "FinStack/0.3.1 arunodayya32@gmail.com"
         )
     )
 
-    # Payment (Phase 2+)
     stripe_secret_key: str = field(
         default_factory=lambda: os.getenv("STRIPE_SECRET_KEY", "")
     )
@@ -102,33 +93,27 @@ class FinStackConfig:
     )
 
     def is_tool_allowed(self, tool_name: str, user_tier: UserTier | None = None) -> bool:
-        """Check if a tool is allowed for the given tier."""
+        """Return whether a given tool is available for the selected tier."""
         tier = user_tier or self.mode
 
         if tier == UserTier.ENTERPRISE:
             return True
 
         if tier == UserTier.FREE:
-            if tool_name in FREE_TIER_LOCKED_TOOLS:
-                return False
-            if tool_name in ENTERPRISE_ONLY_TOOLS:
-                return False
-            return True
+            return tool_name not in FREE_TIER_LOCKED_TOOLS and tool_name not in ENTERPRISE_ONLY_TOOLS
 
         if tier in (UserTier.PRO, UserTier.API):
-            if tool_name in ENTERPRISE_ONLY_TOOLS:
-                return False
-            return True
+            return tool_name not in ENTERPRISE_ONLY_TOOLS
 
         return True
 
     def get_rate_limit(self, user_tier: UserTier | None = None) -> int:
-        """Get daily request limit for the tier."""
+        """Return the daily request cap for the selected tier."""
         tier = user_tier or self.mode
         return TIER_RATE_LIMITS.get(tier, 100)
 
     def setup_logging(self) -> None:
-        """Configure logging for the server."""
+        """Set up a basic structured log format."""
         logging.basicConfig(
             level=getattr(logging, self.log_level.upper(), logging.INFO),
             format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
@@ -136,5 +121,4 @@ class FinStackConfig:
         )
 
 
-# Singleton config instance
 config = FinStackConfig()
