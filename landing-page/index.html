@@ -745,6 +745,7 @@
           <p>Top losers: <span class="highlight">BPCL, LT, ADANIPORTS</span></p>
           <p>Sector lead: <span class="accent">IT +1.8%</span></p>
           <p>Watchlist alerts: RELIANCE earnings due, TCS dividend tracked, HDFCBANK results updated.</p>
+          <p>Delivery: email text, Telegram post, and manual creator/desk brief formats now supported.</p>
           <p>Summary: Market tone is constructive, but select large caps remain mixed. Watch institutional flow and earnings-heavy names.</p>
         </div>
       </aside>
@@ -807,7 +808,7 @@
         <article class="step">
           <span class="step-label">Step 02</span>
           <strong>Generate the brief</strong>
-          <p>The new daily brief engine composes raw market data into structured JSON and a narrative summary.</p>
+          <p>The daily brief engine now produces structured JSON plus readable plain-text, Telegram, and email-ready output.</p>
         </article>
         <article class="step">
           <span class="step-label">Step 03</span>
@@ -914,6 +915,86 @@
         Reason for no direct payment button yet: hosted delivery, billing, and onboarding are not public self-serve right now.
         Showing a fake checkout would reduce trust more than it helps.
       </p>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span class="pill">Premium sample</span>
+        <h2>What a paid daily brief should feel like.</h2>
+        <p>
+          This is the direction for the first revenue product: clean delivery, watchlist context, and a format someone would actually pay to receive every morning.
+        </p>
+      </div>
+      <div class="dual-grid">
+        <article class="panel">
+          <h3>Email-ready brief</h3>
+          <p>
+            Subject: <strong>FinStack Brief | 2026-03-26 | Indian market snapshot</strong>
+          </p>
+          <ul>
+            <li>Nifty 50: 24,812.30 (+0.88%)</li>
+            <li>Sensex: 81,456.18 (+0.74%)</li>
+            <li>Top gainers: TCS, HCLTECH, SBI</li>
+            <li>Top losers: BPCL, LT, ADANIPORTS</li>
+            <li>Watchlist: RELIANCE earnings due, TCS dividend tracked</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h3>Telegram-ready brief</h3>
+          <p>
+            <strong>FinStack Brief</strong> | <code>2026-03-26</code>
+          </p>
+          <ul>
+            <li>Market: CLOSED</li>
+            <li>Nifty 50: 24,812.30 (+0.88%)</li>
+            <li>Top gainers: TCS, HCLTECH, SBI</li>
+            <li>Watchlist: HDFCBANK results updated</li>
+            <li>Use this as a first-pass market briefing, not investment advice.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span class="pill">Early access</span>
+        <h2>How manual onboarding works for the first paid users.</h2>
+        <p>
+          Early revenue should be manual. That keeps the workflow simple while the delivery layer is still being shaped by real user feedback.
+        </p>
+      </div>
+      <div class="flow">
+        <article class="step">
+          <span class="step-label">Step 01</span>
+          <strong>Request access</strong>
+          <p>User mails with watchlist, delivery preference, and whether the use case is personal, creator, or desk.</p>
+        </article>
+        <article class="step">
+          <span class="step-label">Step 02</span>
+          <strong>Manual setup</strong>
+          <p>We decide the symbols, frequency, and delivery format: email, Telegram, or WhatsApp-ready copy.</p>
+        </article>
+        <article class="step">
+          <span class="step-label">Step 03</span>
+          <strong>Trial delivery</strong>
+          <p>Send a sample premium brief for a few days and refine the structure around what the user actually reads.</p>
+        </article>
+        <article class="step">
+          <span class="step-label">Step 04</span>
+          <strong>Paid conversion</strong>
+          <p>Move to a simple monthly payment link once the user sees repeat value in the brief workflow.</p>
+        </article>
+      </div>
+      <div class="hero-actions">
+        <a
+          class="button primary"
+          href="mailto:arunodayya32@gmail.com?subject=FinStack%20Brief%20early%20access&body=Name%3A%0AUse%20case%20(personal%20%2F%20creator%20%2F%20desk)%3A%0AWatchlist%3A%0ADelivery%20format%20(email%20%2F%20telegram)%3A"
+        >Request early access</a>
+        <a
+          class="button secondary"
+          href="mailto:arunodayya32@gmail.com?subject=FinStack%20manual%20onboarding"
+        >Ask onboarding questions</a>
+      </div>
     </section>
 
     <section>

@@ -1,9 +1,4 @@
-"""
-FinStack daily brief generator.
-
-This module is the first bridge from the open-source MCP engine to the paid
-Indian market daily brief product.
-"""
+"""Daily brief generation and delivery formatting for FinStack."""
 
 from __future__ import annotations
 
@@ -32,6 +27,42 @@ def _safe_dict(value: object) -> dict:
     if isinstance(value, dict):
         return value
     return {}
+
+
+def _format_number(value: object) -> str:
+    if isinstance(value, (int, float)):
+        return f"{value:,.2f}"
+    return "N/A"
+
+
+def _format_change(entry: dict) -> str:
+    change_pct = entry.get("change_percent", entry.get("change_pct"))
+    if isinstance(change_pct, (int, float)):
+        prefix = "+" if change_pct > 0 else ""
+        return f"{prefix}{change_pct:.2f}%"
+    return "N/A"
+
+
+def _first_watchlist_signal(item: dict) -> str:
+    earnings = _safe_dict(item.get("earnings"))
+    actions = _safe_list(item.get("corporate_actions"), limit=1)
+    quarter = _safe_dict(item.get("quarterly_results"))
+
+    if earnings.get("earnings_date"):
+        dates = earnings["earnings_date"]
+        if isinstance(dates, list) and dates:
+            return f"Earnings due {dates[0]}"
+        return f"Earnings due {dates}"
+
+    if actions:
+        action = actions[0]
+        return f"{action.get('type', 'Action')} tracked"
+
+    latest_quarter = quarter.get("latest_quarter")
+    if latest_quarter:
+        return f"Results updated for {latest_quarter}"
+
+    return "Monitoring"
 
 
 def _watchlist_section(symbols: list[str]) -> list[dict]:
@@ -82,14 +113,14 @@ def _narrative(
         top = gainers[0]
         lines.append(
             f"Top momentum came from {top.get('symbol', 'N/A')} with "
-            f"{top.get('change_percent', top.get('change_pct', 'N/A'))}% change."
+            f"{_format_change(top)}."
         )
 
     if losers:
         lag = losers[0]
         lines.append(
             f"Main weakness showed in {lag.get('symbol', 'N/A')} with "
-            f"{lag.get('change_percent', lag.get('change_pct', 'N/A'))}% move."
+            f"{_format_change(lag)}."
         )
 
     if watchlist:
@@ -97,6 +128,132 @@ def _narrative(
 
     lines.append("Use this output as a first-pass market briefing, not investment advice.")
     return " ".join(lines)
+
+
+def _render_plain_text(payload: dict) -> str:
+    market_status = _safe_dict(payload.get("market_status"))
+    indices = _safe_dict(payload.get("indices"))
+    movers = _safe_dict(payload.get("market_movers"))
+    watchlist = _safe_list(payload.get("watchlist"))
+    sectors = _safe_dict(payload.get("sector_performance"))
+    fii_dii = _safe_dict(payload.get("institutional_flow"))
+
+    lines = [
+        f"FinStack Brief | {payload.get('brief_date', 'N/A')}",
+        f"Market status: {market_status.get('nse_status', market_status.get('status', 'UNKNOWN'))}",
+        "",
+    ]
+
+    nifty = _safe_dict(indices.get("nifty50"))
+    sensex = _safe_dict(indices.get("sensex"))
+    bank_nifty = _safe_dict(indices.get("bank_nifty"))
+    lines.extend(
+        [
+            f"Nifty 50: {_format_number(nifty.get('value'))} ({_format_change(nifty)})",
+            f"Sensex: {_format_number(sensex.get('value'))} ({_format_change(sensex)})",
+            f"Bank Nifty: {_format_number(bank_nifty.get('value'))} ({_format_change(bank_nifty)})",
+            "",
+        ]
+    )
+
+    gainers = _safe_list(movers.get("gainers"), limit=3)
+    losers = _safe_list(movers.get("losers"), limit=3)
+    if gainers:
+        lines.append("Top gainers: " + ", ".join(f"{item['symbol']} {_format_change(item)}" for item in gainers))
+    if losers:
+        lines.append("Top losers: " + ", ".join(f"{item['symbol']} {_format_change(item)}" for item in losers))
+
+    best_sector = _safe_dict(sectors.get("best_performer"))
+    if best_sector:
+        lines.append(
+            f"Leading sector: {best_sector.get('sector', 'N/A')} ({_format_change(best_sector)})"
+        )
+
+    flow_data = _safe_list(fii_dii.get("data"), limit=2)
+    if flow_data:
+        parts = []
+        for row in flow_data:
+            parts.append(f"{row.get('category', 'N/A')}: {row.get('netValue', 'N/A')}")
+        lines.append("Institutional flow: " + " | ".join(parts))
+
+    if watchlist:
+        lines.append("")
+        lines.append("Watchlist signals:")
+        for item in watchlist:
+            lines.append(f"- {item.get('symbol', 'N/A')}: {_first_watchlist_signal(item)}")
+
+    lines.append("")
+    lines.append(payload.get("summary", ""))
+    return "\n".join(lines).strip()
+
+
+def _render_telegram(payload: dict) -> str:
+    market_status = _safe_dict(payload.get("market_status"))
+    indices = _safe_dict(payload.get("indices"))
+    movers = _safe_dict(payload.get("market_movers"))
+    watchlist = _safe_list(payload.get("watchlist"))
+
+    nifty = _safe_dict(indices.get("nifty50"))
+    sensex = _safe_dict(indices.get("sensex"))
+
+    lines = [
+        f"*FinStack Brief* | `{payload.get('brief_date', 'N/A')}`",
+        f"Market: *{market_status.get('nse_status', market_status.get('status', 'UNKNOWN'))}*",
+        "",
+        f"Nifty 50: *{_format_number(nifty.get('value'))}* ({_format_change(nifty)})",
+        f"Sensex: *{_format_number(sensex.get('value'))}* ({_format_change(sensex)})",
+    ]
+
+    gainers = _safe_list(movers.get("gainers"), limit=3)
+    losers = _safe_list(movers.get("losers"), limit=3)
+    if gainers:
+        lines.append("Top gainers: " + ", ".join(f"{item['symbol']} {_format_change(item)}" for item in gainers))
+    if losers:
+        lines.append("Top losers: " + ", ".join(f"{item['symbol']} {_format_change(item)}" for item in losers))
+
+    if watchlist:
+        lines.append("")
+        lines.append("*Watchlist*")
+        for item in watchlist:
+            lines.append(f"- {item.get('symbol', 'N/A')}: {_first_watchlist_signal(item)}")
+
+    lines.append("")
+    lines.append(payload.get("summary", ""))
+    lines.append("")
+    lines.append("_Not investment advice._")
+    return "\n".join(lines).strip()
+
+
+def _render_email(payload: dict) -> dict:
+    subject = f"FinStack Brief | {payload.get('brief_date', 'N/A')} | Indian market snapshot"
+    plain_text = _render_plain_text(payload)
+    html = f"""
+<html>
+  <body style="margin:0;padding:24px;background:#f6f1e8;color:#171411;font-family:Arial,sans-serif;">
+    <div style="max-width:700px;margin:0 auto;background:#fffdf8;border:1px solid #e7dcc8;border-radius:18px;padding:28px;">
+      <p style="margin:0 0 8px;color:#0d6b57;font-weight:700;">FinStack Brief</p>
+      <h1 style="margin:0 0 18px;font-size:28px;">Indian market snapshot for {payload.get('brief_date', 'N/A')}</h1>
+      <pre style="white-space:pre-wrap;font-family:Arial,sans-serif;line-height:1.7;font-size:15px;margin:0;">{plain_text}</pre>
+    </div>
+  </body>
+</html>
+""".strip()
+    return {
+        "subject": subject,
+        "text": plain_text,
+        "html": html,
+    }
+
+
+def _delivery_formats(payload: dict) -> dict:
+    plain_text = _render_plain_text(payload)
+    telegram = _render_telegram(payload)
+    email = _render_email(payload)
+    return {
+        "plain_text": plain_text,
+        "telegram_markdown": telegram,
+        "email": email,
+    }
 
 
 def generate_daily_brief(
@@ -120,7 +277,7 @@ def generate_daily_brief(
     bulk_deals = _safe_dict(get_bulk_deals())
     watchlist_data = _watchlist_section(watchlist)
 
-    return {
+    payload = {
         "brief_type": "indian_market_daily_brief",
         "generated_at": datetime.now().isoformat(),
         "brief_date": brief_date,
@@ -142,6 +299,8 @@ def generate_daily_brief(
         "watchlist": watchlist_data,
         "summary": _narrative(market_status, gainers, losers, watchlist_data),
     }
+    payload["delivery_formats"] = _delivery_formats(payload)
+    return payload
 
 
 def main() -> None:
@@ -153,6 +312,12 @@ def main() -> None:
     )
     parser.add_argument("--date", default="", help="Brief date in YYYY-MM-DD format")
     parser.add_argument("--style", default="concise", help="Narrative style hint")
+    parser.add_argument(
+        "--output",
+        default="json",
+        choices=["json", "text", "telegram", "email-text", "email-html"],
+        help="Render the brief in a delivery-friendly format",
+    )
     args = parser.parse_args()
 
     watchlist = [symbol for symbol in args.watchlist.split(",") if symbol.strip()]
@@ -161,7 +326,17 @@ def main() -> None:
         brief_date=args.date or None,
         style=args.style,
     )
-    print(json.dumps(payload, indent=2, default=str))
+
+    if args.output == "json":
+        print(json.dumps(payload, indent=2, default=str))
+    elif args.output == "text":
+        print(payload["delivery_formats"]["plain_text"])
+    elif args.output == "telegram":
+        print(payload["delivery_formats"]["telegram_markdown"])
+    elif args.output == "email-text":
+        print(payload["delivery_formats"]["email"]["text"])
+    elif args.output == "email-html":
+        print(payload["delivery_formats"]["email"]["html"])
 
 
 if __name__ == "__main__":

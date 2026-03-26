@@ -34,3 +34,7 @@ def test_generate_daily_brief_shapes_output(monkeypatch):
     assert brief["indices"]["nifty50"]["index"] == "NIFTY50"
     assert len(brief["watchlist"]) == 2
     assert "Market status: OPEN." in brief["summary"]
+    assert "delivery_formats" in brief
+    assert "FinStack Brief | 2026-03-25" in brief["delivery_formats"]["plain_text"]
+    assert "*FinStack Brief*" in brief["delivery_formats"]["telegram_markdown"]
+    assert brief["delivery_formats"]["email"]["subject"].startswith("FinStack Brief | 2026-03-25")
