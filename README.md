@@ -9,6 +9,8 @@
 
 FinStack MCP is an India-first financial data and research engine for MCP clients. It gives Claude, Cursor, ChatGPT, and other MCP-compatible tools a structured interface for NSE/BSE market data, global market coverage, fundamentals, analytics, and watchlist-ready research workflows.
 
+Built and maintained by **Arun B S** ([@SpawnAgent](https://x.com/finstacklabs1)) — open source, MIT licensed.
+
 The repo is public on purpose. It is the open-source engine, trust layer, and distribution channel for the broader FinStack product line.
 
 ## Demo
