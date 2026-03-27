@@ -221,7 +221,7 @@ This package is live on:
 
 - GitHub: https://github.com/finstacklabs/finstack-mcp
 - PyPI: https://pypi.org/project/finstack-mcp/
-- Landing page: https://finstacklabs.github.io/
+- Landing page: https://finstack-mcp-ten.vercel.app/
 - Glama: https://glama.ai/mcp/servers/finstacklabs/finstack-mcp
 - YouTube demo: https://youtu.be/PWK89gBbHEM
 - X / Twitter: https://x.com/finstacklabs1
