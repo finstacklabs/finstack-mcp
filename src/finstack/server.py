@@ -50,6 +50,7 @@ TOOL_CATALOG = [
     {"name": "nse_options_chain", "description": "Options chain with PCR analysis", "tier": "pro"},
     {"name": "portfolio_analysis", "description": "Portfolio P&L, weights, risk analysis", "tier": "pro"},
     {"name": "backtest_strategy", "description": "SMA crossover strategy backtesting", "tier": "pro"},
+    {"name": "calculate_tax_liability", "description": "LTCG/STCG tax calculator for Indian equity and mutual fund trades", "tier": "free"},
 ]
 
 TOTAL_TOOLS = len(TOOL_CATALOG) + 1
@@ -61,10 +62,12 @@ register_indian_tools(mcp)
 from finstack.tools.analytics import register_analytics_tools
 from finstack.tools.fundamentals import register_fundamental_tools
 from finstack.tools.global_ import register_global_tools
+from finstack.tools.tax import register_tax_tools
 
 register_global_tools(mcp)
 register_fundamental_tools(mcp)
 register_analytics_tools(mcp)
+register_tax_tools(mcp)
 
 
 @mcp.tool()

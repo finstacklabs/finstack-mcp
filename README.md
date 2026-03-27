@@ -44,12 +44,13 @@ Most finance MCP servers are either too generic, too thin, or too dependent on A
 
 Current package scope:
 
-- 39 tools in total
-- 33 tools available in the free flow
+- 40 tools in total
+- 34 tools available in the free flow
 - Indian market support for NSE/BSE quotes, indices, corporate actions, quarterly results, FII/DII activity, bulk deals, IPOs, and market status
 - global market support for equities, crypto, forex, news, and SEC filings
 - fundamentals support for income statement, balance sheet, cash flow, key ratios, company profiles, and dividend history
 - analytics support for technical indicators, sector performance, stock comparison, screening, portfolio analysis, support/resistance, options chain, and backtesting
+- tax support for LTCG/STCG calculation under Indian tax rules (post July 2024 Budget)
 
 ## Quick Start
 
@@ -147,6 +148,7 @@ Restart Claude Desktop and try prompts like:
 - options chain
 - portfolio analysis
 - strategy backtesting
+- LTCG/STCG tax calculator (Indian equity and mutual fund trades)
 
 ## Product Role
 
