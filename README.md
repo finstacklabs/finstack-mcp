@@ -11,7 +11,9 @@ FinStack MCP is an India-first financial data and research engine for MCP client
 
 The repo is public on purpose. It is the open-source engine, trust layer, and distribution channel for the broader FinStack product line.
 
-Demo video: https://drive.google.com/file/d/1sWKAB2K62oUG14YtS5YqEo72Unr9xfq3/view?usp=sharing
+## Demo
+
+[![FinStack MCP Demo](https://img.youtube.com/vi/PWK89gBbHEM/maxresdefault.jpg)](https://youtu.be/PWK89gBbHEM?si=MqYuCRRJ0EUP10fm)
 
 ## Overview
 
