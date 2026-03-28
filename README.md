@@ -17,6 +17,16 @@ The repo is public on purpose. It is the open-source engine, trust layer, and di
 
 [![FinStack MCP Demo](https://img.youtube.com/vi/PWK89gBbHEM/maxresdefault.jpg)](https://youtu.be/PWK89gBbHEM?si=MqYuCRRJ0EUP10fm)
 
+## Screenshots
+
+**Market brief for Reliance, TCS, and HDFC Bank — live inside Claude:**
+
+![Market Brief Screenshot](docs/assets/demo-brief.png)
+
+**FII/DII institutional activity — pulled directly from NSE:**
+
+![FII DII Screenshot](docs/assets/demo-fii.png)
+
 ## Overview
 
 FinStack MCP is designed around a simple product split:
