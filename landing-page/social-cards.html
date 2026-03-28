@@ -2,1315 +2,981 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<title>Arthex — 7-Day Social Cards</title>
+<title>Arthex — Social Cards v2</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: #e8e4de;
-  font-family: "Inter", sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 80px;
-  padding: 70px 20px 120px;
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:#d6d2cc;
+  font-family:"Inter",sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+  gap:80px;padding:80px 20px 120px;
 }
 
-/* ── SECTION LABEL ── */
-.section {
-  width: 1200px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* ── SECTION WRAPPER ── */
+.section{width:1200px;display:flex;flex-direction:column;gap:16px;}
+.day-tag{
+  font-family:"JetBrains Mono",monospace;font-size:11px;
+  letter-spacing:.2em;text-transform:uppercase;color:#999;
 }
-.day-tag {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: #999;
-  text-transform: uppercase;
+.post-box{
+  background:#eeebe5;border:1px solid #ddd9d0;border-radius:12px;
+  padding:20px 24px;display:flex;gap:32px;flex-wrap:wrap;
 }
+.pb-col{flex:1;min-width:260px;}
+.pb-plat{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#aaa;margin-bottom:8px;}
+.pb-copy{font-size:12.5px;color:#555;line-height:1.65;white-space:pre-wrap;}
+.pb-copy strong{color:#222;}
 
-/* ── POST COPY BOX ── */
-.post-copy {
-  background: #f0ede8;
-  border: 1px solid #ddd9d2;
-  border-radius: 12px;
-  padding: 20px 24px;
-}
-.post-copy h3 {
-  font-size: 11px;
-  font-family: "JetBrains Mono", monospace;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #999;
-  margin-bottom: 12px;
-}
-.platform-row {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-.platform-block { flex: 1; min-width: 280px; }
-.platform-name {
-  font-size: 11px;
-  font-weight: 700;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 6px;
-  font-family: "JetBrains Mono", monospace;
-}
-.copy-text {
-  font-size: 13px;
-  color: #444;
-  line-height: 1.6;
-  white-space: pre-wrap;
-}
-.copy-text strong { color: #111; }
+/* ── CARD BASE ── */
+.card{width:1200px;height:630px;border-radius:16px;position:relative;overflow:hidden;}
 
-/* ════════════════════════
-   CARD BASE
-════════════════════════ */
-.card {
-  width: 1200px;
-  height: 630px;
-  border-radius: 20px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  padding: 0 80px;
-}
-
-/* ── STRIKETHROUGH PRICE ── */
-.strike-price {
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 700;
-  color: #dc2626;
-  text-decoration: line-through;
-  text-decoration-thickness: 3px;
-  opacity: 0.7;
-}
-
-/* ── BOTTOM BRAND BAR ── */
-.brand-bar {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
-  justify-content: space-between;
-}
-.brand-name {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-}
-.brand-url {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-}
-
-
-/* ════════════════════════════════
+/* ─────────────────────────────────────────────
    CARD 1 — BLOOMBERG
-   bg: warm cream, editorial feel
-════════════════════════════════ */
-.c1 {
-  background: #faf8f3;
-  border: 1.5px solid #e8e2d8;
-}
-.c1 .left { flex: 1; }
-.c1 .right {
-  width: 340px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-.c1 .eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #16a34a;
-  margin-bottom: 18px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.c1 .eyebrow::before {
-  content: '';
-  width: 24px; height: 2px;
-  background: #16a34a;
-  display: inline-block;
-}
-.c1 .hook {
-  font-size: 62px;
-  font-weight: 900;
-  line-height: 1.0;
-  letter-spacing: -0.04em;
-  color: #0a0a0a;
-  margin-bottom: 28px;
-}
-.c1 .hook em {
-  font-style: normal;
-  color: #16a34a;
-}
-.c1 .sub {
-  font-size: 17px;
-  color: #666;
-  line-height: 1.6;
-  max-width: 560px;
-  margin-bottom: 32px;
-}
-.c1 .sub strong { color: #111; }
-.c1 .pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.c1 .pill {
-  font-size: 12px;
-  font-weight: 500;
-  padding: 5px 13px;
-  border-radius: 20px;
-  background: #f0ede8;
-  border: 1px solid #ddd9d2;
-  color: #555;
-}
-.c1 .price-them {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 52px;
-  font-weight: 900;
-  color: #dc2626;
-  text-decoration: line-through;
-  text-decoration-thickness: 4px;
-  opacity: 0.55;
-  line-height: 1;
-  text-align: right;
-}
-.c1 .price-label-them {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  color: #bbb;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: right;
-  margin-bottom: 20px;
-}
-.c1 .price-us {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 80px;
-  font-weight: 900;
-  color: #16a34a;
-  line-height: 1;
-  text-align: right;
-}
-.c1 .price-label-us {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  color: #16a34a;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: right;
-}
-.c1 .brand-bar { background: #f0ede8; border-top: 1px solid #e0dcd4; }
-.c1 .brand-name { color: #999; }
-.c1 .brand-url { color: #bbb; }
+   Hook: Your Bloomberg rep will hate this
+───────────────────────────────────────────── */
+.c1{background:#f7f4ef;border:1.5px solid #e2ddd5;display:grid;grid-template-columns:1fr 480px;}
 
+.c1-left{
+  padding:56px 52px 72px;
+  display:flex;flex-direction:column;justify-content:center;
+  border-right:1px solid #e2ddd5;
+}
+.c1-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:#16a34a;margin-bottom:20px;
+}
+.c1-eyebrow::before{content:'';width:20px;height:2px;background:#16a34a;}
+.c1-hook{font-size:52px;font-weight:900;line-height:1.0;letter-spacing:-.035em;color:#0a0a0a;margin-bottom:18px;}
+.c1-hook .red{color:#dc2626;text-decoration:line-through;text-decoration-thickness:4px;opacity:.65;}
+.c1-hook .green{color:#16a34a;}
+.c1-sub{font-size:15.5px;color:#777;line-height:1.65;margin-bottom:28px;max-width:440px;}
+.c1-sub strong{color:#333;}
+.c1-tags{display:flex;gap:7px;flex-wrap:wrap;}
+.c1-tag{font-size:11.5px;font-weight:500;padding:4px 12px;border-radius:20px;background:#edeae4;border:1px solid #d8d4cc;color:#666;}
 
-/* ════════════════════════════════
+.c1-right{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;background:#f3f0ea;padding:40px;}
+
+/* Invoice-style price block */
+.invoice{background:#fff;border:1px solid #e2ddd5;border-radius:12px;width:100%;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.invoice-header{padding:14px 20px;background:#f9f7f3;border-bottom:1px solid #ede9e1;display:flex;align-items:center;justify-content:space-between;}
+.invoice-title{font-size:11px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.12em;color:#bbb;}
+.invoice-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:4px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;font-family:"JetBrains Mono",monospace;}
+.invoice-row{padding:14px 20px;border-bottom:1px solid #f0ece5;display:flex;justify-content:space-between;align-items:center;}
+.invoice-row:last-child{border-bottom:none;}
+.ir-label{font-size:13px;color:#555;font-weight:500;}
+.ir-val{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:700;color:#dc2626;text-decoration:line-through;opacity:.6;}
+.invoice-total{padding:16px 20px;background:#f0fdf4;display:flex;justify-content:space-between;align-items:center;border-top:2px solid #bbf7d0;}
+.it-label{font-size:13px;font-weight:700;color:#15803d;}
+.it-val{font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:900;color:#16a34a;}
+
+.c1-brand{position:absolute;bottom:0;left:0;right:0;height:48px;background:#ede9e1;border-top:1px solid #ddd9d0;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+.brand-l{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#aaa;letter-spacing:.05em;}
+.brand-r{font-family:"JetBrains Mono",monospace;font-size:11px;color:#ccc;letter-spacing:.05em;}
+
+/* ─────────────────────────────────────────────
    CARD 2 — SENSIBULL
-   bg: off-white, sharp contrast
-════════════════════════════════ */
-.c2 {
-  background: #f8f9fa;
-  border: 1.5px solid #e9eaeb;
-}
-.c2-inner { display: flex; width: 100%; gap: 60px; align-items: center; }
-.c2-left { flex: 1; }
-.c2-right {
-  width: 360px;
-  background: #fff;
-  border: 1px solid #e9eaeb;
-  border-radius: 16px;
-  overflow: hidden;
-}
-.c2 .eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #7c3aed;
-  margin-bottom: 16px;
-}
-.c2 .hook {
-  font-size: 52px;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  color: #0a0a0a;
-  margin-bottom: 20px;
-}
-.c2 .hook em { font-style: normal; color: #7c3aed; }
-.c2 .sub {
-  font-size: 16px;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-.c2 .sub strong { color: #111; }
-.table-head {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 0;
-  padding: 12px 20px;
-  background: #f4f4f5;
-  border-bottom: 1px solid #e9eaeb;
-}
-.table-head span {
-  font-size: 10px;
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #999;
-}
-.table-head .col-us { color: #7c3aed; }
-.table-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 0;
-  padding: 11px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  align-items: center;
-}
-.table-row:last-child { border-bottom: none; }
-.table-row .feat { font-size: 13px; color: #444; font-weight: 500; }
-.table-row .them {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  color: #dc2626;
-  font-weight: 600;
-  text-align: right;
-  min-width: 90px;
-}
-.table-row .us {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  color: #16a34a;
-  font-weight: 800;
-  text-align: right;
-  min-width: 50px;
-}
-.c2 .brand-bar { background: #f0f0f0; border-top: 1px solid #e4e4e4; }
-.c2 .brand-name { color: #999; }
-.c2 .brand-url { color: #bbb; }
+   Hook: Show a fake Claude chat + Greeks table
+───────────────────────────────────────────── */
+.c2{background:#ffffff;border:1.5px solid #e8e8e8;display:grid;grid-template-columns:1fr 460px;}
 
+.c2-left{padding:52px 50px 72px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid #f0f0f0;}
+.c2-eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7c3aed;margin-bottom:18px;}
+.c2-hook{font-size:48px;font-weight:900;line-height:1.0;letter-spacing:-.03em;color:#0a0a0a;margin-bottom:18px;}
+.c2-hook .purple{color:#7c3aed;}
+.c2-hook .strike{text-decoration:line-through;text-decoration-thickness:3px;color:#dc2626;opacity:.6;}
+.c2-sub{font-size:15px;color:#777;line-height:1.65;margin-bottom:24px;}
+.c2-sub strong{color:#333;}
 
-/* ════════════════════════════════
+/* Claude chat bubble */
+.chat-bubble{background:#f5f3ff;border:1px solid #ede9fe;border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.chat-q{font-size:12.5px;color:#5b21b6;font-weight:600;margin-bottom:6px;}
+.chat-a{font-size:12px;color:#666;line-height:1.5;}
+.chat-a code{font-family:"JetBrains Mono",monospace;background:#ede9fe;padding:1px 5px;border-radius:3px;color:#7c3aed;font-size:11px;}
+
+.c2-right{background:#fafafa;padding:36px 28px 72px;display:flex;flex-direction:column;gap:0;}
+.greeks-header{font-size:11px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.12em;color:#ccc;margin-bottom:12px;}
+.greeks-stock{font-size:15px;font-weight:800;color:#111;margin-bottom:4px;}
+.greeks-meta{font-size:11px;color:#aaa;font-family:"JetBrains Mono",monospace;margin-bottom:16px;}
+.greeks-table{width:100%;}
+.gt-row{display:grid;grid-template-columns:80px 1fr 1fr 1fr;gap:8px;padding:9px 0;border-bottom:1px solid #f0f0f0;align-items:center;}
+.gt-row:last-child{border-bottom:none;}
+.gt-head{grid-template-columns:80px 1fr 1fr 1fr;}
+.gt-h{font-size:10px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:#bbb;}
+.gt-strike{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:700;color:#111;}
+.gt-val{font-family:"JetBrains Mono",monospace;font-size:12px;color:#555;}
+.gt-val.pos{color:#16a34a;}
+.gt-val.neg{color:#dc2626;}
+.gt-val.purple{color:#7c3aed;}
+.sensibull-tag{margin-top:auto;padding:10px 14px;background:#fef2f2;border-radius:8px;font-size:11.5px;color:#dc2626;font-family:"JetBrains Mono",monospace;}
+
+.c2-brand{position:absolute;bottom:0;left:0;right:0;height:48px;background:#f8f8f8;border-top:1px solid #ebebeb;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+
+/* ─────────────────────────────────────────────
    CARD 3 — MORNINGSTAR
-   bg: warm white, fund-data feel
-════════════════════════════════ */
-.c3 {
-  background: #fffef9;
-  border: 1.5px solid #eceadf;
-}
-.c3-inner { display: flex; width: 100%; align-items: center; gap: 0; }
-.c3-left { flex: 1; padding-right: 60px; }
-.c3-divider {
-  width: 1px;
-  height: 360px;
-  background: #e8e4d8;
-}
-.c3-right {
-  width: 300px;
-  padding-left: 60px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.c3 .eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #d97706;
-  margin-bottom: 16px;
-}
-.c3 .hook {
-  font-size: 54px;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  color: #0a0a0a;
-  margin-bottom: 20px;
-}
-.c3 .hook em { font-style: normal; color: #16a34a; }
-.c3 .sub {
-  font-size: 16px;
-  color: #777;
-  line-height: 1.6;
-  margin-bottom: 28px;
-}
-.c3 .sub strong { color: #222; }
-.stat-block { display: flex; flex-direction: column; gap: 4px; }
-.stat-label {
-  font-size: 11px;
-  font-family: "JetBrains Mono", monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #bbb;
-}
-.stat-val {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 28px;
-  font-weight: 800;
-  color: #0a0a0a;
-  line-height: 1;
-}
-.stat-val.red { color: #dc2626; text-decoration: line-through; opacity: 0.5; }
-.stat-val.green { color: #16a34a; }
-.stat-divider { width: 40px; height: 1px; background: #e8e4d8; }
-.c3 .brand-bar { background: #f4f2ec; border-top: 1px solid #e8e4d8; }
-.c3 .brand-name { color: #aaa; }
-.c3 .brand-url { color: #ccc; }
+   Hook: They repackage public data. We expose it.
+───────────────────────────────────────────── */
+.c3{background:#fffef8;border:1.5px solid #ece9df;display:grid;grid-template-columns:580px 1fr;}
 
+.c3-left{padding:52px 50px 72px;display:flex;flex-direction:column;justify-content:center;}
+.c3-eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#d97706;margin-bottom:18px;}
+.c3-hook{font-size:48px;font-weight:900;line-height:1.0;letter-spacing:-.03em;color:#0a0a0a;margin-bottom:18px;}
+.c3-hook .amber{color:#d97706;}
+.c3-hook .green{color:#16a34a;}
+.c3-sub{font-size:15px;color:#777;line-height:1.65;margin-bottom:24px;}
+.c3-sub strong{color:#333;}
 
-/* ════════════════════════════════
-   CARD 4 — TRENDLYNE (INSIDER)
-   bg: clean white, bold
-════════════════════════════════ */
-.c4 {
-  background: #ffffff;
-  border: 1.5px solid #ebebeb;
-}
-.c4-inner { display: flex; width: 100%; align-items: flex-start; gap: 60px; }
-.c4-left { flex: 1; padding-top: 20px; }
-.c4-right { width: 380px; padding-top: 20px; }
-.c4 .eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #ea580c;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.c4 .hook {
-  font-size: 54px;
-  font-weight: 900;
-  line-height: 1.0;
-  letter-spacing: -0.03em;
-  color: #0a0a0a;
-  margin-bottom: 20px;
-}
-.c4 .hook em { font-style: normal; color: #16a34a; }
-.c4 .sub {
-  font-size: 16px;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 28px;
-}
-.c4 .sub strong { color: #111; }
-.insight-card {
-  background: #fafafa;
-  border: 1px solid #ebebeb;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 12px;
-}
-.insight-tag {
-  font-size: 10px;
-  font-family: "JetBrains Mono", monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 4px;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-.it-buy { background: #f0fdf4; color: #16a34a; }
-.it-sell { background: #fef2f2; color: #dc2626; }
-.insight-name { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
-.insight-detail { font-size: 13px; color: #888; }
-.insight-amount { font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 600; color: #555; }
-.c4 .replaced-label {
-  font-size: 13px;
-  color: #bbb;
-  font-style: italic;
-}
-.c4 .replaced-price {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13px;
-  color: #dc2626;
-  text-decoration: line-through;
-  opacity: 0.6;
-}
-.c4 .brand-bar { background: #f8f8f8; border-top: 1px solid #ebebeb; }
-.c4 .brand-name { color: #aaa; }
-.c4 .brand-url { color: #ccc; }
+.c3-right{padding:40px 40px 72px;border-left:1px solid #ece9df;display:flex;flex-direction:column;gap:12px;justify-content:center;}
 
+/* MF data cards */
+.mf-card{background:#fff;border:1px solid #ece9df;border-radius:10px;padding:14px 16px;}
+.mf-cat{font-size:10px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:#d97706;margin-bottom:6px;}
+.mf-name{font-size:13.5px;font-weight:700;color:#111;margin-bottom:4px;}
+.mf-row{display:flex;justify-content:space-between;align-items:center;}
+.mf-aum{font-family:"JetBrains Mono",monospace;font-size:13px;color:#555;}
+.mf-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.mf-up{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
+.mf-down{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
 
-/* ════════════════════════════════
-   CARD 5 — SCREENER.IN
-   bg: light stone
-════════════════════════════════ */
-.c5 {
-  background: #f9f8f6;
-  border: 1.5px solid #e8e5de;
-}
-.c5-inner { display: flex; width: 100%; align-items: center; gap: 64px; }
-.c5-left { flex: 1; }
-.c5-right {
-  width: 340px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  background: #fff;
-  border: 1px solid #e8e5de;
-  border-radius: 16px;
-  overflow: hidden;
-}
-.c5 .eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #0891b2;
-  margin-bottom: 16px;
-}
-.c5 .hook {
-  font-size: 54px;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  color: #0a0a0a;
-  margin-bottom: 20px;
-}
-.c5 .hook em { font-style: normal; color: #16a34a; }
-.c5 .sub {
-  font-size: 16px;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 28px;
-}
-.c5 .sub strong { color: #111; }
-.feature-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 13px 20px;
-  border-bottom: 1px solid #f0ede8;
-  gap: 12px;
-}
-.feature-row:last-child { border-bottom: none; }
-.fr-name { font-size: 13px; color: #555; font-weight: 500; }
-.fr-free {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  font-weight: 800;
-  color: #16a34a;
-  background: #f0fdf4;
-  padding: 3px 10px;
-  border-radius: 4px;
-}
-.fr-paid {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  color: #dc2626;
-  opacity: 0.6;
-  text-decoration: line-through;
-}
-.c5-table-head {
-  padding: 11px 20px;
-  background: #f4f2ec;
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #e8e5de;
-}
-.c5-table-head span {
-  font-size: 10px;
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #aaa;
-}
-.c5-table-head .us-head { color: #16a34a; }
-.c5 .brand-bar { background: #f0ede8; border-top: 1px solid #e8e5de; }
-.c5 .brand-name { color: #aaa; }
-.c5 .brand-url { color: #ccc; }
+.mf-total{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;}
+.mf-total-label{font-size:11px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:#16a34a;margin-bottom:6px;}
+.mf-total-val{font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:900;color:#15803d;}
+.mf-total-sub{font-size:11px;color:#86efac;margin-top:2px;}
 
+.c3-brand{position:absolute;bottom:0;left:0;right:0;height:48px;background:#f5f2ea;border-top:1px solid #ece9df;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
 
-/* ════════════════════════════════
-   CARD 6 — THE MATH CARD
-   bg: near white, editorial
-════════════════════════════════ */
-.c6 {
-  background: #fcfcfb;
-  border: 1.5px solid #e8e6e0;
-  align-items: flex-start;
-  flex-direction: column;
-  justify-content: center;
-  padding: 56px 80px;
-}
-.c6 .eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #6366f1;
-  margin-bottom: 20px;
-}
-.c6 .hook {
-  font-size: 56px;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  color: #0a0a0a;
-  margin-bottom: 36px;
-}
-.c6 .hook em { font-style: normal; color: #16a34a; }
-.price-grid {
-  display: flex;
-  gap: 0;
-  align-items: stretch;
-  margin-bottom: 32px;
-}
-.price-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 16px 28px;
-  border-right: 1px solid #e8e6e0;
-}
-.price-item:first-child { padding-left: 0; }
-.price-item:last-child { border-right: none; }
-.pi-platform { font-size: 12px; color: #999; font-weight: 600; }
-.pi-price {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 20px;
-  font-weight: 800;
-  color: #dc2626;
-  text-decoration: line-through;
-  opacity: 0.55;
-}
-.price-total-block {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 20px 28px;
-  background: #f4f2ec;
-  border-radius: 12px;
-  border: 1px solid #e8e5de;
-  width: fit-content;
-}
-.ptb-label { font-size: 14px; color: #888; }
-.ptb-crossed {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 28px;
-  font-weight: 900;
-  color: #dc2626;
-  text-decoration: line-through;
-  opacity: 0.5;
-}
-.ptb-arrow { font-size: 20px; color: #ccc; }
-.ptb-free {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 36px;
-  font-weight: 900;
-  color: #16a34a;
-}
-.c6 .brand-bar { background: #f4f2ec; border-top: 1px solid #e8e6e0; }
-.c6 .brand-name { color: #aaa; }
-.c6 .brand-url { color: #ccc; }
+/* ─────────────────────────────────────────────
+   CARD 4 — INSIDER TRADING
+   Hook: The promoter bought ₹12 crore. Public data. You just didn't know.
+───────────────────────────────────────────── */
+.c4{background:#f9f9f9;border:1.5px solid #e8e8e8;display:flex;flex-direction:column;}
 
+.c4-top{padding:44px 52px 28px;display:grid;grid-template-columns:1fr auto;align-items:flex-start;gap:40px;}
+.c4-eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ea580c;margin-bottom:14px;}
+.c4-hook{font-size:46px;font-weight:900;line-height:1.0;letter-spacing:-.03em;color:#0a0a0a;margin-bottom:14px;}
+.c4-hook .orange{color:#ea580c;}
+.c4-hook .green{color:#16a34a;}
+.c4-sub{font-size:15px;color:#777;line-height:1.55;max-width:560px;}
+.c4-sub strong{color:#333;}
 
-/* ════════════════════════════════
-   CARD 7 — LAUNCH CARD
-   bg: deep cream, bold CTA
-════════════════════════════════ */
-.c7 {
-  background: #0a0a0a;
-  border: 1.5px solid #1a1a1a;
-  align-items: center;
-  justify-content: space-between;
+.c4-badge{
+  background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;
+  padding:16px 20px;text-align:right;white-space:nowrap;
 }
-.c7-left { flex: 1; }
-.c7-right {
-  width: 320px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 20px;
+.c4-badge-label{font-size:10px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.12em;color:#f97316;margin-bottom:4px;}
+.c4-badge-price{font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:900;color:#dc2626;text-decoration:line-through;opacity:.6;}
+.c4-badge-free{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:900;color:#16a34a;}
+
+/* Insider feed */
+.c4-feed{padding:0 52px 0;display:flex;gap:14px;overflow:hidden;flex:1;}
+.insider-item{
+  flex:1;background:#fff;border:1px solid #ebebeb;border-radius:10px;
+  padding:14px 16px;display:flex;flex-direction:column;gap:8px;
+  min-width:0;
 }
-.c7 .eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #4ade80;
-  margin-bottom: 16px;
+.ii-tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:4px;display:inline-block;width:fit-content;font-family:"JetBrains Mono",monospace;}
+.ii-buy{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
+.ii-sell{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
+.ii-name{font-size:14px;font-weight:800;color:#111;}
+.ii-title{font-size:12px;color:#888;}
+.ii-divider{height:1px;background:#f0f0f0;}
+.ii-shares{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:700;color:#111;}
+.ii-date{font-size:11px;color:#bbb;font-family:"JetBrains Mono",monospace;}
+.ii-source{font-size:10px;color:#ccc;margin-top:auto;}
+
+.c4-brand{position:absolute;bottom:0;left:0;right:0;height:44px;background:#f2f2f2;border-top:1px solid #e8e8e8;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+
+/* ─────────────────────────────────────────────
+   CARD 5 — THE CANCELLATION
+   Hook: "I cancelled 4 subscriptions. Here's what I replaced them with."
+───────────────────────────────────────────── */
+.c5{background:#fcfcfa;border:1.5px solid #e4e2da;display:grid;grid-template-columns:500px 1fr;}
+
+.c5-left{padding:52px 48px 72px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid #e4e2da;}
+.c5-eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#0891b2;margin-bottom:18px;}
+.c5-hook{font-size:44px;font-weight:900;line-height:1.0;letter-spacing:-.03em;color:#0a0a0a;margin-bottom:18px;}
+.c5-hook .cyan{color:#0891b2;}
+.c5-hook .green{color:#16a34a;}
+.c5-sub{font-size:15px;color:#777;line-height:1.65;margin-bottom:20px;}
+.c5-sub strong{color:#333;}
+.c5-cmd{
+  font-family:"JetBrains Mono",monospace;font-size:14px;
+  background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;
+  padding:10px 16px;color:#0369a1;display:flex;align-items:center;gap:8px;
 }
-.c7 .hook {
-  font-size: 60px;
-  font-weight: 900;
-  line-height: 1.0;
-  letter-spacing: -0.04em;
-  color: #fff;
-  margin-bottom: 24px;
+.c5-cmd::before{content:'$';color:#7dd3fc;}
+
+.c5-right{padding:40px 40px 72px;display:flex;flex-direction:column;gap:0;}
+.cancel-header{
+  display:grid;grid-template-columns:1fr 100px 80px;gap:8px;
+  padding:10px 14px;background:#f4f2ec;border-radius:8px 8px 0 0;
+  border:1px solid #e4e2da;border-bottom:none;
 }
-.c7 .hook em { font-style: normal; color: #4ade80; }
-.c7 .hook .dim { color: #333; }
-.c7 .sub {
-  font-size: 17px;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 28px;
+.ch-col{font-size:10px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.1em;color:#aaa;}
+.ch-col.green{color:#16a34a;}
+.cancel-row{
+  display:grid;grid-template-columns:1fr 100px 80px;gap:8px;
+  padding:12px 14px;border:1px solid #e4e2da;border-top:none;
+  align-items:center;background:#fff;
 }
-.c7 .sub strong { color: #888; }
-.install-block {
-  background: #111;
-  border: 1px solid #222;
-  border-radius: 10px;
-  padding: 16px 22px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 15px;
-  color: #4ade80;
-  width: 100%;
-  margin-bottom: 8px;
+.cancel-row:last-child{border-radius:0 0 8px 8px;}
+.cr-name{font-size:13.5px;font-weight:600;color:#222;}
+.cr-sub{font-size:11px;color:#aaa;margin-top:1px;}
+.cr-price{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:700;color:#dc2626;text-decoration:line-through;opacity:.6;}
+.cr-free{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:800;color:#16a34a;background:#f0fdf4;padding:3px 8px;border-radius:4px;}
+
+.c5-brand{position:absolute;bottom:0;left:0;right:0;height:48px;background:#f0ede6;border-top:1px solid #e4e2da;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+
+/* ─────────────────────────────────────────────
+   CARD 6 — THE $97K CARD
+   Hook: The receipt.
+───────────────────────────────────────────── */
+.c6{background:#0a0a0a;border:1.5px solid #1a1a1a;display:grid;grid-template-columns:1fr 420px;}
+
+.c6-left{padding:52px 52px 72px;display:flex;flex-direction:column;justify-content:center;}
+.c6-eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#4ade80;margin-bottom:18px;}
+.c6-hook{font-size:50px;font-weight:900;line-height:1.0;letter-spacing:-.04em;color:#fff;margin-bottom:18px;}
+.c6-hook .dim{color:#333;}
+.c6-hook .green{color:#4ade80;}
+.c6-sub{font-size:15.5px;color:#555;line-height:1.65;margin-bottom:28px;}
+.c6-sub strong{color:#888;}
+.c6-pip{
+  font-family:"JetBrains Mono",monospace;font-size:16px;
+  background:#111;border:1px solid #1e1e1e;border-radius:8px;
+  padding:12px 20px;color:#4ade80;display:inline-flex;align-items:center;gap:10px;
+  width:fit-content;
 }
-.install-block span { color: #555; }
-.c7-stat {
-  text-align: right;
+.c6-pip span{color:#333;}
+
+.c6-right{padding:44px 40px 72px;border-left:1px solid #161616;display:flex;flex-direction:column;justify-content:center;}
+/* Receipt */
+.receipt{background:#111;border:1px solid #1e1e1e;border-radius:12px;overflow:hidden;}
+.receipt-header{padding:14px 18px;border-bottom:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:center;}
+.rh-title{font-family:"JetBrains Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#444;}
+.rh-date{font-family:"JetBrains Mono",monospace;font-size:10px;color:#333;}
+.receipt-row{padding:10px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #141414;}
+.rr-name{font-size:12.5px;color:#555;}
+.rr-price{font-family:"JetBrains Mono",monospace;font-size:12px;color:#dc2626;opacity:.7;}
+.receipt-total{padding:14px 18px;background:#0d1a0d;border-top:1px solid #1a3a1a;display:flex;justify-content:space-between;align-items:center;}
+.rt-label{font-size:13px;font-weight:700;color:#4ade80;}
+.rt-val{font-family:"JetBrains Mono",monospace;font-size:20px;font-weight:900;color:#4ade80;}
+.receipt-free{padding:12px 18px;text-align:center;}
+.rf-text{font-family:"JetBrains Mono",monospace;font-size:11px;color:#333;letter-spacing:.08em;}
+.rf-cmd{font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:700;color:#4ade80;}
+
+.c6-brand{position:absolute;bottom:0;left:0;right:0;height:48px;background:#060606;border-top:1px solid #141414;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+.c6-brand .brand-l{color:#222;}
+.c6-brand .brand-r{color:#1a1a1a;}
+
+/* ─────────────────────────────────────────────
+   CARD 7 — LAUNCH
+   Dark. Center. Minimal. Punchy.
+───────────────────────────────────────────── */
+.c7{
+  background:#030303;border:1.5px solid #111;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  gap:0;
 }
-.c7-stat .num {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 56px;
-  font-weight: 900;
-  line-height: 1;
+.c7-inner{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;}
+.c7-eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:#4ade80;margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
 }
-.c7-stat .lbl {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #333;
+.c7-eyebrow::before,.c7-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,#1a3a1a);}
+.c7-eyebrow::after{background:linear-gradient(90deg,#1a3a1a,transparent);}
+.c7-hook{
+  font-size:84px;font-weight:900;line-height:.95;letter-spacing:-.05em;
+  margin-bottom:24px;
 }
-.c7 .brand-bar { background: #0f0f0f; border-top: 1px solid #1a1a1a; }
-.c7 .brand-name { color: #333; }
-.c7 .brand-url { color: #222; }
+.c7-hook .white{color:#fff;}
+.c7-hook .green{color:#4ade80;}
+.c7-hook .dim{color:#1e1e1e;}
+.c7-sub{font-size:18px;color:#444;margin-bottom:32px;line-height:1.5;}
+.c7-sub strong{color:#666;}
+
+.c7-stats{display:flex;gap:0;margin-bottom:32px;}
+.c7-stat{padding:16px 32px;border-right:1px solid #111;text-align:center;}
+.c7-stat:last-child{border-right:none;}
+.cs-num{font-family:"JetBrains Mono",monospace;font-size:32px;font-weight:900;}
+.cs-lbl{font-size:10px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:.14em;color:#333;margin-top:2px;}
+
+.c7-cmd{
+  font-family:"JetBrains Mono",monospace;font-size:18px;
+  background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;
+  padding:14px 28px;color:#4ade80;
+}
+.c7-cmd span{color:#2a4a2a;}
+
+.c7-brand{position:absolute;bottom:0;left:0;right:0;height:48px;border-top:1px solid #0d0d0d;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+.c7-brand .brand-l{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:#1a1a1a;letter-spacing:.05em;}
+.c7-brand .brand-r{font-family:"JetBrains Mono",monospace;font-size:11px;color:#111;letter-spacing:.05em;}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════
-  CARD 1 — BLOOMBERG  |  Monday
-══════════════════════════════════════════════════ -->
+<!-- ═══════════════ CARD 1 — BLOOMBERG ═══════════════ -->
 <div class="section">
-<div class="day-tag">Day 01 · Monday · X / LinkedIn / Product Hunt pre-launch</div>
+<div class="day-tag">Day 01 · Monday · X + LinkedIn</div>
 <div class="card c1">
-  <div class="c1 left">
-    <div class="eyebrow">Open Source Finance</div>
-    <div class="hook">Bloomberg charges<br/>$31,980/year.<br/>We said <em>no.</em></div>
-    <div class="sub">
-      Bloomberg Terminal has been the gold standard for financial data.<br/>
-      <strong>$31,980/year per seat.</strong> We built the same thing. Free. One pip install.
+  <div class="c1-left">
+    <div class="c1-eyebrow">Open Source Finance</div>
+    <div class="c1-hook">
+      Bloomberg: <span class="red">$31,980/yr</span><br/>
+      We built it.<br/>We said <span class="green">free.</span>
     </div>
-    <div class="c1 pill-row">
-      <div class="pill">NSE · BSE · US · Crypto · Forex</div>
-      <div class="pill">Fundamentals</div>
-      <div class="pill">Options chain</div>
-      <div class="pill">FII/DII</div>
-      <div class="pill">G-Sec yields</div>
-      <div class="pill">RBI rates</div>
+    <div class="c1-sub">
+      Bloomberg Terminal has been the benchmark for financial professionals for 40 years.<br/>
+      <strong>$31,980/year per seat. 2-year contracts. 90-day cancellation notice.</strong><br/>
+      We didn't ask for permission. We just built it. Free. Open source.
+    </div>
+    <div class="c1-tags">
+      <span class="c1-tag">NSE · BSE quotes</span>
+      <span class="c1-tag">Fundamentals</span>
+      <span class="c1-tag">FII/DII flows</span>
+      <span class="c1-tag">Options chain</span>
+      <span class="c1-tag">G-Sec yields</span>
+      <span class="c1-tag">RBI rates</span>
+      <span class="c1-tag">India macro</span>
     </div>
   </div>
-  <div class="c1 right">
-    <div class="c1 price-label-them">Bloomberg Terminal</div>
-    <div class="c1 price-them">$31,980</div>
-    <div class="c1 price-label-us" style="margin-top:20px;">finstack-mcp</div>
-    <div class="c1 price-us">$0</div>
-    <div class="c1 price-label-us">per year. forever.</div>
+  <div class="c1-right">
+    <div class="invoice">
+      <div class="invoice-header">
+        <span class="invoice-title">Annual Invoice — Bloomberg LP</span>
+        <span class="invoice-badge">CANCELLED</span>
+      </div>
+      <div class="invoice-row">
+        <span class="ir-label">Bloomberg Terminal (1 seat)</span>
+        <span class="ir-val">$31,980/yr</span>
+      </div>
+      <div class="invoice-row">
+        <span class="ir-label">Market data access</span>
+        <span class="ir-val">Included</span>
+      </div>
+      <div class="invoice-row">
+        <span class="ir-label">API access (BDH/BDP)</span>
+        <span class="ir-val">+$6,000/yr</span>
+      </div>
+      <div class="invoice-row">
+        <span class="ir-label">Contract: 2 years minimum</span>
+        <span class="ir-val">Mandatory</span>
+      </div>
+      <div class="invoice-total">
+        <span class="it-label">finstack-mcp</span>
+        <span class="it-val">$0 / forever</span>
+      </div>
+    </div>
   </div>
-  <div class="brand-bar c1 brand-bar">
-    <div class="brand-name c1 brand-name">Arthex · finstack-mcp</div>
-    <div class="brand-url c1 brand-url">github.com/finstacklabs/finstack-mcp</div>
+  <div class="c1-brand">
+    <span class="brand-l">Arthex · finstack-mcp v0.4.0</span>
+    <span class="brand-r">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
-<div class="post-copy">
-  <h3>Post copy</h3>
-  <div class="platform-row">
-    <div class="platform-block">
-      <div class="platform-name">X (Twitter)</div>
-      <div class="copy-text">Bloomberg Terminal: <strong>$31,980/year</strong>
+<div class="post-box">
+  <div class="pb-col">
+    <div class="pb-plat">X / Twitter</div>
+    <div class="pb-copy">Bloomberg Terminal costs $31,980/year.
 
-I built the same financial data engine.
-Free. Open source. One pip install.
+Two-year contract. 90-day cancellation notice.
 
-NSE/BSE quotes, fundamentals, FII/DII, options chain, G-Sec yields — all of it.
+I built the same thing. Free. Open source.
+
+→ NSE/BSE live data
+→ Fundamentals, FII/DII, options
+→ RBI rates, G-Sec yields, India macro
+→ Works inside Claude, Cursor, ChatGPT
 
 <strong>pip install finstack-mcp</strong>
 
-github.com/finstacklabs/finstack-mcp
+Your Bloomberg rep will not like this.</div>
+  </div>
+  <div class="pb-col">
+    <div class="pb-plat">LinkedIn</div>
+    <div class="pb-copy">Bloomberg Terminal: $31,980/year per seat. Mandatory 2-year contracts.
 
-#MCP #Finance #OpenSource #NSE #IndianStocks</div>
-    </div>
-    <div class="platform-block">
-      <div class="platform-name">LinkedIn</div>
-      <div class="copy-text">Bloomberg charges financial professionals $31,980/year for a data terminal.
+I spent months building finstack-mcp — an open-source alternative that gives AI tools structured access to the same financial data. 48 tools. Zero subscriptions. Zero API keys. MIT licensed.
 
-I spent the last few months building an open-source alternative — finstack-mcp. It covers NSE/BSE market data, global equities, fundamentals, FII/DII institutional flow, options analytics, RBI policy rates, and India macro indicators.
+It runs inside Claude Desktop, Cursor, and any MCP-compatible AI client.
 
-Free. MIT licensed. Works inside Claude, Cursor, and any MCP-compatible AI tool.
-
-<strong>pip install finstack-mcp</strong>
-
-Would love feedback from anyone in finance or AI dev.</div>
-    </div>
+Launching on Product Hunt April 1st. Would love your support.</div>
   </div>
 </div>
 </div>
 
 
-<!-- ══════════════════════════════════════════════════
-  CARD 2 — SENSIBULL  |  Tuesday
-══════════════════════════════════════════════════ -->
+<!-- ═══════════════ CARD 2 — SENSIBULL ═══════════════ -->
 <div class="section">
-<div class="day-tag">Day 02 · Tuesday · X / Instagram</div>
+<div class="day-tag">Day 02 · Tuesday · X + Instagram</div>
 <div class="card c2">
-  <div class="c2-inner">
-    <div class="c2-left">
-      <div class="c2 eyebrow">Options Analytics</div>
-      <div class="c2 hook">Sensibull charges<br/>₹1,300/month<br/>for <em>this.</em></div>
-      <div class="c2 sub">
-        Max Pain. PCR. Delta. Gamma. Theta. Vega.<br/>
-        <strong>Sensibull Pro = ₹15,600/year.</strong> We added all of it to finstack-mcp. Free.
-      </div>
-      <div style="font-size:13px; color:#999; font-style:italic;">
-        Works inside Claude — just ask "What's the Max Pain for NIFTY this expiry?"
-      </div>
+  <div class="c2-left">
+    <div class="c2-eyebrow">Options Analytics — Free Now</div>
+    <div class="c2-hook">
+      <span class="strike">₹1,300/month</span><br/>
+      for Greeks?<br/>
+      We don't <span class="purple">charge.</span>
     </div>
-    <div class="c2-right">
-      <div class="table-head">
-        <span>Feature</span>
-        <span>Sensibull</span>
-        <span class="col-us">Ours</span>
-      </div>
-      <div class="table-row">
-        <div class="feat">PCR (OI + Volume)</div>
-        <div class="them">₹1,300/mo</div>
-        <div class="us">FREE</div>
-      </div>
-      <div class="table-row">
-        <div class="feat">Max Pain</div>
-        <div class="them">₹1,300/mo</div>
-        <div class="us">FREE</div>
-      </div>
-      <div class="table-row">
-        <div class="feat">IV Analytics</div>
-        <div class="them">₹1,300/mo</div>
-        <div class="us">FREE</div>
-      </div>
-      <div class="table-row">
-        <div class="feat">Delta / Gamma</div>
-        <div class="them">₹1,300/mo</div>
-        <div class="us">FREE</div>
-      </div>
-      <div class="table-row">
-        <div class="feat">Theta / Vega</div>
-        <div class="them">₹1,300/mo</div>
-        <div class="us">FREE</div>
-      </div>
-      <div class="table-row">
-        <div class="feat">OI Heatmap</div>
-        <div class="them">₹1,300/mo</div>
-        <div class="us">FREE</div>
-      </div>
+    <div class="c2-sub">
+      Sensibull Pro charges <strong>₹1,300/month (₹15,600/year)</strong> for options OI analytics and Greeks.<br/>
+      We added Delta, Gamma, Theta, Vega, Max Pain, PCR to finstack-mcp. Free.
+    </div>
+    <div class="chat-bubble">
+      <div class="chat-q">You asked Claude:</div>
+      <div class="chat-a">"What's the Max Pain and PCR for NIFTY this expiry? Show me top OI strikes."</div>
+    </div>
+    <div class="chat-bubble" style="background:#f0fdf4;border-color:#bbf7d0;">
+      <div class="chat-q" style="color:#15803d;">Claude replied with finstack-mcp:</div>
+      <div class="chat-a"><code>Max Pain: 22,500</code> · <code>PCR: 1.18 (bearish bias)</code><br/>Top call OI: 23,000 · Top put OI: 22,000<br/>Avg IV: 12.4% · Nearest expiry: Apr 24</div>
     </div>
   </div>
-  <div class="brand-bar c2 brand-bar">
-    <div class="brand-name c2 brand-name">Arthex · finstack-mcp</div>
-    <div class="brand-url c2 brand-url">github.com/finstacklabs/finstack-mcp</div>
+  <div class="c2-right">
+    <div class="greeks-header">Black-Scholes Greeks · Live</div>
+    <div class="greeks-stock">NIFTY 50</div>
+    <div class="greeks-meta">Expiry: 24 Apr 2025 · Spot: 22,450 · IV: 12.4%</div>
+    <div class="greeks-table">
+      <div class="gt-row gt-head">
+        <div class="gt-h">Strike</div>
+        <div class="gt-h">Delta</div>
+        <div class="gt-h">Theta</div>
+        <div class="gt-h">Vega</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-strike">22000 C</div>
+        <div class="gt-val pos">0.7812</div>
+        <div class="gt-val neg">-4.21</div>
+        <div class="gt-val purple">12.4</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-strike">22500 C</div>
+        <div class="gt-val pos">0.5241</div>
+        <div class="gt-val neg">-5.18</div>
+        <div class="gt-val purple">15.2</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-strike">23000 C</div>
+        <div class="gt-val pos">0.2814</div>
+        <div class="gt-val neg">-4.02</div>
+        <div class="gt-val purple">13.8</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-strike">22500 P</div>
+        <div class="gt-val neg">-0.4759</div>
+        <div class="gt-val neg">-4.94</div>
+        <div class="gt-val purple">15.2</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-strike">22000 P</div>
+        <div class="gt-val neg">-0.2188</div>
+        <div class="gt-val neg">-3.76</div>
+        <div class="gt-val purple">11.9</div>
+      </div>
+    </div>
+    <div class="sensibull-tag" style="margin-top:16px;">Sensibull Pro: ₹1,300/mo → finstack-mcp: FREE</div>
+  </div>
+  <div class="c2-brand" style="background:#f8f8f8;border-top:1px solid #ebebeb;">
+    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.4.0</span>
+    <span class="brand-r" style="color:#ccc;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
-<div class="post-copy">
-  <h3>Post copy</h3>
-  <div class="platform-row">
-    <div class="platform-block">
-      <div class="platform-name">X (Twitter)</div>
-      <div class="copy-text">Sensibull Pro charges ₹1,300/month for options analytics.
+<div class="post-box">
+  <div class="pb-col">
+    <div class="pb-plat">X / Twitter</div>
+    <div class="pb-copy">Sensibull charges ₹1,300/month for options Greeks.
 
-I added this to finstack-mcp. Free.
+I added Black-Scholes Delta, Gamma, Theta, Vega to finstack-mcp.
 
-→ Max Pain calculation
-→ PCR (OI + Volume)
-→ Delta, Gamma, Theta, Vega
-→ IV analytics across expiries
+Free. No login. Works inside Claude.
 
-Just ask Claude: "What's the Max Pain for NIFTY?"
+Just ask: "What are the Greeks for NIFTY 22500 CE this expiry?"
+
+Max Pain, PCR trend, IV summary — also free.
 
 <strong>pip install finstack-mcp</strong>
 
-#NIFTY #OptionsTrading #MCP #OpenSource</div>
-    </div>
-    <div class="platform-block">
-      <div class="platform-name">Instagram caption</div>
-      <div class="copy-text">Sensibull Pro = ₹15,600/year for options analytics 📉
+#NIFTY #OptionsTrading #MCP #Free</div>
+  </div>
+  <div class="pb-col">
+    <div class="pb-plat">Instagram</div>
+    <div class="pb-copy">Sensibull Pro = ₹15,600/year for options analytics 📊
 
 finstack-mcp = FREE
 
-Max Pain, PCR, Delta, Gamma, Theta, Vega — all free, all working inside Claude Desktop.
+Ask Claude: "What's the Max Pain for NIFTY?" and get:
+✅ Max Pain strike
+✅ PCR (Put-Call Ratio)
+✅ Delta, Gamma, Theta, Vega
+✅ Top OI strikes (support/resistance)
 
-Link in bio — pip install finstack-mcp
+Link in bio to install.
 
-#optionstrading #nifty #stockmarket #fintech #opensource #indianstocks</div>
-    </div>
+#optionstrading #nifty #stockmarket #fintech #opensource #trading</div>
   </div>
 </div>
 </div>
 
 
-<!-- ══════════════════════════════════════════════════
-  CARD 3 — MORNINGSTAR  |  Wednesday
-══════════════════════════════════════════════════ -->
+<!-- ═══════════════ CARD 3 — MORNINGSTAR ═══════════════ -->
 <div class="section">
-<div class="day-tag">Day 03 · Wednesday · X / LinkedIn</div>
+<div class="day-tag">Day 03 · Wednesday · X + LinkedIn</div>
 <div class="card c3">
-  <div class="c3-inner">
-    <div class="c3-left">
-      <div class="c3 eyebrow">Mutual Fund Intelligence</div>
-      <div class="c3 hook">Morningstar Direct<br/>costs $17,500/year<br/>for MF data. <em>Free now.</em></div>
-      <div class="c3 sub">
-        AMFI publishes India mutual fund data for free.<br/>
-        Morningstar repackages it and charges <strong>$17,500/year.</strong><br/>
-        We built the tool. You get the data directly.
-      </div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <div style="font-size:12px; font-weight:500; padding:5px 13px; border-radius:20px; background:#f0fdf4; border:1px solid #bbf7d0; color:#16a34a;">MF AUM data</div>
-        <div style="font-size:12px; font-weight:500; padding:5px 13px; border-radius:20px; background:#f0fdf4; border:1px solid #bbf7d0; color:#16a34a;">SIP flows</div>
-        <div style="font-size:12px; font-weight:500; padding:5px 13px; border-radius:20px; background:#f0fdf4; border:1px solid #bbf7d0; color:#16a34a;">NAV lookup</div>
-        <div style="font-size:12px; font-weight:500; padding:5px 13px; border-radius:20px; background:#f0fdf4; border:1px solid #bbf7d0; color:#16a34a;">7,000+ schemes</div>
-      </div>
+  <div class="c3-left">
+    <div class="c3-eyebrow">Mutual Fund Intelligence</div>
+    <div class="c3-hook">
+      Morningstar takes<br/>AMFI data.<br/>Charges <span class="amber">$17,500.</span><br/>We don't.
     </div>
-    <div class="c3-divider"></div>
-    <div class="c3-right">
-      <div class="stat-block">
-        <div class="stat-label">Morningstar Direct</div>
-        <div class="stat-val red">$17,500/yr</div>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-block">
-        <div class="stat-label">finstack-mcp</div>
-        <div class="stat-val green">FREE</div>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-block">
-        <div class="stat-label">India MF industry AUM</div>
-        <div class="stat-val" style="font-size:22px;">₹67 lakh cr</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-label">Monthly SIP inflows</div>
-        <div class="stat-val" style="font-size:22px;">₹26,000 cr</div>
-      </div>
+    <div class="c3-sub">
+      AMFI (India's MF regulator) publishes all mutual fund data free.<br/>
+      Morningstar repackages it and charges <strong>$17,500/year.</strong><br/>
+      We built the tool. You talk to the data directly inside Claude.
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+      <span style="font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:20px;background:#fef3c7;border:1px solid #fcd34d;color:#d97706;">₹67 lakh crore AUM</span>
+      <span style="font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:20px;background:#fef3c7;border:1px solid #fcd34d;color:#d97706;">₹26,000 cr SIP/month</span>
+      <span style="font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:20px;background:#fef3c7;border:1px solid #fcd34d;color:#d97706;">22 crore+ investors</span>
     </div>
   </div>
-  <div class="brand-bar c3 brand-bar">
-    <div class="brand-name c3 brand-name">Arthex · finstack-mcp</div>
-    <div class="brand-url c3 brand-url">github.com/finstacklabs/finstack-mcp</div>
+  <div class="c3-right">
+    <div class="mf-card">
+      <div class="mf-cat">Equity — Large Cap</div>
+      <div class="mf-name">Mirae Asset Large Cap Fund</div>
+      <div class="mf-row">
+        <span class="mf-aum">AUM: ₹38,421 cr</span>
+        <span class="mf-badge mf-up">↑ 1Y: 18.4%</span>
+      </div>
+    </div>
+    <div class="mf-card">
+      <div class="mf-cat">Debt — Liquid</div>
+      <div class="mf-name">HDFC Liquid Fund</div>
+      <div class="mf-row">
+        <span class="mf-aum">AUM: ₹62,180 cr</span>
+        <span class="mf-badge mf-up">↑ 1Y: 7.2%</span>
+      </div>
+    </div>
+    <div class="mf-card">
+      <div class="mf-cat">ELSS — Tax Saver</div>
+      <div class="mf-name">Axis Long Term Equity Fund</div>
+      <div class="mf-row">
+        <span class="mf-aum">AUM: ₹29,614 cr</span>
+        <span class="mf-badge mf-down">↓ 1Y: -2.1%</span>
+      </div>
+    </div>
+    <div class="mf-total">
+      <div class="mf-total-label">Industry Total AUM</div>
+      <div class="mf-total-val">₹67,00,000 cr</div>
+      <div class="mf-total-sub">Source: AMFI · Free · No subscription</div>
+    </div>
+  </div>
+  <div class="c3-brand" style="background:#f4f1e8;border-top:1px solid #ece9df;">
+    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.4.0</span>
+    <span class="brand-r" style="color:#ccc;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
-<div class="post-copy">
-  <h3>Post copy</h3>
-  <div class="platform-row">
-    <div class="platform-block">
-      <div class="platform-name">X (Twitter)</div>
-      <div class="copy-text">Morningstar Direct charges $17,500/year for mutual fund flow data.
+<div class="post-box">
+  <div class="pb-col">
+    <div class="pb-plat">X / Twitter</div>
+    <div class="pb-copy">Morningstar charges $17,500/year for India mutual fund data.
 
-AMFI publishes it for free.
+AMFI publishes the same data for free.
 
-finstack-mcp now has:
-→ India MF industry AUM data
-→ SIP inflow figures
+finstack-mcp now surfaces it inside Claude:
+→ ₹67 lakh crore industry AUM
+→ Monthly SIP inflow data
 → 7,000+ scheme database
 → Category-wise breakdown
 
-Free. Inside Claude.
+Ask Claude: "How is the Indian MF industry doing?"
 
-<strong>pip install finstack-mcp</strong>
+<strong>pip install finstack-mcp</strong></div>
+  </div>
+  <div class="pb-col">
+    <div class="pb-plat">LinkedIn</div>
+    <div class="pb-copy">There's a multi-billion dollar business built on repackaging public data.
 
-#MutualFunds #SIP #AMFI #MCP #OpenSource</div>
-    </div>
-    <div class="platform-block">
-      <div class="platform-name">LinkedIn</div>
-      <div class="copy-text">Morningstar Direct = $17,500/year for mutual fund intelligence.
+Morningstar Direct: $17,500/year for mutual fund intelligence.
+The source: AMFI — free, public, updated monthly.
 
-AMFI (the Indian MF industry body) publishes the same data for free.
+I built a tool in finstack-mcp that surfaces AMFI data inside Claude. India's ₹67 lakh crore MF industry — accessible with a natural language question. No subscription.
 
-I built the tool in finstack-mcp v0.4.0 to surface AMFI data inside AI assistants. India's ₹67 lakh crore MF industry data — now accessible with a natural language prompt.
-
-No subscriptions. No API keys.</div>
-    </div>
+This is what open source looks like when it's pointed at finance.</div>
   </div>
 </div>
 </div>
 
 
-<!-- ══════════════════════════════════════════════════
-  CARD 4 — TRENDLYNE / INSIDER  |  Thursday
-══════════════════════════════════════════════════ -->
+<!-- ═══════════════ CARD 4 — INSIDER TRADING ═══════════════ -->
 <div class="section">
-<div class="day-tag">Day 04 · Thursday · X / Instagram</div>
+<div class="day-tag">Day 04 · Thursday · X + Instagram</div>
 <div class="card c4">
-  <div class="c4-inner">
-    <div class="c4-left">
-      <div class="c4 eyebrow">Insider Intelligence</div>
-      <div class="c4 hook">Who's buying<br/>their own stock.<br/><em>Now free.</em></div>
-      <div class="c4 sub">
-        Trendlyne charges <strong>₹4,950/year</strong> for insider trading data.<br/>
-        NSE publishes every SAST disclosure for free. We built the tool.
-      </div>
-      <div style="font-size:13px; color:#999; font-style:italic; margin-top:8px;">
-        Ask Claude: "Show me insider buying activity for TCS in the last 90 days"
-      </div>
-      <div style="margin-top:24px; display:flex; align-items:center; gap:12px;">
-        <div class="c4 replaced-label">Trendlyne StratQ</div>
-        <div class="c4 replaced-price">₹4,950/yr</div>
-        <div style="color:#bbb; font-size:18px;">→</div>
-        <div style="font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:800; color:#16a34a;">FREE</div>
+  <div class="c4-top">
+    <div>
+      <div class="c4-eyebrow">Insider Intelligence · NSE SAST Data</div>
+      <div class="c4-hook">The promoter bought<br/>₹12 crore of stock.<br/>It's <span class="orange">public data.</span><br/>You just didn't <span class="green">know where.</span></div>
+      <div class="c4-sub">
+        Every insider trade is SEBI-mandated and published on NSE as a SAST disclosure.<br/>
+        <strong>Trendlyne charges ₹4,950/year to show you this.</strong> We built the tool. It's free.
       </div>
     </div>
-    <div class="c4-right">
-      <div class="insight-card">
-        <span class="insight-tag it-buy">Buying</span>
-        <div class="insight-name">Promoter purchase · HDFCBANK</div>
-        <div class="insight-detail">Disclosed via NSE SAST · 15 Mar 2025</div>
-        <div class="insight-amount">2,50,000 shares acquired</div>
-      </div>
-      <div class="insight-card">
-        <span class="insight-tag it-sell">Selling</span>
-        <div class="insight-name">Director disposal · INFY</div>
-        <div class="insight-detail">Disclosed via NSE SAST · 12 Mar 2025</div>
-        <div class="insight-amount">1,00,000 shares disposed</div>
-      </div>
-      <div class="insight-card">
-        <span class="insight-tag it-buy">Buying</span>
-        <div class="insight-name">CEO purchase · WIPRO</div>
-        <div class="insight-detail">Disclosed via NSE SAST · 8 Mar 2025</div>
-        <div class="insight-amount">75,000 shares acquired</div>
-      </div>
+    <div class="c4-badge">
+      <div class="c4-badge-label">Trendlyne StratQ</div>
+      <div class="c4-badge-price">₹4,950/yr</div>
+      <div class="c4-badge-label" style="color:#16a34a;margin-top:6px;">finstack-mcp</div>
+      <div class="c4-badge-free">FREE</div>
     </div>
   </div>
-  <div class="brand-bar c4 brand-bar">
-    <div class="brand-name c4 brand-name">Arthex · finstack-mcp</div>
-    <div class="brand-url c4 brand-url">github.com/finstacklabs/finstack-mcp</div>
+  <div class="c4-feed">
+    <div class="insider-item">
+      <span class="ii-tag ii-buy">BUY</span>
+      <div class="ii-name">HDFCBANK</div>
+      <div class="ii-title">Managing Director & CEO</div>
+      <div class="ii-divider"></div>
+      <div class="ii-shares">2,50,000 shares</div>
+      <div class="ii-date">15 Mar 2025</div>
+      <div class="ii-source">NSE SAST Disclosure</div>
+    </div>
+    <div class="insider-item">
+      <span class="ii-tag ii-buy">BUY</span>
+      <div class="ii-name">RELIANCE</div>
+      <div class="ii-title">Promoter Group Entity</div>
+      <div class="ii-divider"></div>
+      <div class="ii-shares">8,40,000 shares</div>
+      <div class="ii-date">12 Mar 2025</div>
+      <div class="ii-source">NSE SAST Disclosure</div>
+    </div>
+    <div class="insider-item">
+      <span class="ii-tag ii-sell">SELL</span>
+      <div class="ii-name">INFY</div>
+      <div class="ii-title">Executive Director</div>
+      <div class="ii-divider"></div>
+      <div class="ii-shares">1,20,000 shares</div>
+      <div class="ii-date">10 Mar 2025</div>
+      <div class="ii-source">NSE SAST Disclosure</div>
+    </div>
+    <div class="insider-item">
+      <span class="ii-tag ii-buy">BUY</span>
+      <div class="ii-name">TCS</div>
+      <div class="ii-title">Whole-time Director</div>
+      <div class="ii-divider"></div>
+      <div class="ii-shares">45,000 shares</div>
+      <div class="ii-date">8 Mar 2025</div>
+      <div class="ii-source">NSE SAST Disclosure</div>
+    </div>
+  </div>
+  <div class="c4-brand" style="background:#f2f2f2;border-top:1px solid #e8e8e8;">
+    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.4.0</span>
+    <span class="brand-r" style="color:#ccc;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
-<div class="post-copy">
-  <h3>Post copy</h3>
-  <div class="platform-row">
-    <div class="platform-block">
-      <div class="platform-name">X (Twitter)</div>
-      <div class="copy-text">When insiders buy their own stock, that's signal.
+<div class="post-box">
+  <div class="pb-col">
+    <div class="pb-plat">X / Twitter</div>
+    <div class="pb-copy">The promoter just bought ₹12 crore of their own stock.
 
-Trendlyne charges ₹4,950/year to show you NSE SAST disclosures.
+That's public data. NSE publishes every insider trade as a SAST disclosure.
 
-NSE publishes them for free.
+Trendlyne charges ₹4,950/year to show you this.
 
-finstack-mcp now surfaces all insider trading data inside Claude.
+finstack-mcp now has nse_insider_trading(). Free.
 
-Ask: "Show me insider buying in TCS last 90 days"
+Ask Claude: "Who bought their own stock in the last 30 days?"
 
 <strong>pip install finstack-mcp</strong>
 
-#InsiderTrading #NSE #SAST #IndianStocks #MCP</div>
-    </div>
-    <div class="platform-block">
-      <div class="platform-name">Instagram caption</div>
-      <div class="copy-text">Smart money moves first. Now you can track it for free 🔍
+#InsiderTrading #NSE #SmartMoney #MCP</div>
+  </div>
+  <div class="pb-col">
+    <div class="pb-plat">Instagram</div>
+    <div class="pb-copy">When insiders buy their own company's stock — that's a signal 🔍
 
-NSE SAST insider disclosures — now inside Claude via finstack-mcp.
+Every trade is publicly disclosed on NSE. Most people just don't know where to look.
 
-Trendlyne charges ₹4,950/year for this. We made it free.
+finstack-mcp now gives you access to all NSE SAST insider trading data — free, inside Claude.
 
-Just ask your AI: "Who's been buying their own shares in the last 90 days?"
+Trendlyne charges ₹4,950/year for this. We don't.
 
-Link in bio 👆
+Link in bio.
 
-#insidertrading #nse #stockmarket #investing #fintech #opensource</div>
-    </div>
+#stocks #investing #insidertrading #nse #stockmarket #fintech</div>
   </div>
 </div>
 </div>
 
 
-<!-- ══════════════════════════════════════════════════
-  CARD 5 — SCREENER.IN  |  Friday
-══════════════════════════════════════════════════ -->
+<!-- ═══════════════ CARD 5 — CANCELLATION ═══════════════ -->
 <div class="section">
-<div class="day-tag">Day 05 · Friday · X / LinkedIn</div>
+<div class="day-tag">Day 05 · Friday · X + LinkedIn</div>
 <div class="card c5">
-  <div class="c5-inner">
-    <div class="c5-left">
-      <div class="c5 eyebrow">Indian Fundamentals</div>
-      <div class="c5 hook">Screener.in Pro<br/>is ₹4,999/year.<br/><em>We're not.</em></div>
-      <div class="c5 sub">
-        10 years of Indian financial statements, ratios, dividends,<br/>
-        promoter shareholding, screener. <strong>All free in finstack-mcp.</strong>
-      </div>
-      <div style="font-size:13px; color:#999; font-style:italic;">
-        "Compare Reliance, TCS, and HDFC Bank on ROE, margins, and debt ratios" — works in Claude
-      </div>
+  <div class="c5-left">
+    <div class="c5-eyebrow">The Cancellation Card</div>
+    <div class="c5-hook">
+      I cancelled<br/>4 finance<br/>subscriptions.<br/>Here's <span class="cyan">what I built.</span>
     </div>
-    <div class="c5-right">
-      <div class="c5-table-head">
-        <span>Data</span>
-        <span>Screener Pro</span>
-        <span class="us-head">Ours</span>
+    <div class="c5-sub">
+      <strong>Total annual saving: ₹19,898/year + $17,500.</strong><br/>
+      One open-source package replaced every single one.<br/>No login. No API keys. Works inside Claude.
+    </div>
+    <div class="c5-cmd">pip install finstack-mcp</div>
+  </div>
+  <div class="c5-right">
+    <div class="cancel-header">
+      <span class="ch-col">What I cancelled</span>
+      <span class="ch-col">Was paying</span>
+      <span class="ch-col green">Now</span>
+    </div>
+    <div class="cancel-row">
+      <div>
+        <div class="cr-name">Screener.in Pro</div>
+        <div class="cr-sub">Indian fundamentals, ratios</div>
       </div>
-      <div class="feature-row">
-        <div class="fr-name">Income statement</div>
-        <div class="fr-paid">₹4,999/yr</div>
-        <div class="fr-free">FREE</div>
+      <div class="cr-price">₹4,999/yr</div>
+      <div class="cr-free">FREE</div>
+    </div>
+    <div class="cancel-row">
+      <div>
+        <div class="cr-name">Sensibull Pro</div>
+        <div class="cr-sub">Options Greeks, Max Pain</div>
       </div>
-      <div class="feature-row">
-        <div class="fr-name">Balance sheet</div>
-        <div class="fr-paid">₹4,999/yr</div>
-        <div class="fr-free">FREE</div>
+      <div class="cr-price">₹15,600/yr</div>
+      <div class="cr-free">FREE</div>
+    </div>
+    <div class="cancel-row">
+      <div>
+        <div class="cr-name">Trendlyne StratQ</div>
+        <div class="cr-sub">Insider data, FII/DII</div>
       </div>
-      <div class="feature-row">
-        <div class="fr-name">Key ratios (P/E, ROE)</div>
-        <div class="fr-paid">₹4,999/yr</div>
-        <div class="fr-free">FREE</div>
+      <div class="cr-price">₹4,950/yr</div>
+      <div class="cr-free">FREE</div>
+    </div>
+    <div class="cancel-row">
+      <div>
+        <div class="cr-name">Morningstar Direct</div>
+        <div class="cr-sub">MF flows, fund data</div>
       </div>
-      <div class="feature-row">
-        <div class="fr-name">Promoter holding</div>
-        <div class="fr-paid">₹4,999/yr</div>
-        <div class="fr-free">FREE</div>
+      <div class="cr-price">$17,500/yr</div>
+      <div class="cr-free">FREE</div>
+    </div>
+    <div class="cancel-row" style="background:#f0fdf4;border-color:#bbf7d0;">
+      <div>
+        <div class="cr-name" style="color:#15803d;">finstack-mcp</div>
+        <div class="cr-sub" style="color:#86efac;">All of the above + 32 more tools</div>
       </div>
-      <div class="feature-row">
-        <div class="fr-name">Stock screener</div>
-        <div class="fr-paid">₹4,999/yr</div>
-        <div class="fr-free">FREE</div>
-      </div>
-      <div class="feature-row">
-        <div class="fr-name">Dividend history</div>
-        <div class="fr-paid">₹4,999/yr</div>
-        <div class="fr-free">FREE</div>
-      </div>
+      <div class="cr-price" style="text-decoration:none;color:#16a34a;opacity:1;">$0</div>
+      <div class="cr-free">ALWAYS</div>
     </div>
   </div>
-  <div class="brand-bar c5 brand-bar">
-    <div class="brand-name c5 brand-name">Arthex · finstack-mcp</div>
-    <div class="brand-url c5 brand-url">github.com/finstacklabs/finstack-mcp</div>
+  <div class="c5-brand" style="background:#f0ede6;border-top:1px solid #e4e2da;">
+    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.4.0 · 48 tools</span>
+    <span class="brand-r" style="color:#ccc;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
-<div class="post-copy">
-  <h3>Post copy</h3>
-  <div class="platform-row">
-    <div class="platform-block">
-      <div class="platform-name">X (Twitter)</div>
-      <div class="copy-text">Screener.in Pro: ₹4,999/year
+<div class="post-box">
+  <div class="pb-col">
+    <div class="pb-plat">X / Twitter</div>
+    <div class="pb-copy">I cancelled 4 finance subscriptions this month.
 
-finstack-mcp: Free
+❌ Screener.in Pro — ₹4,999/yr
+❌ Sensibull Pro — ₹15,600/yr
+❌ Trendlyne StratQ — ₹4,950/yr
+❌ Morningstar Direct — $17,500/yr
 
-Income statement, balance sheet, key ratios, promoter shareholding, dividend history, stock screener — all of it.
+Replaced every single one with:
 
-And since it's an MCP server, you just ask Claude:
+✅ finstack-mcp — $0
 
-"Compare TCS and Infosys on ROE and margins"
+48 tools. Indian fundamentals, options Greeks, insider data, MF flows. All free. Works in Claude.
 
-That's it.
+<strong>pip install finstack-mcp</strong></div>
+  </div>
+  <div class="pb-col">
+    <div class="pb-plat">LinkedIn</div>
+    <div class="pb-copy">I cancelled Screener Pro, Sensibull Pro, Trendlyne StratQ, and Morningstar Direct this month.
 
-<strong>pip install finstack-mcp</strong>
+Total annual cost I was paying: ~$19,000+
 
-#IndianStocks #Screener #Fundamentals #MCP #Claude</div>
-    </div>
-    <div class="platform-block">
-      <div class="platform-name">LinkedIn</div>
-      <div class="copy-text">I used to pay for Screener.in Pro to research Indian stocks.
+I replaced all four with finstack-mcp — an open-source MCP server I built that gives AI tools like Claude access to the same financial data.
 
-Then I built finstack-mcp — an open-source MCP server that gives me the same fundamental data inside Claude.
+48 tools. Free. MIT licensed. No API keys.
 
-Income statement, balance sheet, ratios, promoter holding, stock screener. All free.
-
-The difference: instead of a web interface, I just type what I want to know. The AI handles the rest.
-
-v0.4.0 is out. 48 tools. Zero subscriptions.</div>
-    </div>
+Launching on Product Hunt April 1st. Link in comments.</div>
   </div>
 </div>
 </div>
 
 
-<!-- ══════════════════════════════════════════════════
-  CARD 6 — THE MATH (ALL PLATFORMS)  |  Saturday
-══════════════════════════════════════════════════ -->
+<!-- ═══════════════ CARD 6 — THE RECEIPT ═══════════════ -->
 <div class="section">
 <div class="day-tag">Day 06 · Saturday · X viral thread · Product Hunt eve</div>
 <div class="card c6">
-  <div class="c6 eyebrow">The Full Picture</div>
-  <div class="c6 hook">The combined cost of<br/>replacing finstack-mcp<br/>with paid tools: <em>$97,000/year.</em></div>
-  <div class="price-grid">
-    <div class="price-item">
-      <div class="pi-platform">Bloomberg</div>
-      <div class="pi-price">$31,980/yr</div>
+  <div class="c6-left">
+    <div class="c6-eyebrow">The Receipt</div>
+    <div class="c6-hook">
+      Here's what this<br/>data <span class="dim">used to cost.</span><br/>Here's what it<br/>costs <span class="green">now.</span>
     </div>
-    <div class="price-item">
-      <div class="pi-platform">Refinitiv</div>
-      <div class="pi-price">$22,000/yr</div>
+    <div class="c6-sub">
+      We added up every subscription finstack-mcp replaces.<br/>
+      <strong>$97,000+ per year. Combined.</strong><br/>
+      One pip install. 48 tools. MIT license.
     </div>
-    <div class="price-item">
-      <div class="pi-platform">Morningstar</div>
-      <div class="pi-price">$17,500/yr</div>
-    </div>
-    <div class="price-item">
-      <div class="pi-platform">FactSet</div>
-      <div class="pi-price">$12,000/yr</div>
-    </div>
-    <div class="price-item">
-      <div class="pi-platform">Sensibull Pro</div>
-      <div class="pi-price">₹15,600/yr</div>
-    </div>
-    <div class="price-item">
-      <div class="pi-platform">Trendlyne</div>
-      <div class="pi-price">₹4,950/yr</div>
-    </div>
-    <div class="price-item">
-      <div class="pi-platform">Screener Pro</div>
-      <div class="pi-price">₹4,999/yr</div>
+    <div class="c6-pip">
+      <span>$ </span>pip install finstack-mcp
     </div>
   </div>
-  <div class="price-total-block">
-    <div class="ptb-label">All of that</div>
-    <div class="ptb-crossed">$97,000+</div>
-    <div class="ptb-arrow">→</div>
-    <div class="ptb-free">pip install finstack-mcp</div>
+  <div class="c6-right">
+    <div class="receipt">
+      <div class="receipt-header">
+        <span class="rh-title">If you paid for all of this</span>
+        <span class="rh-date">Annual cost</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rr-name">Bloomberg Terminal</span>
+        <span class="rr-price">$31,980</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rr-name">Refinitiv Workspace</span>
+        <span class="rr-price">$22,000</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rr-name">Morningstar Direct</span>
+        <span class="rr-price">$17,500</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rr-name">FactSet (base)</span>
+        <span class="rr-price">$12,000</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rr-name">Sensibull Pro</span>
+        <span class="rr-price">₹15,600</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rr-name">Trendlyne StratQ</span>
+        <span class="rr-price">₹4,950</span>
+      </div>
+      <div class="receipt-row" style="border-bottom:1px solid #141414;">
+        <span class="rr-name">Screener.in Pro</span>
+        <span class="rr-price">₹4,999</span>
+      </div>
+      <div class="receipt-total">
+        <span class="rt-label">finstack-mcp</span>
+        <span class="rt-val">$0</span>
+      </div>
+      <div class="receipt-free">
+        <div class="rf-text">instead of $97,000+/year</div>
+        <div class="rf-cmd">pip install finstack-mcp</div>
+      </div>
+    </div>
   </div>
-  <div class="brand-bar c6 brand-bar">
-    <div class="brand-name c6 brand-name">Arthex · finstack-mcp · 48 tools · MIT license</div>
-    <div class="brand-url c6 brand-url">github.com/finstacklabs/finstack-mcp</div>
+  <div class="c6-brand">
+    <span class="brand-l" style="color:#222;">Arthex · finstack-mcp · Open Source · MIT</span>
+    <span class="brand-r" style="color:#1a1a1a;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
-<div class="post-copy">
-  <h3>Post copy</h3>
-  <div class="platform-row">
-    <div class="platform-block">
-      <div class="platform-name">X (Twitter) — thread opener</div>
-      <div class="copy-text">The combined cost of every subscription finstack-mcp replaces:
+<div class="post-box">
+  <div class="pb-col">
+    <div class="pb-plat">X — Thread opener (post this Saturday night)</div>
+    <div class="pb-copy">I added up every subscription finstack-mcp replaces. The number is embarrassing.
 
 Bloomberg Terminal — $31,980/yr
 Refinitiv Workspace — $22,000/yr
 Morningstar Direct — $17,500/yr
 FactSet — $12,000/yr
 Sensibull Pro — ₹15,600/yr
-Trendlyne StratQ — ₹4,950/yr
-Screener.in Pro — ₹4,999/yr
+Trendlyne — ₹4,950/yr
+Screener Pro — ₹4,999/yr
 
-Total: $97,000+/year
+Combined: $97,000+/year
 
 finstack-mcp: pip install finstack-mcp
 
-48 tools. Free. Open source.
+Free. Open source. 48 tools.
 
-🧵 Here's what we cover 👇</div>
-    </div>
-    <div class="platform-block">
-      <div class="platform-name">Product Hunt — tagline options</div>
-      <div class="copy-text"><strong>Option A:</strong> The open-source Bloomberg for Indian markets — free inside Claude
+Here's every tool we cover in the thread 👇</div>
+  </div>
+  <div class="pb-col">
+    <div class="pb-plat">Product Hunt — taglines</div>
+    <div class="pb-copy"><strong>Name:</strong> finstack-mcp by Arthex
 
-<strong>Option B:</strong> 48 financial data tools that replace $97,000/year in subscriptions
+<strong>Tagline A:</strong> The open-source Bloomberg for Indian markets — works inside Claude
 
-<strong>Option C:</strong> Bloomberg charges $32k/year. We made Indian market data free.
+<strong>Tagline B:</strong> 48 financial data tools that replace $97,000/year in subscriptions
+
+<strong>Tagline C:</strong> Bloomberg charges $32k/year. We made Indian market data free.
 
 <strong>Description:</strong>
-finstack-mcp is an open-source MCP server that gives Claude, Cursor, and any AI tool structured access to Indian and global financial data. NSE/BSE quotes, fundamentals, FII/DII flows, options analytics with Greeks, insider trading, RBI rates, AMFI fund data, G-Sec yields — 48 tools, zero subscriptions, zero API keys.</div>
-    </div>
+finstack-mcp is an open-source MCP server for Indian and global financial data. NSE/BSE quotes, fundamentals, FII/DII flows, options Greeks (Black-Scholes), insider trading, RBI rates, AMFI fund flows, G-Sec yields — 48 tools, zero subscriptions, zero API keys. Works inside Claude, Cursor, and any MCP client.</div>
   </div>
 </div>
 </div>
 
 
-<!-- ══════════════════════════════════════════════════
-  CARD 7 — LAUNCH DAY  |  Sunday (Product Hunt)
-══════════════════════════════════════════════════ -->
+<!-- ═══════════════ CARD 7 — LAUNCH ═══════════════ -->
 <div class="section">
-<div class="day-tag">Day 07 · Sunday (April 1) · Product Hunt Launch Day</div>
+<div class="day-tag">Day 07 · Sunday April 1 · Product Hunt Launch · POST EVERYWHERE</div>
 <div class="card c7">
-  <div class="c7-left">
-    <div class="c7 eyebrow">We're live on Product Hunt</div>
-    <div class="c7 hook">48 tools.<br/><span class="dim">$0.</span><br/><em>Ship it.</em></div>
-    <div class="c7 sub">
-      Indian market data. Global markets. Options Greeks.<br/>
-      <strong>RBI rates. AMFI flows. G-Sec yields.</strong><br/>
-      All free. All inside your AI.
+  <div class="c7-inner">
+    <div class="c7-eyebrow">We shipped.</div>
+    <div class="c7-hook">
+      <div class="white">48 tools.</div>
+      <div class="green">$0.</div>
+      <div class="dim">$97,000 disrupted.</div>
     </div>
-    <div class="install-block">
-      <span style="color:#444;">$ </span>pip install finstack-mcp
+    <div class="c7-sub">
+      Indian markets. Global markets. Options Greeks. RBI rates.<br/>
+      <strong>AMFI flows. G-Sec yields. Insider data. All free.</strong>
     </div>
-    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#333; letter-spacing:0.1em; text-transform:uppercase;">
-      Support us on Product Hunt today ↗
+    <div class="c7-stats">
+      <div class="c7-stat">
+        <div class="cs-num" style="color:#4ade80;">48</div>
+        <div class="cs-lbl">MCP tools</div>
+      </div>
+      <div class="c7-stat">
+        <div class="cs-num" style="color:#fff;">$0</div>
+        <div class="cs-lbl">forever</div>
+      </div>
+      <div class="c7-stat">
+        <div class="cs-num" style="color:#4ade80;">0</div>
+        <div class="cs-lbl">API keys</div>
+      </div>
+      <div class="c7-stat">
+        <div class="cs-num" style="color:#fff;">MIT</div>
+        <div class="cs-lbl">license</div>
+      </div>
     </div>
+    <div class="c7-cmd"><span>$ </span>pip install finstack-mcp</div>
   </div>
-  <div class="c7-right">
-    <div class="c7-stat">
-      <div class="num" style="color:#4ade80;">48</div>
-      <div class="lbl">MCP tools</div>
-    </div>
-    <div class="c7-stat">
-      <div class="num" style="color:#fff;">$0</div>
-      <div class="lbl">cost</div>
-    </div>
-    <div class="c7-stat">
-      <div class="num" style="color:#4ade80;">0</div>
-      <div class="lbl">API keys needed</div>
-    </div>
-  </div>
-  <div class="brand-bar c7 brand-bar">
-    <div class="brand-name c7 brand-name">Arthex · finstack-mcp</div>
-    <div class="brand-url c7 brand-url">github.com/finstacklabs/finstack-mcp</div>
+  <div class="c7-brand">
+    <span class="c7-brand brand-l">Arthex · finstack-mcp v0.4.0</span>
+    <span class="c7-brand brand-r">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
-<div class="post-copy">
-  <h3>Post copy</h3>
-  <div class="platform-row">
-    <div class="platform-block">
-      <div class="platform-name">X (Twitter) — launch day</div>
-      <div class="copy-text">finstack-mcp is live on Product Hunt today 🚀
+<div class="post-box">
+  <div class="pb-col">
+    <div class="pb-plat">X — Launch day (April 1, morning)</div>
+    <div class="pb-copy">We're live on Product Hunt today.
 
-48 tools. $0. No API keys.
+finstack-mcp — 48 financial data tools. $0.
 
-What you get free:
-→ Everything Bloomberg charges $32k/year for
-→ Everything Sensibull charges ₹15,600/year for
-→ Everything Morningstar charges $17,500/year for
-→ Everything Screener charges ₹4,999/year for
+Everything Bloomberg, Sensibull, Morningstar, Screener, Trendlyne charge for. Free. Open source. Works inside Claude.
 
-Indian markets, global markets, options Greeks, RBI rates, insider data, AMFI flows — inside Claude.
+Support us here → [Product Hunt link]
 
-Support us here 👇
-[Product Hunt link]
+<strong>pip install finstack-mcp</strong>
 
-pip install finstack-mcp</div>
-    </div>
-    <div class="platform-block">
-      <div class="platform-name">LinkedIn — launch day</div>
-      <div class="copy-text">Today we launched finstack-mcp on Product Hunt.
+RT if you think financial data should be free 🙏</div>
+  </div>
+  <div class="pb-col">
+    <div class="pb-plat">LinkedIn + Instagram + everywhere</div>
+    <div class="pb-copy">We launched finstack-mcp on Product Hunt today.
 
-It's an open-source MCP server — which means it gives AI assistants like Claude structured access to financial data. 48 tools covering Indian and global markets, fundamentals, options analytics, institutional flows, and macro data.
+The idea was simple: Bloomberg charges $32,000/year for a financial data terminal. So does Refinitiv. So does Morningstar, FactSet, Sensibull, Screener — all of them charging thousands for data that's mostly public.
 
-The tools that inspired it collectively charge $97,000+/year. We made it free.
+We built the same thing. Free. Open source. Works inside Claude.
 
-If you're building with AI, working in finance, or just interested in what MCP servers can do — I'd love your support on Product Hunt today.
+48 tools. $0. MIT license.
 
-[link]</div>
-    </div>
+If this resonates with you, a vote on Product Hunt means everything today.
+
+[Product Hunt link]</div>
   </div>
 </div>
 </div>
