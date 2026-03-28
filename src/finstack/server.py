@@ -65,6 +65,12 @@ TOOL_CATALOG = [
     {"name": "promoter_pledge", "description": "Promoter pledge % risk signal [Screener Pro ₹4,999/yr → FREE]", "tier": "free"},
     {"name": "dividend_history_deep", "description": "10-year dividend history + trailing yield [Bloomberg/FactSet paid → FREE]", "tier": "free"},
     {"name": "nifty_pcr_trend", "description": "Nifty PCR across all expiries + overall sentiment [Sensibull ₹1,300/mo → FREE]", "tier": "free"},
+    # ── Broker + Credit + ESG (Tools 54–58) ──
+    {"name": "live_quote", "description": "Real-time NSE quote via Angel One SmartAPI — zero delay [Zerodha ₹500/mo → FREE]", "tier": "free"},
+    {"name": "market_depth", "description": "Level 2 order book top 5 bid/ask via Angel One [Zerodha ₹500/mo → FREE]", "tier": "free"},
+    {"name": "broker_setup_status", "description": "Check Angel One SmartAPI integration status + setup guide", "tier": "free"},
+    {"name": "credit_ratings", "description": "NSE/BSE credit ratings from SEBI filings [Bloomberg $24k/yr → FREE]", "tier": "free"},
+    {"name": "brsr_esg", "description": "BRSR sustainability data from SEBI filings [Bloomberg ESG $24k/yr → FREE]", "tier": "free"},
 ]
 
 TOTAL_TOOLS = len(TOOL_CATALOG) + 1
@@ -78,12 +84,14 @@ from finstack.tools.fundamentals import register_fundamental_tools
 from finstack.tools.global_ import register_global_tools
 from finstack.tools.tax import register_tax_tools
 from finstack.tools.market_intelligence import register_market_intelligence_tools
+from finstack.tools.broker_credit_esg import register_broker_credit_esg_tools
 
 register_global_tools(mcp)
 register_fundamental_tools(mcp)
 register_analytics_tools(mcp)
 register_tax_tools(mcp)
 register_market_intelligence_tools(mcp)
+register_broker_credit_esg_tools(mcp)
 
 
 @mcp.tool()
