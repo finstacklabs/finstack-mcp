@@ -51,6 +51,15 @@ TOOL_CATALOG = [
     {"name": "portfolio_analysis", "description": "Portfolio P&L, weights, risk analysis", "tier": "pro"},
     {"name": "backtest_strategy", "description": "SMA crossover strategy backtesting", "tier": "pro"},
     {"name": "calculate_tax_liability", "description": "LTCG/STCG tax calculator for Indian equity and mutual fund trades", "tier": "free"},
+    # ── Market Intelligence (Tools 41–48) — features paid platforms charge for ──
+    {"name": "options_oi_analytics", "description": "Max Pain, PCR trend, IV summary, top OI strikes [Sensibull Pro ₹1,300/mo → FREE]", "tier": "free"},
+    {"name": "options_greeks", "description": "Black-Scholes Greeks: Delta, Gamma, Theta, Vega, Rho [Sensibull Pro → FREE]", "tier": "free"},
+    {"name": "nse_insider_trading", "description": "NSE SAST insider trading disclosures [Trendlyne ₹4,950/yr → FREE]", "tier": "free"},
+    {"name": "promoter_shareholding", "description": "Promoter/FII/DII/public shareholding pattern [Screener Pro ₹4,999/yr → FREE]", "tier": "free"},
+    {"name": "rbi_policy_rates", "description": "RBI repo, CRR, SLR, MSF, bank rate [Bloomberg $31,980/yr → FREE]", "tier": "free"},
+    {"name": "india_macro_indicators", "description": "CPI inflation, GDP growth, current account [Bloomberg $31,980/yr → FREE]", "tier": "free"},
+    {"name": "amfi_fund_flows", "description": "MF industry AUM, SIP flows, category breakdown [Morningstar $17,500/yr → FREE]", "tier": "free"},
+    {"name": "india_gsec_yields", "description": "G-Sec yield curve: T-bill to 30-yr bond [Bloomberg $31,980/yr → FREE]", "tier": "free"},
 ]
 
 TOTAL_TOOLS = len(TOOL_CATALOG) + 1
@@ -63,11 +72,13 @@ from finstack.tools.analytics import register_analytics_tools
 from finstack.tools.fundamentals import register_fundamental_tools
 from finstack.tools.global_ import register_global_tools
 from finstack.tools.tax import register_tax_tools
+from finstack.tools.market_intelligence import register_market_intelligence_tools
 
 register_global_tools(mcp)
 register_fundamental_tools(mcp)
 register_analytics_tools(mcp)
 register_tax_tools(mcp)
+register_market_intelligence_tools(mcp)
 
 
 @mcp.tool()

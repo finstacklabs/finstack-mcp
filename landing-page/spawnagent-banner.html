@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>SpawnAgent — Brand Assets</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0c0c0c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 80px;
+    padding: 60px 20px 100px;
+    font-family: "Inter", sans-serif;
+  }
+  .sect-label {
+    color: #2a2a2a;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    width: 1280px;
+    margin-bottom: -70px;
+  }
+
+  /* ═══════════════════════
+     LOGO SHOWCASE FIRST
+  ═══════════════════════ */
+  .logo-grid {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .lv { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .lv-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: #2a2a2a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── MAIN LOGO: dark bg ── */
+  .logo-main-dark {
+    width: 360px;
+    height: 180px;
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .logo-main-light {
+    width: 360px;
+    height: 180px;
+    background: #f5f5f5;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  /* ── ICON MARK ── */
+  .icon-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── WORDMARK ── */
+  .wm-dark {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .wm-name-dark {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: #fff;
+  }
+  .wm-name-dark .hi { color: #8b5cf6; }
+  .wm-sub-dark {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: #3a3a3a;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .wm-name-light {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: #0a0a0a;
+  }
+  .wm-name-light .hi { color: #7c3aed; }
+  .wm-sub-light {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: #999;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ── CIRCLE ── */
+  .logo-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 999px;
+    background: #0a0a0a;
+    border: 1.5px solid #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-circle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(139,92,246,0.1), transparent 60%);
+  }
+  .lc-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    position: relative;
+  }
+
+  /* ── SQUARE ── */
+  .logo-sq {
+    width: 200px;
+    height: 200px;
+    border-radius: 44px;
+    background: linear-gradient(145deg, #0f0b1a, #090710);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 1px solid rgba(139,92,246,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-sq::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139,92,246,0.4), transparent);
+  }
+  .ls-wordmark {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: rgba(255,255,255,0.5);
+  }
+  .ls-wordmark span { color: #8b5cf6; }
+
+
+  /* ═══════════════════════
+     YOUTUBE BANNER 1280×720
+  ═══════════════════════ */
+  .banner {
+    width: 1280px;
+    height: 720px;
+    position: relative;
+    overflow: hidden;
+    background: #07070a;
+    flex-shrink: 0;
+  }
+
+  /* BG layers */
+  .bg-aurora {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 50% -20%, rgba(109,40,217,0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 500px 400px at 10% 60%, rgba(79,70,229,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 400px 300px at 90% 70%, rgba(139,92,246,0.08) 0%, transparent 55%);
+  }
+  .bg-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 900px 600px at center, black, transparent);
+  }
+
+  /* Decorative arcs — premium touch */
+  .arc-wrap {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 900px;
+    pointer-events: none;
+  }
+
+  /* Horizontal rules */
+  .hr { position: absolute; left: 64px; right: 64px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 75%, transparent); }
+  .hr.t { top: 56px; }
+  .hr.b { bottom: 56px; }
+  .vr { position: absolute; top: 56px; bottom: 56px; width: 1px; background: linear-gradient(180deg, transparent, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 75%, transparent); }
+  .vr.l { left: 64px; }
+  .vr.r { right: 64px; }
+
+  /* Corner ticks */
+  .ct { position: absolute; width: 14px; height: 14px; }
+  .ct.tl { top: 49px; left: 57px; border-top: 1px solid rgba(139,92,246,0.4); border-left: 1px solid rgba(139,92,246,0.4); }
+  .ct.tr { top: 49px; right: 57px; border-top: 1px solid rgba(139,92,246,0.4); border-right: 1px solid rgba(139,92,246,0.4); }
+  .ct.bl { bottom: 49px; left: 57px; border-bottom: 1px solid rgba(139,92,246,0.4); border-left: 1px solid rgba(139,92,246,0.4); }
+  .ct.br { bottom: 49px; right: 57px; border-bottom: 1px solid rgba(139,92,246,0.4); border-right: 1px solid rgba(139,92,246,0.4); }
+
+  /* Center block */
+  .banner-center {
+    position: absolute; inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    z-index: 10;
+  }
+
+  .b-wordmark {
+    font-size: 104px;
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .b-wordmark .name-spawn { color: #fff; }
+  .b-wordmark .name-agent {
+    background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .b-tag {
+    margin-top: 20px;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.22);
+    text-align: center;
+  }
+
+  .b-divider {
+    width: 260px;
+    height: 1px;
+    margin: 22px 0;
+    background: linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent);
+  }
+
+  .b-pills {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .bp {
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .bp.v { background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.22); color: rgba(167,139,250,0.75); }
+  .bp.w { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.25); }
+
+  /* Side whispers */
+  .side { position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
+  .side.l { left: 90px; align-items: flex-start; }
+  .side.r { right: 90px; align-items: flex-end; }
+  .side-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: rgba(255,255,255,0.14);
+    letter-spacing: 0.06em;
+  }
+  .side-pip { width: 3px; height: 3px; border-radius: 999px; background: rgba(139,92,246,0.4); flex-shrink: 0; }
+
+  .b-handle {
+    position: absolute;
+    bottom: 34px; right: 90px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.1);
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGOS FIRST ═══ -->
+<div class="sect-label">Logo — Dark & Light versions</div>
+<div class="logo-grid">
+
+  <!-- DARK LOGO -->
+  <div class="lv">
+    <div class="logo-main-dark">
+      <div class="icon-wrap">
+        <!-- SPAWN AGENT ICON: geometric agent mark — angular S formed by nodes -->
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer hexagon ring -->
+          <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z" stroke="rgba(139,92,246,0.25)" stroke-width="1" fill="none"/>
+          <!-- Inner shape — agent spawn mark -->
+          <path d="M32 14 L48 23 L48 41 L32 50 L16 41 L16 23 Z" stroke="rgba(139,92,246,0.15)" stroke-width="1" fill="none"/>
+          <!-- Central bolt/spawn symbol -->
+          <path d="M38 20 L26 32 L34 32 L26 44" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <!-- Accent dots -->
+          <circle cx="38" cy="20" r="2.5" fill="#a78bfa"/>
+          <circle cx="26" cy="44" r="2.5" fill="#7c3aed"/>
+          <!-- Node dots -->
+          <circle cx="32" cy="4" r="1.5" fill="rgba(139,92,246,0.4)"/>
+          <circle cx="56" cy="18" r="1.5" fill="rgba(139,92,246,0.3)"/>
+          <circle cx="56" cy="46" r="1.5" fill="rgba(139,92,246,0.3)"/>
+          <circle cx="32" cy="60" r="1.5" fill="rgba(139,92,246,0.4)"/>
+          <circle cx="8" cy="46" r="1.5" fill="rgba(139,92,246,0.3)"/>
+          <circle cx="8" cy="18" r="1.5" fill="rgba(139,92,246,0.3)"/>
+        </svg>
+      </div>
+      <div class="wm-dark">
+        <div class="wm-name-dark"><span class="hi">Spawn</span>Agent</div>
+        <div class="wm-sub-dark">AI Tools · Agents · Open Source</div>
+      </div>
+    </div>
+    <div class="lv-label">Logo — Dark</div>
+  </div>
+
+  <!-- LIGHT LOGO -->
+  <div class="lv">
+    <div class="logo-main-light">
+      <div class="icon-wrap">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z" stroke="rgba(109,40,217,0.2)" stroke-width="1" fill="none"/>
+          <path d="M32 14 L48 23 L48 41 L32 50 L16 41 L16 23 Z" stroke="rgba(109,40,217,0.12)" stroke-width="1" fill="none"/>
+          <path d="M38 20 L26 32 L34 32 L26 44" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="38" cy="20" r="2.5" fill="#7c3aed"/>
+          <circle cx="26" cy="44" r="2.5" fill="#6d28d9"/>
+          <circle cx="32" cy="4" r="1.5" fill="rgba(109,40,217,0.4)"/>
+          <circle cx="56" cy="18" r="1.5" fill="rgba(109,40,217,0.3)"/>
+          <circle cx="56" cy="46" r="1.5" fill="rgba(109,40,217,0.3)"/>
+          <circle cx="32" cy="60" r="1.5" fill="rgba(109,40,217,0.4)"/>
+          <circle cx="8" cy="46" r="1.5" fill="rgba(109,40,217,0.3)"/>
+          <circle cx="8" cy="18" r="1.5" fill="rgba(109,40,217,0.3)"/>
+        </svg>
+      </div>
+      <div class="wm-dark" style="gap:4px;">
+        <div class="wm-name-light"><span class="hi">Spawn</span>Agent</div>
+        <div class="wm-sub-light">AI Tools · Agents · Open Source</div>
+      </div>
+    </div>
+    <div class="lv-label">Logo — Light</div>
+  </div>
+
+</div>
+
+<!-- CIRCLE + SQUARE -->
+<div class="sect-label" style="margin-bottom:-70px;">Profile picture & App icon</div>
+<div class="logo-grid">
+
+  <!-- CIRCLE -->
+  <div class="lv">
+    <div class="logo-circle">
+      <div style="position:relative; z-index:2;">
+        <svg width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z" stroke="rgba(139,92,246,0.2)" stroke-width="1" fill="none"/>
+          <path d="M32 14 L48 23 L48 41 L32 50 L16 41 L16 23 Z" stroke="rgba(139,92,246,0.12)" stroke-width="1" fill="none"/>
+          <path d="M38 20 L26 32 L34 32 L26 44" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="38" cy="20" r="3" fill="#a78bfa"/>
+          <circle cx="26" cy="44" r="3" fill="#7c3aed"/>
+          <circle cx="32" cy="4" r="2" fill="rgba(139,92,246,0.5)"/>
+          <circle cx="56" cy="18" r="2" fill="rgba(139,92,246,0.4)"/>
+          <circle cx="56" cy="46" r="2" fill="rgba(139,92,246,0.4)"/>
+          <circle cx="32" cy="60" r="2" fill="rgba(139,92,246,0.5)"/>
+          <circle cx="8" cy="46" r="2" fill="rgba(139,92,246,0.4)"/>
+          <circle cx="8" cy="18" r="2" fill="rgba(139,92,246,0.4)"/>
+        </svg>
+      </div>
+      <div class="lc-name">SpawnAgent</div>
+    </div>
+    <div class="lv-label">YouTube Profile Pic</div>
+  </div>
+
+  <!-- SQUARE -->
+  <div class="lv">
+    <div class="logo-sq">
+      <div>
+        <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z" stroke="rgba(139,92,246,0.25)" stroke-width="1" fill="none"/>
+          <path d="M32 14 L48 23 L48 41 L32 50 L16 41 L16 23 Z" stroke="rgba(139,92,246,0.15)" stroke-width="1" fill="none"/>
+          <path d="M38 20 L26 32 L34 32 L26 44" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="38" cy="20" r="3" fill="#a78bfa"/>
+          <circle cx="26" cy="44" r="3" fill="#7c3aed"/>
+          <circle cx="32" cy="4" r="2" fill="rgba(139,92,246,0.5)"/>
+          <circle cx="56" cy="18" r="2" fill="rgba(139,92,246,0.4)"/>
+          <circle cx="56" cy="46" r="2" fill="rgba(139,92,246,0.4)"/>
+          <circle cx="32" cy="60" r="2" fill="rgba(139,92,246,0.5)"/>
+          <circle cx="8" cy="46" r="2" fill="rgba(139,92,246,0.4)"/>
+          <circle cx="8" cy="18" r="2" fill="rgba(139,92,246,0.4)"/>
+        </svg>
+      </div>
+      <div class="ls-wordmark"><span>Spawn</span>Agent</div>
+    </div>
+    <div class="lv-label">App Icon / Square</div>
+  </div>
+
+</div>
+
+<!-- ═══ YOUTUBE BANNER ═══ -->
+<div class="sect-label">YouTube Banner — screenshot full width</div>
+<div class="banner">
+  <div class="bg-aurora"></div>
+  <div class="bg-grid"></div>
+
+  <!-- Decorative arcs -->
+  <div class="arc-wrap">
+    <svg width="900" height="900" viewBox="0 0 900 900" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;">
+      <circle cx="450" cy="450" r="380" stroke="rgba(139,92,246,0.05)" stroke-width="1"/>
+      <circle cx="450" cy="450" r="280" stroke="rgba(139,92,246,0.06)" stroke-width="1"/>
+      <circle cx="450" cy="450" r="180" stroke="rgba(139,92,246,0.08)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="hr t"></div>
+  <div class="hr b"></div>
+  <div class="vr l"></div>
+  <div class="vr r"></div>
+  <div class="ct tl"></div>
+  <div class="ct tr"></div>
+  <div class="ct bl"></div>
+  <div class="ct br"></div>
+
+  <div class="side l">
+    <div class="side-item"><span class="side-pip"></span>AI Agents</div>
+    <div class="side-item"><span class="side-pip"></span>MCP Servers</div>
+    <div class="side-item"><span class="side-pip"></span>Open Source</div>
+    <div class="side-item"><span class="side-pip"></span>Indian Markets</div>
+    <div class="side-item"><span class="side-pip"></span>Build in Public</div>
+  </div>
+  <div class="side r">
+    <div class="side-item">Tools & Demos<span class="side-pip"></span></div>
+    <div class="side-item">Finance × AI<span class="side-pip"></span></div>
+    <div class="side-item">Tutorials<span class="side-pip"></span></div>
+    <div class="side-item">@finstacklabs1<span class="side-pip"></span></div>
+    <div class="side-item">by Arunodayya B S<span class="side-pip"></span></div>
+  </div>
+
+  <div class="banner-center">
+    <!-- Large icon -->
+    <svg width="96" height="96" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:20px;filter:drop-shadow(0 0 30px rgba(139,92,246,0.4))">
+      <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z" stroke="rgba(139,92,246,0.3)" stroke-width="1" fill="none"/>
+      <path d="M32 14 L48 23 L48 41 L32 50 L16 41 L16 23 Z" stroke="rgba(139,92,246,0.18)" stroke-width="1" fill="none"/>
+      <path d="M38 20 L26 32 L34 32 L26 44" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="38" cy="20" r="3" fill="#a78bfa"/>
+      <circle cx="26" cy="44" r="3" fill="#7c3aed"/>
+      <circle cx="32" cy="4" r="2" fill="rgba(139,92,246,0.6)"/>
+      <circle cx="56" cy="18" r="2" fill="rgba(139,92,246,0.4)"/>
+      <circle cx="56" cy="46" r="2" fill="rgba(139,92,246,0.4)"/>
+      <circle cx="32" cy="60" r="2" fill="rgba(139,92,246,0.6)"/>
+      <circle cx="8" cy="46" r="2" fill="rgba(139,92,246,0.4)"/>
+      <circle cx="8" cy="18" r="2" fill="rgba(139,92,246,0.4)"/>
+    </svg>
+
+    <div class="b-wordmark">
+      <span class="name-spawn">Spawn</span><span class="name-agent">Agent</span>
+    </div>
+    <div class="b-tag">Building AI Tools · Agents · Open Source</div>
+    <div class="b-divider"></div>
+    <div class="b-pills">
+      <div class="bp v">AI Agents</div>
+      <div class="bp v">MCP</div>
+      <div class="bp v">Finance × AI</div>
+      <div class="bp w">by Arunodayya B S</div>
+    </div>
+  </div>
+
+  <div class="b-handle">x.com/finstacklabs1</div>
+</div>
+
+</body>
+</html>
