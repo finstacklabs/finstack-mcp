@@ -725,3 +725,352 @@ def get_india_gsec_yields() -> dict:
     }
 
     return yields
+
+
+# ──────────────────────────────────────────────
+# INDIA VIX (FEAR INDEX)
+# ──────────────────────────────────────────────
+
+@cached(quotes_cache, ttl=300)
+def get_india_vix(days: int = 30) -> dict:
+    """
+    India VIX — the NSE volatility / fear index.
+    Trendlyne charges for historical VIX data. NSE publishes it free.
+    """
+    try:
+        ticker = yf.Ticker("^INDIAVIX")
+        hist = ticker.history(period=f"{days}d")
+
+        if hist.empty:
+            return {"error": "India VIX data not available"}
+
+        current = float(hist["Close"].iloc[-1])
+        prev = float(hist["Close"].iloc[-2]) if len(hist) > 1 else current
+        high_30d = float(hist["High"].max())
+        low_30d = float(hist["Low"].min())
+        avg_30d = round(float(hist["Close"].mean()), 2)
+
+        signal = "Low fear (market complacent)"
+        if current > 25:
+            signal = "High fear (panic zone — potential buying opportunity)"
+        elif current > 18:
+            signal = "Elevated fear (caution advised)"
+        elif current > 13:
+            signal = "Moderate (normal range)"
+
+        history = []
+        for date, row in hist.tail(30).iterrows():
+            history.append({
+                "date": str(date.date()),
+                "close": round(float(row["Close"]), 2),
+                "high": round(float(row["High"]), 2),
+                "low": round(float(row["Low"]), 2),
+            })
+
+        return clean_nan({
+            "current_vix": round(current, 2),
+            "change": round(current - prev, 2),
+            "change_pct": round((current - prev) / prev * 100, 2) if prev else 0,
+            "high_period": round(high_30d, 2),
+            "low_period": round(low_30d, 2),
+            "avg_period": avg_30d,
+            "signal": signal,
+            "interpretation": {
+                "below_13": "Very low fear — market overconfident, watch for correction",
+                "13_to_18": "Normal range — healthy market sentiment",
+                "18_to_25": "Elevated — traders hedging, expect volatility",
+                "above_25": "Fear zone — historically a good time to buy blue chips",
+            },
+            "history_days": days,
+            "history": history,
+            "data_source": "NSE India VIX via yfinance (^INDIAVIX)",
+            "timestamp": datetime.now().isoformat(),
+        })
+
+    except Exception as e:
+        return {"error": f"India VIX fetch failed: {e}"}
+
+
+# ──────────────────────────────────────────────
+# GIFT NIFTY (SGX NIFTY SUCCESSOR)
+# ──────────────────────────────────────────────
+
+@cached(quotes_cache, ttl=60)
+def get_gift_nifty() -> dict:
+    """
+    GIFT Nifty (formerly SGX Nifty) — pre-market indicator for Indian markets.
+    Bloomberg charges for global futures data. This is free via yfinance.
+    """
+    result: dict = {
+        "note": "GIFT Nifty direct feed — use NSE pre-open data or GIFT City exchange for live GIFT Nifty",
+        "timestamp": datetime.now().isoformat(),
+    }
+
+    # Try yfinance for Nifty spot as reference
+    try:
+        nifty = yf.Ticker("^NSEI")
+        hist = nifty.history(period="2d")
+
+        if not hist.empty:
+            prev_close = float(hist["Close"].iloc[-2]) if len(hist) > 1 else None
+            current = float(hist["Close"].iloc[-1])
+            result["nifty_spot"] = {
+                "last_close": round(current, 2),
+                "prev_close": round(prev_close, 2) if prev_close else None,
+                "change": round(current - prev_close, 2) if prev_close else None,
+                "change_pct": round((current - prev_close) / prev_close * 100, 2) if prev_close else None,
+            }
+    except Exception:
+        pass
+
+    # NSE pre-open session data as GIFT Nifty proxy
+    with _nse_session() as client:
+        try:
+            resp = client.get("https://www.nseindia.com/api/market-status")
+            if resp.status_code == 200:
+                data = resp.json()
+                result["market_status"] = data
+        except Exception:
+            pass
+
+    result["gift_nifty_live"] = {
+        "source": "https://www.nseindia.com/market-data/live-market-indices",
+        "note": "For live GIFT Nifty: check NSE website pre-open (9:00–9:15 AM IST) or GIFT City exchange",
+        "ticker_for_futures": "NIFTY futures contracts on NSE",
+    }
+
+    # Global indices as overnight sentiment
+    global_sentiment = {}
+    for sym, name in [("^GSPC", "S&P 500"), ("^DJI", "Dow Jones"), ("^IXIC", "NASDAQ"), ("^HSI", "Hang Seng")]:
+        try:
+            t = yf.Ticker(sym)
+            h = t.history(period="2d")
+            if not h.empty and len(h) > 1:
+                c = float(h["Close"].iloc[-1])
+                p = float(h["Close"].iloc[-2])
+                global_sentiment[name] = {
+                    "last": round(c, 2),
+                    "change_pct": round((c - p) / p * 100, 2),
+                }
+        except Exception:
+            pass
+
+    result["global_indices_overnight"] = global_sentiment
+    result["data_source"] = "yfinance + NSE"
+
+    return clean_nan(result)
+
+
+# ──────────────────────────────────────────────
+# PROMOTER PLEDGE DATA
+# ──────────────────────────────────────────────
+
+@cached(fundamentals_cache, ttl=86400)
+def get_promoter_pledge(symbol: str) -> dict:
+    """
+    Promoter pledge percentage — how much promoter holding is pledged as collateral.
+    Screener Pro (₹4,999/yr) charges for this. NSE publishes it free.
+    High pledge = risk signal (forced selling if stock falls).
+    """
+    symbol = validate_symbol(symbol).replace(".NS", "").replace(".BO", "")
+
+    with _nse_session() as client:
+        try:
+            resp = client.get(
+                "https://www.nseindia.com/api/corporate-share-holding-category",
+                params={"symbol": symbol},
+            )
+            resp.raise_for_status()
+            raw = resp.json()
+            categories = raw if isinstance(raw, list) else raw.get("data", [])
+
+            promoter_data = []
+            for item in categories:
+                cat = (item.get("category") or "").lower()
+                if "promoter" in cat:
+                    promoter_data.append({
+                        "category": item.get("category"),
+                        "shares_held": item.get("noOfSharesHeld"),
+                        "pct_held": item.get("percentageSharesHeld"),
+                        "pledged_shares": item.get("noOfSharesPledged"),
+                        "pct_pledged_of_total": item.get("percentageSharesPledgedToTotal"),
+                        "pct_pledged_of_promoter": item.get("percentageSharesPledgedToPromoter"),
+                        "quarter": item.get("quarter"),
+                    })
+
+            total_pledged_pct = None
+            for p in promoter_data:
+                if p.get("pct_pledged_of_total"):
+                    try:
+                        total_pledged_pct = float(p["pct_pledged_of_total"])
+                    except Exception:
+                        pass
+
+            risk = "Unknown"
+            if total_pledged_pct is not None:
+                if total_pledged_pct > 50:
+                    risk = "HIGH RISK — more than half of promoter holding pledged"
+                elif total_pledged_pct > 20:
+                    risk = "Moderate risk — significant pledge, monitor closely"
+                elif total_pledged_pct > 0:
+                    risk = "Low risk — minor pledge"
+                else:
+                    risk = "Clean — no promoter pledge"
+
+            return clean_nan({
+                "symbol": symbol,
+                "promoter_pledge_data": promoter_data,
+                "total_pledged_pct": total_pledged_pct,
+                "risk_signal": risk,
+                "interpretation": "High promoter pledge = forced selling risk if stock price falls (margin call)",
+                "data_source": "NSE Corporate Shareholding",
+                "timestamp": datetime.now().isoformat(),
+            })
+
+        except Exception as e:
+            logger.warning("Promoter pledge fetch failed for %s: %s", symbol, e)
+
+    return {
+        "symbol": symbol,
+        "error": "NSE pledge data not available",
+        "note": "Check NSE website: https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern",
+        "timestamp": datetime.now().isoformat(),
+    }
+
+
+# ──────────────────────────────────────────────
+# DIVIDEND HISTORY (DEEP 10-YEAR)
+# ──────────────────────────────────────────────
+
+@cached(fundamentals_cache, ttl=86400)
+def get_dividend_history_deep(symbol: str) -> dict:
+    """
+    10-year dividend history with yield calculation.
+    Bloomberg/FactSet charge for deep dividend history. yfinance has it free.
+    """
+    symbol = validate_symbol(symbol)
+
+    for yf_sym in [to_nse_symbol(symbol), symbol]:
+        try:
+            ticker = yf.Ticker(yf_sym)
+            divs = ticker.dividends
+            info = ticker.info
+
+            if divs is None or len(divs) == 0:
+                continue
+
+            current_price = info.get("regularMarketPrice") or info.get("currentPrice", 0)
+
+            history = []
+            for date, amount in divs.items():
+                history.append({
+                    "date": str(date.date()),
+                    "dividend": round(float(amount), 4),
+                })
+            history = sorted(history, key=lambda x: x["date"], reverse=True)
+
+            # Annual dividend aggregation
+            annual: dict = {}
+            for item in history:
+                year = item["date"][:4]
+                annual[year] = annual.get(year, 0) + item["dividend"]
+            annual_list = [{"year": y, "total_dividend": round(v, 4)} for y, v in sorted(annual.items(), reverse=True)]
+
+            trailing_12m = sum(
+                item["dividend"] for item in history
+                if (datetime.now() - datetime.strptime(item["date"], "%Y-%m-%d")).days <= 365
+            )
+            div_yield = round(trailing_12m / current_price * 100, 2) if current_price else None
+
+            return clean_nan({
+                "symbol": symbol.replace(".NS", "").replace(".BO", ""),
+                "current_price": current_price,
+                "trailing_12m_dividend": round(trailing_12m, 4),
+                "dividend_yield_pct": div_yield,
+                "total_dividends_on_record": len(history),
+                "annual_summary": annual_list[:10],
+                "full_history": history[:60],
+                "data_source": "yfinance",
+                "timestamp": datetime.now().isoformat(),
+            })
+
+        except Exception as e:
+            logger.warning("Dividend history failed for %s: %s", yf_sym, e)
+
+    return {"error": f"Dividend history not available for {symbol}"}
+
+
+# ──────────────────────────────────────────────
+# INDIA VIX PCR HISTORICAL (NIFTY OPTIONS)
+# ──────────────────────────────────────────────
+
+@cached(quotes_cache, ttl=300)
+def get_nifty_pcr_trend(num_expiries: int = 5) -> dict:
+    """
+    Nifty PCR (Put-Call Ratio) trend across multiple expiries.
+    Sensibull charges ₹1,300/month for PCR trend data. We calculate it free.
+    """
+    try:
+        ticker = yf.Ticker("^NSEI")
+        expiry_dates = ticker.options
+
+        if not expiry_dates:
+            return {"error": "NIFTY options data not available"}
+
+        pcr_trend = []
+        for expiry in list(expiry_dates)[:num_expiries]:
+            try:
+                chain = ticker.option_chain(expiry)
+                calls = chain.calls
+                puts = chain.puts
+
+                call_oi = int(calls["openInterest"].fillna(0).sum())
+                put_oi = int(puts["openInterest"].fillna(0).sum())
+                call_vol = int(calls["volume"].fillna(0).sum())
+                put_vol = int(puts["volume"].fillna(0).sum())
+
+                pcr_oi = round(put_oi / call_oi, 3) if call_oi > 0 else None
+                pcr_vol = round(put_vol / call_vol, 3) if call_vol > 0 else None
+
+                signal = "Neutral"
+                if pcr_oi:
+                    if pcr_oi > 1.3:
+                        signal = "Bullish reversal (oversold)"
+                    elif pcr_oi > 1.0:
+                        signal = "Bearish bias"
+                    elif pcr_oi < 0.7:
+                        signal = "Bearish reversal (overbought)"
+                    else:
+                        signal = "Bullish bias"
+
+                pcr_trend.append({
+                    "expiry": expiry,
+                    "pcr_oi": pcr_oi,
+                    "pcr_volume": pcr_vol,
+                    "total_call_oi": call_oi,
+                    "total_put_oi": put_oi,
+                    "signal": signal,
+                })
+            except Exception:
+                continue
+
+        overall_pcr = None
+        if pcr_trend:
+            vals = [p["pcr_oi"] for p in pcr_trend if p["pcr_oi"]]
+            overall_pcr = round(sum(vals) / len(vals), 3) if vals else None
+
+        return clean_nan({
+            "index": "NIFTY 50",
+            "overall_pcr": overall_pcr,
+            "overall_signal": (
+                "Bearish sentiment" if overall_pcr and overall_pcr > 1.1
+                else "Bullish sentiment" if overall_pcr and overall_pcr < 0.9
+                else "Neutral"
+            ) if overall_pcr else "Insufficient data",
+            "expiry_breakdown": pcr_trend,
+            "data_source": "NSE options via yfinance",
+            "timestamp": datetime.now().isoformat(),
+        })
+
+    except Exception as e:
+        return {"error": f"Nifty PCR trend failed: {e}"}

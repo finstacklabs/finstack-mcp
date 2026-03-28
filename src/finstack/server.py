@@ -60,6 +60,11 @@ TOOL_CATALOG = [
     {"name": "india_macro_indicators", "description": "CPI inflation, GDP growth, current account [Bloomberg $31,980/yr → FREE]", "tier": "free"},
     {"name": "amfi_fund_flows", "description": "MF industry AUM, SIP flows, category breakdown [Morningstar $17,500/yr → FREE]", "tier": "free"},
     {"name": "india_gsec_yields", "description": "G-Sec yield curve: T-bill to 30-yr bond [Bloomberg $31,980/yr → FREE]", "tier": "free"},
+    {"name": "india_vix", "description": "India VIX fear index + signal + history [Trendlyne paid → FREE]", "tier": "free"},
+    {"name": "gift_nifty", "description": "GIFT Nifty pre-market + overnight global indices [Bloomberg paid → FREE]", "tier": "free"},
+    {"name": "promoter_pledge", "description": "Promoter pledge % risk signal [Screener Pro ₹4,999/yr → FREE]", "tier": "free"},
+    {"name": "dividend_history_deep", "description": "10-year dividend history + trailing yield [Bloomberg/FactSet paid → FREE]", "tier": "free"},
+    {"name": "nifty_pcr_trend", "description": "Nifty PCR across all expiries + overall sentiment [Sensibull ₹1,300/mo → FREE]", "tier": "free"},
 ]
 
 TOTAL_TOOLS = len(TOOL_CATALOG) + 1

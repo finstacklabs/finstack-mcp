@@ -1,8 +1,6 @@
 """
 FinStack Market Intelligence MCP Tools
 
-These 8 tools cover features that major paid platforms charge for:
-
 Tool 41: options_oi_analytics    — Max Pain, PCR, IV heatmap  [Sensibull Pro ₹1,300/mo → FREE]
 Tool 42: options_greeks          — Delta, Gamma, Theta, Vega  [Sensibull Pro ₹1,300/mo → FREE]
 Tool 43: nse_insider_trading     — SAST insider disclosures   [Trendlyne ₹4,950/yr → FREE]
@@ -11,6 +9,11 @@ Tool 45: rbi_policy_rates        — Repo, CRR, SLR, MSF        [Bloomberg $24,0
 Tool 46: india_macro_indicators  — CPI, GDP, current account  [Bloomberg $24,000/yr → FREE]
 Tool 47: amfi_fund_flows         — MF industry AUM & flows    [Morningstar $17,500/yr → FREE]
 Tool 48: india_gsec_yields       — G-Sec yield curve          [Bloomberg $24,000/yr → FREE]
+Tool 49: india_vix               — Fear index + history       [Trendlyne paid → FREE]
+Tool 50: gift_nifty              — Pre-market + global indices [Bloomberg paid → FREE]
+Tool 51: promoter_pledge         — Pledge % risk signal       [Screener Pro ₹4,999/yr → FREE]
+Tool 52: dividend_history_deep   — 10-year dividends + yield  [Bloomberg/FactSet paid → FREE]
+Tool 53: nifty_pcr_trend         — PCR across all expiries    [Sensibull ₹1,300/mo → FREE]
 """
 
 from finstack.data.market_intelligence import (
@@ -22,6 +25,11 @@ from finstack.data.market_intelligence import (
     get_india_macro_indicators,
     get_amfi_fund_flows,
     get_india_gsec_yields,
+    get_india_vix,
+    get_gift_nifty,
+    get_promoter_pledge,
+    get_dividend_history_deep,
+    get_nifty_pcr_trend,
 )
 
 
@@ -206,3 +214,113 @@ def register_market_intelligence_tools(mcp):
         """
         import json
         return json.dumps(get_india_gsec_yields(), indent=2)
+
+    @mcp.tool()
+    def india_vix(days: int = 30) -> str:
+        """India VIX — the NSE fear/volatility index with history and signal.
+
+        Trendlyne charges for historical India VIX data. NSE publishes it free via ^INDIAVIX.
+
+        Provides:
+        - Current VIX level and daily change
+        - Signal: low fear / elevated / panic zone
+        - 30-day high, low, average
+        - Full daily history for the requested period
+        - Interpretation guide (what VIX levels mean for markets)
+
+        Args:
+            days: Lookback period in days (default 30)
+
+        Examples:
+            india_vix() → Current India VIX with signal and 30-day history
+            india_vix(90) → 90-day VIX history for trend analysis
+        """
+        import json
+        return json.dumps(get_india_vix(days), indent=2)
+
+    @mcp.tool()
+    def gift_nifty() -> str:
+        """GIFT Nifty pre-market data + overnight global indices for Indian market preview.
+
+        Bloomberg charges for global futures data. This is free.
+
+        Provides:
+        - Nifty 50 last close and change
+        - Global indices overnight performance (S&P 500, Dow, NASDAQ, Hang Seng)
+        - Market status from NSE
+        - Links to live GIFT Nifty sources
+
+        Examples:
+            gift_nifty() → Pre-market global sentiment + Nifty reference
+        """
+        import json
+        return json.dumps(get_gift_nifty(), indent=2)
+
+    @mcp.tool()
+    def promoter_pledge(symbol: str) -> str:
+        """Promoter pledge percentage — how much of promoter holding is pledged as loan collateral.
+
+        Screener.in Pro (₹4,999/yr) charges for this data. NSE publishes it free.
+
+        High pledge = risk signal: if the stock falls, lenders can force-sell pledged shares,
+        causing further decline. A key red flag before investing.
+
+        Provides:
+        - Promoter pledge % of total shares
+        - Pledge % of promoter holding
+        - Risk signal (clean / low / moderate / HIGH RISK)
+        - Quarter-wise breakdown
+
+        Args:
+            symbol: NSE stock symbol (e.g., RELIANCE, TCS, ADANIENT)
+
+        Examples:
+            promoter_pledge("ADANIENT") → Adani pledge levels and risk signal
+            promoter_pledge("RELIANCE") → Reliance promoter pledge status
+        """
+        import json
+        return json.dumps(get_promoter_pledge(symbol), indent=2)
+
+    @mcp.tool()
+    def dividend_history_deep(symbol: str) -> str:
+        """10-year dividend history with yield calculation and annual summary.
+
+        Bloomberg and FactSet charge for deep dividend history. yfinance has it free.
+
+        Provides:
+        - Full dividend payment history (up to 60 entries)
+        - Annual dividend totals per year (last 10 years)
+        - Trailing 12-month dividend yield %
+        - Total dividends on record
+
+        Args:
+            symbol: NSE or global stock symbol (e.g., RELIANCE, TCS, INFY, AAPL)
+
+        Examples:
+            dividend_history_deep("TCS") → TCS 10-year dividend history + yield
+            dividend_history_deep("HDFCBANK") → HDFC Bank dividend track record
+        """
+        import json
+        return json.dumps(get_dividend_history_deep(symbol), indent=2)
+
+    @mcp.tool()
+    def nifty_pcr_trend(num_expiries: int = 5) -> str:
+        """Nifty PCR (Put-Call Ratio) trend across multiple expiries — market sentiment gauge.
+
+        Sensibull Pro charges ₹1,300/month for PCR trend data. We calculate it free.
+
+        Provides:
+        - PCR (OI-based and Volume-based) per expiry
+        - Overall averaged PCR with sentiment signal
+        - Bullish / Bearish / Neutral interpretation per expiry
+        - Total call and put OI per expiry
+
+        Args:
+            num_expiries: Number of expiries to analyze (default 5)
+
+        Examples:
+            nifty_pcr_trend() → Nifty PCR across 5 expiries with overall sentiment
+            nifty_pcr_trend(3) → Quick 3-expiry PCR snapshot
+        """
+        import json
+        return json.dumps(get_nifty_pcr_trend(num_expiries), indent=2)
