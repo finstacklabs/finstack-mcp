@@ -1,4 +1,4 @@
-# FinStack MCP
+# finstack-mcp · by Arthex
 
 <!-- mcp-name: io.github.finstacklabs/finstack-mcp -->
 
@@ -7,90 +7,60 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io)
 
-FinStack MCP is an India-first financial data and research engine for MCP clients. It gives Claude, Cursor, ChatGPT, and other MCP-compatible tools a structured interface for NSE/BSE market data, global market coverage, fundamentals, analytics, and watchlist-ready research workflows.
+**They charge $97,000+/year. We made it free.**
 
-Built and maintained by **Arunodayya B S** ([@SpawnAgent](https://x.com/finstacklabs1)) — open source, MIT licensed.
+finstack-mcp is an open-source MCP server that gives Claude, Cursor, ChatGPT, and any MCP client structured access to Indian and global financial data — 58 tools, zero subscriptions, zero API keys.
 
-The repo is public on purpose. It is the open-source engine, trust layer, and distribution channel for the broader FinStack product line.
+Built by **Arunodayya B S** ([@SpawnAgent](https://x.com/finstacklabs1)) · [Arthex](https://finstacklabs.github.io/) · MIT licensed.
+
+---
+
+## What they charge. What you pay.
+
+| Feature | They charge | finstack-mcp |
+|---|---|---|
+| Real-time NSE data | Zerodha ₹6,000/yr | **FREE** (Angel One) |
+| Options Greeks (Black-Scholes) | Sensibull ₹15,600/yr | **FREE** |
+| Options Max Pain + PCR | Sensibull ₹15,600/yr | **FREE** |
+| MF flows + AMFI AUM | Morningstar $17,500/yr | **FREE** |
+| NSE Insider trading (SAST) | Trendlyne ₹4,950/yr | **FREE** |
+| Promoter/FII/DII shareholding | Screener ₹4,999/yr | **FREE** |
+| RBI rates + India macro | Bloomberg $31,980/yr | **FREE** |
+| Credit ratings (CRISIL/ICRA/CARE) | Bloomberg $24,000/yr | **FREE** |
+| BRSR/ESG data (SEBI-mandated) | Bloomberg ESG $24,000/yr | **FREE** |
+| Fundamentals (P&L, balance sheet) | FactSet $12,000/yr | **FREE** |
+| LTCG/STCG tax calculator | Nobody has this | **ONLY US** |
+
+---
 
 ## Demo
 
 [![FinStack MCP Demo](https://img.youtube.com/vi/PWK89gBbHEM/maxresdefault.jpg)](https://youtu.be/PWK89gBbHEM?si=MqYuCRRJ0EUP10fm)
 
-## Screenshots
-
-**Market brief for Reliance, TCS, and HDFC Bank — live inside Claude:**
-
-![Market Brief Screenshot](docs/assets/demo-brief.png)
-
-**FII/DII institutional activity — pulled directly from NSE:**
-
-![FII DII Screenshot](docs/assets/demo-fii.png)
-
-## Overview
-
-FinStack MCP is designed around a simple product split:
-
-- `finstack-mcp` is the open-source MCP engine
-- `FinStack Brief` is the paid delivery layer built on top of it
-
-That means this repo focuses on the part that should be public and reusable:
-
-- financial data access for Indian and global markets
-- structured tools that work inside MCP clients
-- reusable analytics for research workflows
-- a base layer for future brief, alert, and dashboard products
-
-## Why This Exists
-
-Most finance MCP servers are either too generic, too thin, or too dependent on API-key-heavy setups. FinStack MCP is meant to be more practical:
-
-- India-first coverage instead of treating NSE/BSE as an afterthought
-- broad enough to be useful on day one
-- simple enough to install with one package
-- compatible with local MCP workflows before any hosted product exists
-
-## What You Get
-
-Current package scope:
-
-- 40 tools in total
-- 34 tools available in the free flow
-- Indian market support for NSE/BSE quotes, indices, corporate actions, quarterly results, FII/DII activity, bulk deals, IPOs, and market status
-- global market support for equities, crypto, forex, news, and SEC filings
-- fundamentals support for income statement, balance sheet, cash flow, key ratios, company profiles, and dividend history
-- analytics support for technical indicators, sector performance, stock comparison, screening, portfolio analysis, support/resistance, options chain, and backtesting
-- tax support for LTCG/STCG calculation under Indian tax rules (post July 2024 Budget)
+---
 
 ## Quick Start
-
-Install from PyPI:
 
 ```bash
 pip install finstack-mcp
 ```
 
-Run locally:
+For real-time NSE data via Angel One SmartAPI (optional):
 
 ```bash
-python -m finstack.server
+pip install finstack-mcp[broker]
 ```
 
-Or use the installed entry point:
+Add to your `.env` (stays local, never on GitHub):
 
-```bash
-finstack-mcp
 ```
-
-Generate a daily brief from the CLI:
-
-```bash
-finstack-brief --watchlist RELIANCE,TCS,HDFCBANK
+ANGEL_API_KEY=your_api_key
+ANGEL_CLIENT_ID=your_client_id
+ANGEL_PASSWORD=your_pin
+ANGEL_TOTP_SECRET=your_totp_secret
 ```
 
 ## Claude Desktop Setup
-
-Add this to your Claude Desktop MCP configuration:
 
 ```json
 {
@@ -103,145 +73,115 @@ Add this to your Claude Desktop MCP configuration:
 }
 ```
 
-Restart Claude Desktop and try prompts like:
+Restart Claude Desktop and try:
 
-- "What's the latest price and day range for Reliance?"
-- "Compare TCS, Infosys, and Wipro on margins and valuation."
-- "Show me upcoming earnings and corporate actions for HDFCBANK."
-- "Generate a quick Indian market brief for my watchlist."
+- *"What's the credit rating for Reliance? Show CRISIL/ICRA ratings."*
+- *"Get real-time live price for TCS via Angel One."*
+- *"Show BRSR ESG data for HDFC Bank."*
+- *"What are the Options Greeks for NIFTY 24000 CE expiring next week?"*
+- *"Compare TCS, Infosys, and Wipro on margins and valuation."*
+- *"Show insider trading activity for ADANIENT."*
+- *"What's the India VIX and what does it signal?"*
+- *"Calculate my LTCG tax on 500 shares of Reliance bought at ₹2,200, sold at ₹2,900."*
 
-## Tool Coverage
+---
 
-### Indian Markets
+## Tool Coverage — 58 Tools
 
-- NSE quotes
-- BSE quotes
-- market status
-- Nifty, Sensex, and Bank Nifty indices
-- historical OHLCV data
-- top movers
-- mutual fund NAV
-- circuit-breaker scanner
-- Sensex component snapshot
-- 52-week scanner
-- FII/DII activity
-- bulk deals
-- corporate actions
-- quarterly results
-- earnings calendar
-- IPO calendar
+### Indian Markets (16 tools)
+- NSE/BSE live quotes · market status · Nifty/Sensex/Bank Nifty indices
+- Historical OHLCV · top movers · mutual fund NAV
+- Circuit breaker scanner · 52-week scanner · Sensex components
+- FII/DII institutional activity · bulk & block deals
+- Corporate actions · quarterly results · earnings calendar · IPO calendar
 
-### Global Markets
+### Global Markets (8 tools)
+- Global stock quotes + historical data
+- Crypto prices + history (BTC, ETH, SOL, 100+)
+- Forex rates (USD/INR, EUR/INR, 50+ pairs)
+- Market news by ticker · SEC filings (10-K, 10-Q, 8-K) · SEC search
 
-- global stock quotes
-- historical stock data
-- crypto quotes
-- crypto history
-- forex rates
-- market news
-- SEC filings
-- SEC search
+### Fundamentals (7 tools)
+- Income statement · balance sheet · cash flow
+- Key ratios (P/E, ROE, margins, debt/equity, growth)
+- Company profile · dividend history · stock comparison
 
-### Fundamentals And Analytics
+### Analytics (5 tools)
+- Technical indicators (RSI, MACD, SMA, Bollinger, ATR, Stochastic, ADX)
+- Sector performance · stock screener · support/resistance · backtesting
 
-- income statement
-- balance sheet
-- cash flow
-- key ratios
-- company profile
-- dividend history
-- technical indicators
-- stock comparison
-- sector performance
-- stock screener
-- support and resistance
-- options chain
-- portfolio analysis
-- strategy backtesting
-- LTCG/STCG tax calculator (Indian equity and mutual fund trades)
+### Options & Greeks (3 tools)
+- Options chain with PCR analysis
+- Black-Scholes Greeks: Delta, Gamma, Theta, Vega, Rho
+- Options OI analytics: Max Pain, IV summary, top OI strikes
 
-## Product Role
+### Market Intelligence (10 tools)
+- India VIX fear index + signal · GIFT Nifty pre-market
+- NSE insider trading (SAST) · promoter shareholding · promoter pledge
+- RBI policy rates (repo, CRR, SLR, MSF) · India macro (CPI, GDP, CAD)
+- AMFI fund flows + SIP data · India G-Sec yield curve · Nifty PCR trend
+- Dividend history deep (10yr) · portfolio analysis
 
-This repo is not meant to be the whole business by itself.
+### Real-time Broker Data — NEW (3 tools)
+- `live_quote` — real-time NSE LTP via Angel One SmartAPI (zero delay)
+- `market_depth` — Level 2 order book top 5 bid/ask (Zerodha charges ₹500/mo → FREE)
+- `broker_setup_status` — check Angel One connection + setup guide
 
-Its role is:
+### Credit & ESG — NEW (2 tools)
+- `credit_ratings` — CRISIL/ICRA/CARE/India Ratings from SEBI-mandated NSE/BSE filings (Bloomberg $24k/yr → FREE)
+- `brsr_esg` — BRSR sustainability report data from SEBI-mandated filings (Bloomberg ESG $24k/yr → FREE)
 
-- public GitHub presence
-- PyPI distribution
-- MCP ecosystem discovery
-- technical credibility
-- reusable engine for future products
+### Tax (1 tool)
+- LTCG/STCG tax calculator (Indian equity + mutual fund trades, post-July 2024 Budget rules)
 
-The paid wedge currently being built on top of this engine is the Indian market daily brief.
-
-Reference doc:
-
-- Operating manual: [docs/FINSTACK_OPERATING_MANUAL.md](docs/FINSTACK_OPERATING_MANUAL.md)
+---
 
 ## Data Sources
 
 | Source | Coverage | API key required |
 |---|---|---|
-| yfinance | NSE, BSE, US equities, crypto, forex, earnings | No |
-| NSE Direct endpoints | FII/DII, bulk deals, market data, IPO context | No |
-| SEC EDGAR | US filings and company submission data | No |
-| CoinGecko | Crypto market data | No for current free flow |
+| yfinance | NSE, BSE, US equities, crypto, forex | No |
+| NSE direct endpoints | FII/DII, bulk deals, options chain, insider trading, credit ratings, BRSR | No |
+| BSE India API | Supplemental quotes, credit ratings | No |
+| SEC EDGAR | US filings (10-K, 10-Q, 8-K) | No |
+| CoinGecko | Crypto market data | No |
+| World Bank API | India macro: CPI, GDP, current account | No |
+| AMFI / mfapi.in | Mutual fund NAV, industry AUM, SIP flows | No |
+| Angel One SmartAPI | Real-time NSE quotes, Level 2 depth | Your own broker key (free for account holders) |
 
-## Daily Brief Direction
+---
 
-The first commercial layer on top of FinStack MCP is not "generic pro access." It is a repeatable workflow:
+## Security — Your API Key is Safe
 
-1. pull Indian market state
-2. enrich it with watchlist context
-3. compose a structured brief
-4. deliver it through email, Telegram, WhatsApp, or a hosted dashboard
+When you configure Angel One SmartAPI, your credentials live in your local `.env` file which is in `.gitignore`. The open-source code only reads `os.environ` — it never stores, logs, or transmits your key. Every user sets their own credentials.
 
-That is the bridge from open-source distribution to paid recurring value.
+---
 
 ## Development
-
-Clone the repo:
 
 ```bash
 git clone https://github.com/finstacklabs/finstack-mcp.git
 cd finstack-mcp
-```
-
-Install development dependencies:
-
-```bash
 pip install -e .[dev]
-```
-
-Run tests:
-
-```bash
 pytest -q
 ```
 
-Build the package:
-
-```bash
-python -m build
-```
+---
 
 ## Current Status
 
-This package is live on:
-
 - GitHub: https://github.com/finstacklabs/finstack-mcp
 - PyPI: https://pypi.org/project/finstack-mcp/
-- Landing page: https://finstack-mcp-ten.vercel.app/
-- Glama: https://glama.ai/mcp/servers/finstacklabs/finstack-mcp
+- Landing page: https://finstacklabs.github.io/
 - YouTube demo: https://youtu.be/PWK89gBbHEM
 - X / Twitter: https://x.com/finstacklabs1
 
-The hosted commercial layer is not public checkout yet. Public pricing should currently be treated as interest capture and positioning, not as a fully self-serve SaaS checkout.
+---
 
 ## Contributing
 
-PRs are welcome. Keep changes focused, test what you touch, and document new tools or changed behavior clearly.
+PRs welcome. Keep changes focused, test what you touch, document new tools clearly.
 
 ## License
 
-MIT
+MIT · Arthex · finstack-mcp v0.6.1

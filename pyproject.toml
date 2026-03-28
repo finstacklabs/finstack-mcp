@@ -1,12 +1,12 @@
 [project]
 name = "finstack-mcp"
-version = "0.6.0"
+version = "0.6.1"
 description = "Open-source MCP server for Indian (NSE/BSE) + Global financial data with built-in AI analytics"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
-    {name = "finstacklabs", email = "arunodayya32@gmail.com"}
+    {name = "Arthex / finstacklabs", email = "arunodayya32@gmail.com"}
 ]
 keywords = ["mcp", "finance", "nse", "bse", "stocks", "trading", "ai-agents", "claude", "cursor"]
 classifiers = [

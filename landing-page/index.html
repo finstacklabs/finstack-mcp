@@ -3,1175 +3,1543 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FinStack | India-First Market Intelligence</title>
-  <meta
-    name="description"
-    content="FinStack MCP is the open-source engine for Indian market data. FinStack Brief is the paid daily market brief built on top of it."
-  />
+  <title>finstack-mcp — They charge $97,000+/yr. We made it free.</title>
+  <meta name="description" content="58 financial tools for Claude AI. Bloomberg-level data, zero subscriptions. pip install finstack-mcp" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #f6f1e8;
-      --surface: rgba(255, 252, 246, 0.76);
-      --surface-strong: #fffdf8;
-      --ink: #171411;
-      --muted: rgba(23, 20, 17, 0.66);
-      --line: rgba(23, 20, 17, 0.12);
-      --line-strong: rgba(23, 20, 17, 0.2);
-      --accent: #0d6b57;
-      --accent-soft: rgba(13, 107, 87, 0.1);
-      --highlight: #d58d3d;
-      --shadow: 0 24px 80px rgba(38, 31, 23, 0.08);
-      --radius: 24px;
+      --cream: #f7f4ef;
+      --green: #16a34a;
+      --green-light: #dcfce7;
+      --red: #dc2626;
+      --dark: #0a0a0a;
+      --muted: #777;
+      --border: #e5e0d8;
+      --card-bg: #fdfaf6;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
-      margin: 0;
-      font-family: "Space Grotesk", sans-serif;
-      color: var(--ink);
-      background: #f6f1e8;
+      background: var(--cream);
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    /* GRAIN OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
     }
 
-    button {
-      font: inherit;
+    /* CURSOR GLOW */
+    #cursor-glow {
+      position: fixed;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(22,163,74,0.09) 0%, transparent 70%);
     }
 
-    .shell {
-      width: min(1180px, calc(100vw - 32px));
-      margin: 0 auto;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 16px;
-      border: 1px solid var(--line-strong);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.55);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .pill-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(13, 107, 87, 0.12);
-    }
-
-    header {
+    /* NAV */
+    nav {
       position: sticky;
       top: 0;
-      z-index: 30;
-      backdrop-filter: blur(16px);
-      background: rgba(246, 241, 232, 0.8);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .nav {
+      z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 0;
-      gap: 24px;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(247,244,239,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .brand {
+    .nav-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--dark);
     }
 
-    .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--accent), #0a4a3c);
-      color: #fff;
-      font-family: "Fraunces", serif;
-      font-size: 22px;
+    .nav-brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.75); }
+    }
+
+    .nav-brand-name {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-brand-sep {
+      color: var(--border);
+      margin: 0 4px;
+    }
+
+    .nav-brand-pkg {
+      font-size: 13px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 4px;
+    }
+
+    .nav-link {
       font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-link:hover { color: var(--dark); background: rgba(0,0,0,0.05); }
+
+    .nav-cta {
+      background: var(--dark);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      margin-left: 4px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px 60px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fade-up 0.6s 0.2s ease forwards;
+    }
+
+    .hero-headline {
+      font-size: clamp(44px, 8vw, 96px);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+      max-width: 960px;
+      margin-bottom: 28px;
+    }
+
+    .hero-headline .word {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+      margin-right: 0.18em;
+    }
+
+    .hero-headline .word-inner {
+      display: inline-block;
+      transform: translateY(110%);
+      opacity: 0;
+      animation: word-rise 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+
+    .hero-headline .word-inner.green { color: var(--green); }
+    .hero-headline .word-inner.strike {
+      text-decoration: line-through;
+      text-decoration-color: var(--red);
       color: var(--muted);
     }
 
-    .nav-links a:hover {
-      color: var(--ink);
+    @keyframes word-rise {
+      to { transform: translateY(0); opacity: 1; }
     }
 
-    .nav-cta {
-      padding: 12px 18px;
-      border-radius: 999px;
-      background: var(--ink);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .nav-toggle {
-      display: none;
-      width: 52px;
-      height: 52px;
-      border: 1px solid var(--line-strong);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.62);
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      padding: 0;
-    }
-
-    .nav-toggle span {
-      width: 20px;
-      height: 2px;
-      border-radius: 999px;
-      background: var(--ink);
-      transition: transform 0.22s ease, opacity 0.22s ease;
-    }
-
-    .nav-toggle.open span:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
-    }
-
-    .nav-toggle.open span:nth-child(2) {
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 19px);
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 52px;
       opacity: 0;
+      animation: fade-up 0.6s 1.2s ease forwards;
     }
 
-    .nav-toggle.open span:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
-    }
-
-    .mobile-menu {
-      position: fixed;
-      inset: 82px 12px auto;
-      z-index: 35;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: rgba(255, 252, 246, 0.94);
-      box-shadow: 0 30px 90px rgba(32, 26, 18, 0.18);
-      backdrop-filter: blur(20px);
-      display: grid;
-      gap: 10px;
+    /* TICKER */
+    .ticker-wrapper {
+      width: 100%;
+      overflow: hidden;
+      padding: 13px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+      background: rgba(255,255,255,0.35);
+      position: relative;
       opacity: 0;
+      animation: fade-up 0.6s 1.0s ease forwards;
+    }
+
+    .ticker-wrapper::before, .ticker-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 100px;
+      z-index: 2;
       pointer-events: none;
-      transform: translateY(-12px);
-      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+    .ticker-wrapper::before { left: 0; background: linear-gradient(to right, var(--cream), transparent); }
+    .ticker-wrapper::after { right: 0; background: linear-gradient(to left, var(--cream), transparent); }
+
+    .ticker-track {
+      display: flex;
+      white-space: nowrap;
+      width: max-content;
+      animation: ticker-scroll 42s linear infinite;
     }
 
-    .mobile-menu.open {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
+    .ticker-track:hover { animation-play-state: paused; }
+
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
-    .mobile-menu a {
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.66);
-      border: 1px solid rgba(23, 20, 17, 0.08);
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 32px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .ticker-item strong { color: var(--dark); }
+
+    .ticker-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--red);
+      text-decoration: line-through;
+      text-decoration-thickness: 1.5px;
       font-weight: 600;
     }
 
-    .mobile-menu a.mobile-cta {
-      background: var(--ink);
+    .ticker-sep { color: var(--border); }
+
+    /* INSTALL BOX */
+    .install-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--dark);
       color: #fff;
+      padding: 14px 20px 14px 24px;
+      border-radius: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fade-up 0.6s 1.4s ease forwards;
     }
 
-    .hero {
-      padding: 72px 0 36px;
+    .install-prefix { color: var(--green); }
+
+    .copy-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #aaa;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 7px 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    .copy-btn.copied { background: var(--green); color: #fff; }
+
+    /* STATS */
+    .stats-row {
+      display: flex;
+      gap: 64px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fade-up 0.6s 1.6s ease forwards;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-number {
+      font-size: clamp(38px, 5vw, 56px);
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.04em;
+      color: var(--dark);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-suffix { color: var(--green); }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* SECTION SHARED */
+    .section-wrap {
+      padding: 100px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: clamp(30px, 5vw, 54px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      margin-bottom: 14px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 52px;
+    }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    .reveal-group > * {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal-group.revealed > *:nth-child(1) { opacity:1;transform:none;transition-delay:0s; }
+    .reveal-group.revealed > *:nth-child(2) { opacity:1;transform:none;transition-delay:0.08s; }
+    .reveal-group.revealed > *:nth-child(3) { opacity:1;transform:none;transition-delay:0.16s; }
+    .reveal-group.revealed > *:nth-child(4) { opacity:1;transform:none;transition-delay:0.24s; }
+    .reveal-group.revealed > *:nth-child(5) { opacity:1;transform:none;transition-delay:0.32s; }
+    .reveal-group.revealed > *:nth-child(6) { opacity:1;transform:none;transition-delay:0.40s; }
+    .reveal-group.revealed > *:nth-child(7) { opacity:1;transform:none;transition-delay:0.48s; }
+    .reveal-group.revealed > *:nth-child(8) { opacity:1;transform:none;transition-delay:0.56s; }
+
+    /* COMPARISON */
+    .before-after-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin: 0 0 52px;
+      flex-wrap: wrap;
+    }
+
+    .ba-card {
+      padding: 28px 40px;
+      border-radius: 16px;
+      text-align: center;
+      min-width: 200px;
+    }
+    .ba-card.before { background: #fff5f5; border: 1.5px solid #fecaca; }
+    .ba-card.after { background: var(--green-light); border: 1.5px solid #bbf7d0; }
+
+    .ba-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .ba-price-before {
+      font-size: 38px;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--red);
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+    }
+
+    .ba-price-after {
+      font-size: 38px;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--green);
+    }
+
+    .ba-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .ba-sub.green { color: var(--green); }
+
+    .ba-arrow {
+      font-size: 32px;
+      color: var(--muted);
+      animation: arrow-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes arrow-pulse {
+      0%, 100% { transform: translateX(0); opacity: 0.4; }
+      50% { transform: translateX(8px); opacity: 0.9; }
+    }
+
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+
+    .comp-table th {
+      padding: 15px 22px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      background: var(--dark);
+      color: #fff;
+      text-align: left;
+    }
+
+    .comp-table th:last-child { text-align: center; }
+
+    .comp-table td {
+      padding: 15px 22px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .comp-table tr:last-child td { border-bottom: none; }
+
+    .comp-table tbody tr {
+      transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .comp-table tbody tr:hover {
+      background: rgba(22,163,74,0.04);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      position: relative;
+      z-index: 1;
+    }
+
+    .comp-name { font-weight: 600; }
+    .comp-feature { color: var(--muted); font-size: 13px; }
+
+    .comp-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--red);
+      text-decoration: line-through;
+      text-decoration-thickness: 1.5px;
+      font-size: 13px;
+    }
+
+    .comp-ours { text-align: center; }
+
+    .badge-free {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .badge-new {
+      display: inline-block;
+      background: #7c3aed;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      padding: 2px 7px;
+      border-radius: 100px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* TOOLS */
+    .tools-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
-      gap: 36px;
-      align-items: stretch;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
     }
 
-    .hero-copy,
-    .hero-card {
-      border: 1px solid var(--line);
-      border-radius: 32px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
+    .tool-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      position: relative;
+      transition: box-shadow 0.3s, border-color 0.3s;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
-    .hero-copy {
-      padding: 40px;
+    .tool-card:hover {
+      box-shadow: 0 20px 60px rgba(0,0,0,0.09);
+      border-color: rgba(22,163,74,0.25);
+    }
+
+    .tool-card-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .tool-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .tool-card-items {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+
+    .tool-card-items li {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 3px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tool-card-items li::before {
+      content: '→ ';
+      color: var(--green);
+    }
+
+    .tool-card-free {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 100px;
+    }
+
+    /* TERMINAL SECTION */
+    #terminal-section {
+      background: var(--dark);
+      padding: 100px 40px;
+    }
+
+    .terminal-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .terminal-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 14px;
+    }
+
+    .terminal-section-title {
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 48px;
+    }
+
+    .terminal-window {
+      background: #141414;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      background: #1e1e1e;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .t-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .t-dot.red { background: #ff5f57; }
+    .t-dot.yellow { background: #febc2e; }
+    .t-dot.green { background: #28c840; }
+
+    .terminal-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #555;
+      margin-left: 6px;
+    }
+
+    .terminal-body {
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.85;
+      color: #d4d4d4;
+      min-height: 340px;
+    }
+
+    .t-line { display: block; }
+    .t-blank { display: block; height: 8px; }
+    .t-prompt { color: var(--green); }
+    .t-cmd { color: #e2e8f0; }
+    .t-output { color: #64748b; }
+    .t-success { color: #4ade80; }
+    .t-claude { color: #a78bfa; }
+    .t-tool { color: #fbbf24; }
+    .t-result { color: #6ee7b7; }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--green);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* WHY */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .why-card {
+      padding: 36px 28px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card-bg);
       position: relative;
       overflow: hidden;
     }
 
-    .hero-copy::after {
-      content: "";
+    .why-card::before {
+      content: '';
       position: absolute;
-      inset: auto -10% -40% auto;
-      width: 320px;
-      height: 320px;
-      border-radius: 999px;
-      background: radial-gradient(circle, rgba(13, 107, 87, 0.18), transparent 65%);
-      pointer-events: none;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--green);
     }
 
-    h1,
-    h2 {
-      margin: 0;
-      font-family: "Fraunces", serif;
-      line-height: 0.95;
-      letter-spacing: -0.04em;
-    }
-
-    h1 {
-      margin-top: 24px;
-      font-size: clamp(48px, 8vw, 88px);
-      max-width: 760px;
-    }
-
-    .hero-sub {
-      max-width: 620px;
-      margin: 24px 0 32px;
-      font-size: 18px;
-      line-height: 1.7;
-      color: var(--muted);
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 0 20px;
-      border-radius: 999px;
-      border: 1px solid var(--line-strong);
-      font-weight: 700;
-      transition: transform 0.2s ease, background 0.2s ease;
-    }
-
-    .button:hover {
-      transform: translateY(-1px);
-    }
-
-    .button.primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-
-    .button.secondary {
-      background: rgba(255, 255, 255, 0.65);
-    }
-
-    .command {
-      margin-top: 28px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .command code {
-      padding: 14px 18px;
-      border-radius: 16px;
-      background: #171411;
-      color: #c9ffef;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 14px;
-      overflow-wrap: anywhere;
-    }
-
-    .command button {
-      border: 0;
-      border-radius: 14px;
-      padding: 14px 16px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      cursor: pointer;
-    }
-
-    .hero-grid {
-      margin-top: 34px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .mini-card {
-      padding: 16px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.55);
-    }
-
-    .mini-card strong {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 24px;
-      font-family: "Fraunces", serif;
-    }
-
-    .mini-card span {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .hero-card {
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 253, 248, 0.92), rgba(243, 236, 226, 0.92)),
-        var(--surface);
-    }
-
-    .card-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 12px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .brief-preview {
-      padding: 22px;
-      border-radius: 24px;
-      background: #11100e;
-      color: #f6f1e8;
-      font-family: "JetBrains Mono", monospace;
-      min-height: 100%;
-    }
-
-    .brief-preview .accent {
-      color: #8ff0ce;
-    }
-
-    .brief-preview .highlight {
-      color: #f6c27a;
-    }
-
-    .brief-preview p {
-      margin: 0 0 14px;
-      line-height: 1.8;
-      font-size: 13px;
-      color: rgba(246, 241, 232, 0.8);
-    }
-
-    section {
-      padding: 34px 0;
-    }
-
-    .section-title {
-      display: grid;
-      gap: 14px;
-      margin-bottom: 26px;
-    }
-
-    .section-title p {
-      margin: 0;
-      max-width: 620px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .section-note {
-      margin-top: 10px;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 760px;
-    }
-
-    .dual-grid,
-    .three-grid,
-    .pricing-grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .dual-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .three-grid,
-    .pricing-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .panel {
-      padding: 24px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface-strong);
-      box-shadow: var(--shadow);
-    }
-
-    .panel h3 {
-      margin: 0 0 10px;
-      font-size: 20px;
-    }
-
-    .panel p,
-    .panel li {
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .panel ul {
-      padding-left: 18px;
-      margin: 0;
-    }
-
-    .panel-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .flow {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .step {
-      padding: 22px;
-      border-radius: 22px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.68);
-    }
-
-    .step-label {
-      display: inline-flex;
+    .why-num {
+      font-size: 48px;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--border);
       margin-bottom: 14px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .price {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin: 14px 0 18px;
-    }
-
-    .price strong {
-      font-family: "Fraunces", serif;
-      font-size: 44px;
+      letter-spacing: -0.04em;
       line-height: 1;
     }
 
-    .price span {
-      color: var(--muted);
+    .why-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .why-text {
       font-size: 14px;
-    }
-
-    .pricing-grid .panel.featured {
-      border-color: rgba(13, 107, 87, 0.22);
-      background: linear-gradient(180deg, rgba(13, 107, 87, 0.06), rgba(255, 253, 248, 0.95));
-    }
-
-    .tag {
-      display: inline-flex;
-      margin-bottom: 14px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(13, 107, 87, 0.2);
-      background: rgba(13, 107, 87, 0.08);
-      color: var(--accent);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .launch-card {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-      gap: 18px;
-      align-items: center;
-      padding: 26px;
-      border-radius: 28px;
-      border: 1px solid var(--line);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(233, 246, 239, 0.72));
-      box-shadow: var(--shadow);
-    }
-
-    .launch-card p {
-      margin: 0;
       color: var(--muted);
       line-height: 1.7;
     }
 
-    footer {
-      padding: 40px 0 56px;
-      color: var(--muted);
-      font-size: 14px;
+    /* PRICING */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 920px;
+      margin: 0 auto;
     }
 
-    .footer-grid {
+    .pricing-card {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 28px;
+      background: var(--card-bg);
+      position: relative;
+      text-align: center;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--green);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(22,163,74,0.07);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .pricing-plan {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .pricing-price {
+      font-size: 40px;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.04em;
+      margin-bottom: 4px;
+    }
+
+    .price-unit { font-size: 15px; font-weight: 400; color: var(--muted); }
+
+    .pricing-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+
+    .pricing-features li {
+      font-size: 13px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .pricing-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+    .pricing-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .pricing-btn:hover { opacity: 0.82; transform: translateY(-1px); }
+    .pricing-btn.primary { background: var(--dark); color: #fff; }
+    .pricing-btn.secondary { background: var(--border); color: var(--dark); }
+    .pricing-btn.green { background: var(--green); color: #fff; }
+
+    /* WAITLIST */
+    .waitlist-inner {
+      max-width: 540px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .waitlist-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .waitlist-input {
+      flex: 1;
+      padding: 14px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      background: var(--card-bg);
+      color: var(--dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .waitlist-input:focus { border-color: var(--green); }
+
+    .waitlist-btn {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .waitlist-btn:hover { background: #15803d; transform: translateY(-1px); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 18px;
       flex-wrap: wrap;
-      padding-top: 26px;
-      border-top: 1px solid var(--line);
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
+    .footer-left { font-size: 13px; color: var(--muted); }
+    .footer-left strong { color: var(--dark); }
+    .footer-mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--dark); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
     }
 
-    @media (max-width: 980px) {
-      .hero,
-      .dual-grid,
-      .flow,
-      .three-grid,
-      .pricing-grid,
-      .launch-card {
-        grid-template-columns: 1fr;
-      }
-
-      .nav {
-        padding: 16px 0;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .nav-toggle {
-        display: inline-flex;
-      }
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .section-wrap { padding: 60px 20px; }
+      #hero { padding: 60px 20px 40px; }
+      .stats-row { gap: 36px; }
+      .why-grid { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: 1fr 1fr; }
+      .waitlist-form { flex-direction: column; }
+      footer { flex-direction: column; text-align: center; }
+      .nav-link { display: none; }
+      .comp-table { font-size: 12px; }
+      .comp-table td, .comp-table th { padding: 10px 12px; }
+      #terminal-section { padding: 60px 20px; }
     }
 
-    @media (max-width: 640px) {
-      .shell {
-        width: min(100vw - 20px, 1180px);
-      }
-
-      header {
-        position: static;
-      }
-
-      .hero-copy,
-      .hero-card,
-      .panel,
-      .launch-card {
-        padding: 20px;
-      }
-
-      .hero {
-        padding-top: 36px;
-        gap: 22px;
-      }
-
-      h1 {
-        font-size: clamp(40px, 16vw, 62px);
-      }
-
-      .hero-sub {
-        font-size: 16px;
-      }
-
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-actions,
-      .command {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .button,
-      .command button,
-      .command code {
-        width: 100%;
-        justify-content: center;
-      }
+    @media (max-width: 480px) {
+      .tools-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="shell nav">
-      <a class="brand" href="./">
-        <span class="brand-mark">F</span>
-        <span>FinStack</span>
-      </a>
-      <nav class="nav-links">
-        <a href="#demo">Demo</a>
-        <a href="#engine">OSS Engine</a>
-        <a href="#brief">Daily Brief</a>
-        <a href="#pricing">Pricing</a>
-        <a
-          class="nav-cta"
-          href="https://github.com/finstacklabs/finstack-mcp"
-          target="_blank"
-          rel="noopener noreferrer"
-        >GitHub</a>
-      </nav>
-      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </header>
 
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="#engine">OSS Engine</a>
-    <a href="#brief">Daily Brief</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#launch">Launch</a>
-    <a
-      class="mobile-cta"
-      href="https://github.com/finstacklabs/finstack-mcp"
-      target="_blank"
-      rel="noopener noreferrer"
-    >Open GitHub</a>
+<div id="cursor-glow"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-brand-dot"></div>
+    <span class="nav-brand-name">Arthex</span>
+    <span class="nav-brand-sep">·</span>
+    <span class="nav-brand-pkg">finstack-mcp</span>
+  </a>
+  <div class="nav-links">
+    <a href="#tools" class="nav-link">Tools</a>
+    <a href="#comparison" class="nav-link">Compare</a>
+    <a href="https://youtu.be/PWK89gBbHEM" target="_blank" class="nav-link">Demo</a>
+    <a href="https://github.com/finstacklabs/finstack-mcp" target="_blank" class="nav-cta">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="max-width:100%;">
+  <div class="hero-eyebrow">v0.6.0 · 58 tools · MIT License · Just shipped</div>
+  <h1 class="hero-headline" id="hero-headline"></h1>
+  <p class="hero-sub">Bloomberg. Morningstar. FactSet. They built walls and charged rent.<br>We tore them down. 58 financial tools. One pip install.</p>
+
+  <!-- TICKER TAPE -->
+  <div class="ticker-wrapper">
+    <div class="ticker-track" id="ticker-track"></div>
   </div>
 
-  <main class="shell">
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="pill"><span class="pill-dot"></span>Open-source engine + paid market brief</span>
-        <h1>Build once in MCP. Deliver daily in the Indian market.</h1>
-        <p class="hero-sub">
-          FinStack MCP is the public engine for NSE, BSE, fundamentals, analytics, and research workflows.
-          FinStack Brief is the paid product built on top of it: a daily Indian market brief for watchlists,
-          creators, and serious retail users.
-        </p>
-        <div class="hero-actions">
-          <a
-            class="button primary"
-            href="https://github.com/finstacklabs/finstack-mcp"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Open GitHub</a>
-          <a class="button secondary" href="#brief">See the daily brief angle</a>
-          <a
-            class="button secondary"
-            href="https://youtu.be/PWK89gBbHEM"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Watch demo</a>
-        </div>
-        <div class="command">
-          <code id="install-command">pip install finstack-mcp</code>
-          <button id="copy-button" type="button">copy</button>
-        </div>
-        <div class="hero-grid">
-          <div class="mini-card">
-            <strong>40</strong>
-            <span>MCP tools already in the engine</span>
-          </div>
-          <div class="mini-card">
-            <strong>34</strong>
-            <span>free tools usable immediately after install</span>
-          </div>
-          <div class="mini-card">
-            <strong>1</strong>
-            <span>clear paid wedge: Indian market daily brief</span>
-          </div>
-        </div>
-      </div>
+  <!-- INSTALL -->
+  <div class="install-box">
+    <span><span class="install-prefix">$</span>&nbsp;pip install finstack-mcp</span>
+    <button class="copy-btn" id="copy-btn" onclick="copyInstall()">COPY</button>
+  </div>
 
-      <aside class="hero-card">
-        <div class="card-head">
-          <span>Preview</span>
-          <span>Daily Brief V1</span>
-        </div>
-        <div class="brief-preview">
-          <p><span class="accent">[08:15 IST]</span> FinStack Brief generated.</p>
-          <p>Nifty 50: <span class="highlight">24,812.30</span> | Sensex: <span class="highlight">81,456.18</span></p>
-          <p>Top gainers: <span class="accent">TCS, HCLTECH, SBI</span></p>
-          <p>Top losers: <span class="highlight">BPCL, LT, ADANIPORTS</span></p>
-          <p>Sector lead: <span class="accent">IT +1.8%</span></p>
-          <p>Watchlist alerts: RELIANCE earnings due, TCS dividend tracked, HDFCBANK results updated.</p>
-          <p>Delivery: email text, Telegram post, and manual creator/desk brief formats now supported.</p>
-          <p>Summary: Market tone is constructive, but select large caps remain mixed. Watch institutional flow and earnings-heavy names.</p>
-        </div>
-      </aside>
-    </section>
+  <!-- COUNTERS -->
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-number">
+        <span class="counter" data-target="58" data-suffix="">0</span><span class="stat-suffix">&nbsp;tools</span>
+      </div>
+      <div class="stat-label">MCP tools</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">
+        $<span class="counter" data-target="97" data-suffix="k+">0</span>
+      </div>
+      <div class="stat-label">replaced / year</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">
+        <span class="counter" data-target="0" data-suffix="">0</span><span class="stat-suffix">&nbsp;keys</span>
+      </div>
+      <div class="stat-label">API keys needed</div>
+    </div>
+  </div>
+</section>
 
-    <section id="demo" style="padding: 0 0 34px;">
-      <div style="position:relative;padding-bottom:56.25%;height:0;border-radius:24px;overflow:hidden;border:1px solid rgba(23,20,17,0.1);box-shadow:0 24px 80px rgba(38,31,23,0.08);">
-        <iframe
-          src="https://www.youtube.com/embed/PWK89gBbHEM"
-          title="FinStack MCP Demo"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-          style="position:absolute;top:0;left:0;width:100%;height:100%;"
-        ></iframe>
-      </div>
-    </section>
+<!-- COMPARISON -->
+<div id="comparison">
+  <div class="section-wrap">
+    <div class="section-label reveal">vs. the incumbents</div>
+    <h2 class="section-title reveal">What they charge.<br>What you pay.</h2>
+    <p class="section-sub reveal">Every row is a paid product finstack-mcp replaces — completely free.</p>
 
-    <section id="engine">
-      <div class="section-title">
-        <span class="pill">Open-source engine</span>
-        <h2>What stays public in FinStack MCP.</h2>
-        <p>
-          This repo stays public. It is the engine, the credibility layer, and the top of the funnel.
-          It should win on usefulness and clarity, not on hype.
-        </p>
-        <p class="section-note">
-          Public does not mean shallow. The job of this page is to show exactly what exists, how it installs,
-          why Indian-market users should care, and how the future paid layer fits on top without pretending the hosted stack is already finished.
-        </p>
+    <div class="before-after-row reveal">
+      <div class="ba-card before">
+        <div class="ba-label">Industry average</div>
+        <div class="ba-price-before">$97,000</div>
+        <div class="ba-sub">per year</div>
       </div>
-      <div class="dual-grid">
-        <article class="panel">
-          <h3>What the OSS repo does</h3>
-          <ul>
-            <li>NSE and BSE quotes, indices, corporate actions, quarterly results</li>
-            <li>Global stocks, crypto, forex, SEC filings, and fundamentals</li>
-            <li>Technical indicators, stock comparison, sector performance, options chain</li>
-            <li>Reusable data engine for future email, Telegram, and dashboard products</li>
-          </ul>
-        </article>
-        <article class="panel">
-          <h3>What the OSS repo does not try to be</h3>
-          <ul>
-            <li>Not the whole SaaS business on its own</li>
-            <li>Not a generic "finance MCP but with more tools" story</li>
-            <li>Not the place for billing, private customer logic, or closed dashboards</li>
-            <li>Not dependent on large marketing spend to be useful</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section id="brief">
-      <div class="section-title">
-        <span class="pill">Paid wedge</span>
-        <h2>The paid product is the Indian market daily brief.</h2>
-        <p>
-          This is the fastest bridge from the current repo to revenue. It is easier to ship, easier to explain,
-          and easier to repeat daily than a broad portfolio platform or a sales-heavy advisor suite.
-        </p>
-        <p class="section-note">
-          The brief is meant for people who care about usable output, not raw data dumps: morning market context,
-          watchlist triggers, earnings dates, corporate actions, and a compact written summary delivered daily.
-        </p>
-      </div>
-      <div class="flow">
-        <article class="step">
-          <span class="step-label">Step 01</span>
-          <strong>Collect market state</strong>
-          <p>Indices, movers, sector performance, FII/DII context, bulk deals, and watchlist events.</p>
-        </article>
-        <article class="step">
-          <span class="step-label">Step 02</span>
-          <strong>Generate the brief</strong>
-          <p>The daily brief engine now produces structured JSON plus readable plain-text, Telegram, and email-ready output.</p>
-        </article>
-        <article class="step">
-          <span class="step-label">Step 03</span>
-          <strong>Format for delivery</strong>
-          <p>Turn the brief into email, Telegram, WhatsApp, or dashboard output depending on the user tier.</p>
-        </article>
-        <article class="step">
-          <span class="step-label">Step 04</span>
-          <strong>Sell recurring value</strong>
-          <p>Charge for daily watchlist intelligence and creator or desk workflows instead of generic access alone.</p>
-        </article>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-title">
-        <span class="pill">Who it is for</span>
-        <h2>Target users for the first launch.</h2>
-        <p>
-          These are the three user groups most likely to pay first because they benefit from repeatable daily output,
-          not because they want another generic finance dashboard.
-        </p>
-      </div>
-      <div class="three-grid">
-        <article class="panel">
-          <h3>Serious retail users</h3>
-          <p>People who want a quick morning brief across watchlists, earnings, and market tone.</p>
-        </article>
-        <article class="panel">
-          <h3>Market creators</h3>
-          <p>Telegram, Discord, YouTube, and X creators who need a reliable structured daily market summary.</p>
-        </article>
-        <article class="panel">
-          <h3>Small research desks</h3>
-          <p>Teams that need repeatable, branded briefs faster than hand-written manual notes.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="pricing">
-      <div class="section-title">
-        <span class="pill">Pricing path</span>
-        <h2>Start free in OSS. Charge for delivery and workflow.</h2>
-        <p>
-          The public site shows pricing direction, but not a fake self-serve checkout. Until billing and delivery are ready,
-          the right CTA is GitHub, waitlist, or direct contact.
-        </p>
-      </div>
-      <div class="pricing-grid">
-        <article class="panel">
-          <span class="tag">OSS</span>
-          <h3>FinStack MCP</h3>
-          <div class="price"><strong>Free</strong><span>public repo</span></div>
-          <ul>
-            <li>Install with pip</li>
-            <li>Use 34 free tools locally</li>
-            <li>Acts as trust and discovery layer</li>
-          </ul>
-          <div class="panel-actions">
-            <a
-              class="button secondary"
-              href="https://github.com/finstacklabs/finstack-mcp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >View repo</a>
-          </div>
-        </article>
-        <article class="panel featured">
-          <span class="tag">Best first product</span>
-          <h3>FinStack Brief</h3>
-          <div class="price"><strong>Rs 499-999</strong><span>per month</span></div>
-          <ul>
-            <li>Daily Indian market brief</li>
-            <li>Watchlist updates</li>
-            <li>Earnings and action tracking</li>
-            <li>Email or Telegram delivery</li>
-          </ul>
-          <div class="panel-actions">
-            <a
-              class="button primary"
-              href="mailto:arunodayya32@gmail.com?subject=FinStack%20Brief%20waitlist"
-            >Join waitlist</a>
-          </div>
-        </article>
-        <article class="panel">
-          <span class="tag">Desk tier</span>
-          <h3>Creator / Desk</h3>
-          <div class="price"><strong>Rs 2,999+</strong><span>per month</span></div>
-          <ul>
-            <li>Branded briefs</li>
-            <li>Multiple watchlists</li>
-            <li>Custom delivery workflow</li>
-            <li>Higher-touch support</li>
-          </ul>
-          <div class="panel-actions">
-            <a
-              class="button secondary"
-              href="mailto:arunodayya32@gmail.com?subject=FinStack%20Desk%20plan"
-            >Request access</a>
-          </div>
-        </article>
-      </div>
-      <p class="section-note">
-        Reason for no direct payment button yet: hosted delivery, billing, and onboarding are not public self-serve right now.
-        Showing a fake checkout would reduce trust more than it helps.
-      </p>
-    </section>
-
-    <section>
-      <div class="section-title">
-        <span class="pill">Premium sample</span>
-        <h2>What a paid daily brief should feel like.</h2>
-        <p>
-          This is the direction for the first revenue product: clean delivery, watchlist context, and a format someone would actually pay to receive every morning.
-        </p>
-      </div>
-      <div class="dual-grid">
-        <article class="panel">
-          <h3>Email-ready brief</h3>
-          <p>
-            Subject: <strong>FinStack Brief | 2026-03-26 | Indian market snapshot</strong>
-          </p>
-          <ul>
-            <li>Nifty 50: 24,812.30 (+0.88%)</li>
-            <li>Sensex: 81,456.18 (+0.74%)</li>
-            <li>Top gainers: TCS, HCLTECH, SBI</li>
-            <li>Top losers: BPCL, LT, ADANIPORTS</li>
-            <li>Watchlist: RELIANCE earnings due, TCS dividend tracked</li>
-          </ul>
-        </article>
-        <article class="panel">
-          <h3>Telegram-ready brief</h3>
-          <p>
-            <strong>FinStack Brief</strong> | <code>2026-03-26</code>
-          </p>
-          <ul>
-            <li>Market: CLOSED</li>
-            <li>Nifty 50: 24,812.30 (+0.88%)</li>
-            <li>Top gainers: TCS, HCLTECH, SBI</li>
-            <li>Watchlist: HDFCBANK results updated</li>
-            <li>Use this as a first-pass market briefing, not investment advice.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-title">
-        <span class="pill">Early access</span>
-        <h2>How manual onboarding works for the first paid users.</h2>
-        <p>
-          Early revenue should be manual. That keeps the workflow simple while the delivery layer is still being shaped by real user feedback.
-        </p>
-      </div>
-      <div class="flow">
-        <article class="step">
-          <span class="step-label">Step 01</span>
-          <strong>Request access</strong>
-          <p>User mails with watchlist, delivery preference, and whether the use case is personal, creator, or desk.</p>
-        </article>
-        <article class="step">
-          <span class="step-label">Step 02</span>
-          <strong>Manual setup</strong>
-          <p>We decide the symbols, frequency, and delivery format: email, Telegram, or WhatsApp-ready copy.</p>
-        </article>
-        <article class="step">
-          <span class="step-label">Step 03</span>
-          <strong>Trial delivery</strong>
-          <p>Send a sample premium brief for a few days and refine the structure around what the user actually reads.</p>
-        </article>
-        <article class="step">
-          <span class="step-label">Step 04</span>
-          <strong>Paid conversion</strong>
-          <p>Move to a simple monthly payment link once the user sees repeat value in the brief workflow.</p>
-        </article>
-      </div>
-      <div class="hero-actions">
-        <a
-          class="button primary"
-          href="mailto:arunodayya32@gmail.com?subject=FinStack%20Brief%20early%20access&body=Name%3A%0AUse%20case%20(personal%20%2F%20creator%20%2F%20desk)%3A%0AWatchlist%3A%0ADelivery%20format%20(email%20%2F%20telegram)%3A"
-        >Request early access</a>
-        <a
-          class="button secondary"
-          href="mailto:arunodayya32@gmail.com?subject=FinStack%20manual%20onboarding"
-        >Ask onboarding questions</a>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-title">
-        <span class="pill">Why trust it</span>
-        <h2>What makes this credible to a public visitor.</h2>
-      </div>
-      <div class="three-grid">
-        <article class="panel">
-          <h3>Live package and repo</h3>
-          <p>The engine is already live on GitHub and PyPI, not just a landing page concept or waitlist mockup.</p>
-        </article>
-        <article class="panel">
-          <h3>Clear product split</h3>
-          <p>The public OSS engine and the future paid brief are separated clearly so the business story is believable.</p>
-        </article>
-        <article class="panel">
-          <h3>Concrete workflow</h3>
-          <p>This is not "AI for finance" in the abstract. It is a repeatable market-brief workflow tied to real Indian-market data.</p>
-        </article>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-title">
-        <span class="pill">Use cases</span>
-        <h2>What people should actually do with FinStack.</h2>
-      </div>
-      <div class="dual-grid">
-        <article class="panel">
-          <h3>Research inside MCP clients</h3>
-          <ul>
-            <li>check NSE/BSE prices, indices, and market status</li>
-            <li>compare stocks on valuation, profitability, and growth</li>
-            <li>pull corporate actions, quarterly results, and earnings context</li>
-            <li>scan movers, sectors, and watchlist names quickly</li>
-          </ul>
-        </article>
-        <article class="panel">
-          <h3>Daily brief delivery later</h3>
-          <ul>
-            <li>generate an India-focused market brief every morning</li>
-            <li>summarize watchlist triggers for retail users or creators</li>
-            <li>reuse one engine for email, Telegram, or advisor workflows</li>
-            <li>turn raw market tools into a repeatable paid product</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section id="waitlist">
-      <div class="section-title">
-        <span class="pill">Stay in the loop</span>
-        <h2>Get notified when FinStack Brief goes live.</h2>
-        <p>Drop your email and we will reach out when paid daily briefs are ready for Indian market users.</p>
-      </div>
-      <div class="launch-card">
-        <div>
-          <p>No spam. One email when paid delivery goes live. You can also mail directly: <strong>arunodayya32@gmail.com</strong></p>
-        </div>
-        <form
-          action="https://formspree.io/f/xreoegpo"
-          method="POST"
-          style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;"
-        >
-          <input
-            type="email"
-            name="email"
-            placeholder="your@email.com"
-            required
-            style="flex:1;min-width:200px;padding:14px 18px;border-radius:999px;border:1px solid rgba(23,20,17,0.2);background:rgba(255,255,255,0.8);font-family:inherit;font-size:14px;"
-          />
-          <button
-            type="submit"
-            class="button primary"
-            style="border:none;cursor:pointer;"
-          >Notify me</button>
-        </form>
-      </div>
-    </section>
-
-    <section id="launch">
-      <div class="section-title">
-        <span class="pill">Launch today</span>
-        <h2>What needs to go live first.</h2>
-      </div>
-      <div class="launch-card">
-        <div>
-          <p>
-            Today's launch is not "full SaaS live." It is a clean public release of `finstack-mcp` plus a clear
-            product narrative that the paid layer is the Indian market daily brief. That gives us a real story for
-            GitHub, PyPI, MCP registries, and early users.
-          </p>
-        </div>
-        <div class="hero-actions">
-          <a
-            class="button primary"
-            href="https://github.com/finstacklabs/finstack-mcp"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Launch GitHub</a>
-          <a
-            class="button secondary"
-            href="https://github.com/finstacklabs/finstack-mcp/blob/main/docs/FINSTACK_OPERATING_MANUAL.md"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Open manual</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="shell">
-    <div class="footer-grid">
-      <span>MIT licensed. Open-source engine first. Not investment advice.</span>
-      <div class="footer-links">
-        <a href="https://github.com/finstacklabs/finstack-mcp" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://pypi.org/project/finstack-mcp/" target="_blank" rel="noopener noreferrer">PyPI</a>
-        <a href="https://youtu.be/PWK89gBbHEM" target="_blank" rel="noopener noreferrer">YouTube</a>
-        <a href="https://x.com/finstacklabs1" target="_blank" rel="noopener noreferrer">X / Twitter</a>
-        <a href="mailto:arunodayya32@gmail.com">Contact</a>
+      <div class="ba-arrow">→</div>
+      <div class="ba-card after">
+        <div class="ba-label">finstack-mcp</div>
+        <div class="ba-price-after">FREE</div>
+        <div class="ba-sub green">forever · MIT</div>
       </div>
     </div>
-  </footer>
 
-  <script>
-    const copyButton = document.getElementById("copy-button");
-    const installCommand = document.getElementById("install-command").textContent;
-    const navToggle = document.getElementById("nav-toggle");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const mobileLinks = mobileMenu.querySelectorAll("a");
+    <div class="reveal">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>What it does</th>
+            <th>Their price</th>
+            <th>Ours</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="comp-name">Bloomberg Terminal</span></td>
+            <td><span class="comp-feature">Real-time financial data &amp; analytics</span></td>
+            <td><span class="comp-price">$31,980/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Refinitiv Eikon</span></td>
+            <td><span class="comp-feature">Market data, news, analytics</span></td>
+            <td><span class="comp-price">$22,000/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">FactSet</span></td>
+            <td><span class="comp-feature">Fundamentals, earnings, estimates</span></td>
+            <td><span class="comp-price">$12,000/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Morningstar Direct</span></td>
+            <td><span class="comp-feature">Fund data, ratings, research</span></td>
+            <td><span class="comp-price">$17,500/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Sensibull</span></td>
+            <td><span class="comp-feature">Options analytics, greeks, strategies</span></td>
+            <td><span class="comp-price">₹15,600/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Trendlyne</span></td>
+            <td><span class="comp-feature">Indian stock screener, technicals</span></td>
+            <td><span class="comp-price">₹4,950/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Screener.in</span></td>
+            <td><span class="comp-feature">Indian fundamentals, financials</span></td>
+            <td><span class="comp-price">₹4,999/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Zerodha Kite API</span></td>
+            <td><span class="comp-feature">Live NSE/BSE data, order management</span></td>
+            <td><span class="comp-price">₹6,000/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Real-time NSE data</span><span class="badge-new">NEW</span></td>
+            <td><span class="comp-feature">Live quotes via Angel One broker API</span></td>
+            <td><span class="comp-price">₹3,600/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Credit Ratings</span><span class="badge-new">NEW</span></td>
+            <td><span class="comp-feature">CRISIL / ICRA / CARE bond ratings</span></td>
+            <td><span class="comp-price">₹24,000/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">BRSR / ESG Data</span><span class="badge-new">NEW</span></td>
+            <td><span class="comp-feature">SEBI-mandated sustainability disclosures</span></td>
+            <td><span class="comp-price">₹18,000/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Options Greeks API</span></td>
+            <td><span class="comp-feature">Delta, Gamma, Theta, Vega live</span></td>
+            <td><span class="comp-price">$4,800/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Earnings Transcripts</span></td>
+            <td><span class="comp-feature">Quarterly earnings call data</span></td>
+            <td><span class="comp-price">$2,400/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Macro Data Feeds</span></td>
+            <td><span class="comp-feature">GDP, CPI, RBI policy rates</span></td>
+            <td><span class="comp-price">$6,000/yr</span></td>
+            <td class="comp-ours"><span class="badge-free">FREE</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-    copyButton.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(installCommand);
-        copyButton.textContent = "copied";
-        window.setTimeout(() => {
-          copyButton.textContent = "copy";
-        }, 1800);
-      } catch (error) {
-        copyButton.textContent = "failed";
-      }
-    });
+<!-- TOOLS -->
+<div id="tools">
+  <div class="section-wrap">
+    <div class="section-label reveal">the toolkit</div>
+    <h2 class="section-title reveal">58 tools.<br>Zero subscriptions.</h2>
+    <p class="section-sub reveal">Every category of financial intelligence, available inside Claude. Just ask.</p>
 
-    function closeMobileMenu() {
-      navToggle.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-      mobileMenu.classList.remove("open");
-      document.body.style.overflow = "";
+    <div class="tools-grid reveal-group" id="tools-grid">
+      <div class="tool-card tilt-card">
+        <span class="tool-card-free">FREE</span>
+        <span class="tool-card-icon">🇮🇳</span>
+        <div class="tool-card-title">Indian Markets</div>
+        <ul class="tool-card-items">
+          <li>NSE/BSE live quotes</li>
+          <li>F&O lot sizes &amp; margins</li>
+          <li>Nifty, Sensex, Bank Nifty</li>
+          <li>Sector performance</li>
+        </ul>
+      </div>
+      <div class="tool-card tilt-card">
+        <span class="tool-card-free">FREE</span>
+        <span class="tool-card-icon">🌐</span>
+        <div class="tool-card-title">Global Markets</div>
+        <ul class="tool-card-items">
+          <li>NYSE/NASDAQ quotes</li>
+          <li>Forex &amp; crypto rates</li>
+          <li>Global indices</li>
+          <li>Commodity prices</li>
+        </ul>
+      </div>
+      <div class="tool-card tilt-card">
+        <span class="tool-card-free">FREE</span>
+        <span class="tool-card-icon">📐</span>
+        <div class="tool-card-title">Options &amp; Greeks</div>
+        <ul class="tool-card-items">
+          <li>Delta, Gamma, Theta, Vega</li>
+          <li>Options chain screener</li>
+          <li>IV rank &amp; percentile</li>
+          <li>Strategy payoff analysis</li>
+        </ul>
+      </div>
+      <div class="tool-card tilt-card">
+        <span class="tool-card-free">FREE</span>
+        <span class="tool-card-icon">📊</span>
+        <div class="tool-card-title">Fundamentals</div>
+        <ul class="tool-card-items">
+          <li>P/E, P/B, EV/EBITDA</li>
+          <li>Balance sheet data</li>
+          <li>Earnings history &amp; estimates</li>
+          <li>Dividend tracker</li>
+        </ul>
+      </div>
+      <div class="tool-card tilt-card">
+        <span class="tool-card-free">FREE</span>
+        <span class="tool-card-icon">🧠</span>
+        <div class="tool-card-title">Market Intelligence</div>
+        <ul class="tool-card-items">
+          <li>Screener queries</li>
+          <li>Technical indicators</li>
+          <li>FII/DII flow data</li>
+          <li>Bulk &amp; block deals</li>
+        </ul>
+      </div>
+      <div class="tool-card tilt-card">
+        <span class="tool-card-free">FREE</span>
+        <span class="tool-card-icon">⚡</span>
+        <div class="tool-card-title">Real-time Broker</div>
+        <ul class="tool-card-items">
+          <li>Angel One integration</li>
+          <li>Portfolio positions</li>
+          <li>Order book &amp; trades</li>
+          <li>Live P&amp;L tracking</li>
+        </ul>
+      </div>
+      <div class="tool-card tilt-card">
+        <span class="tool-card-free">FREE</span>
+        <span class="tool-card-icon">🏦</span>
+        <div class="tool-card-title">Credit &amp; ESG</div>
+        <ul class="tool-card-items">
+          <li>CRISIL/ICRA/CARE ratings</li>
+          <li>BRSR disclosures</li>
+          <li>ESG scores</li>
+          <li>Debt instrument data</li>
+        </ul>
+      </div>
+      <div class="tool-card tilt-card">
+        <span class="tool-card-free">FREE</span>
+        <span class="tool-card-icon">🧮</span>
+        <div class="tool-card-title">Analytics &amp; Tax</div>
+        <ul class="tool-card-items">
+          <li>XIRR/CAGR calculator</li>
+          <li>LTCG/STCG computation</li>
+          <li>SIP projections</li>
+          <li>Risk metrics (Sharpe, Beta)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TERMINAL -->
+<div id="terminal-section">
+  <div class="terminal-inner">
+    <div class="terminal-section-label reveal">see it in action</div>
+    <h2 class="terminal-section-title reveal">One install.<br>Instant intelligence.</h2>
+    <div class="terminal-window reveal" id="terminal-window">
+      <div class="terminal-bar">
+        <div class="t-dot red"></div>
+        <div class="t-dot yellow"></div>
+        <div class="t-dot green"></div>
+        <span class="terminal-title">finstack-mcp — terminal</span>
+      </div>
+      <div class="terminal-body" id="terminal-body">
+        <span class="cursor-blink" id="term-cursor"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY -->
+<div id="why">
+  <div class="section-wrap">
+    <div class="section-label reveal">why we built this</div>
+    <h2 class="section-title reveal">Built different.<br>On purpose.</h2>
+    <div class="why-grid reveal-group" style="margin-top:52px;">
+      <div class="why-card">
+        <div class="why-num">01</div>
+        <div class="why-title">SEBI mandates it. They charge for it.</div>
+        <p class="why-text">ESG/BRSR data is legally required to be publicly disclosed. We just make it queryable — no ₹18k/yr subscription, no data desk, no login wall.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-num">02</div>
+        <div class="why-title">Real-time. Not 15-minute delayed.</div>
+        <p class="why-text">Most free tools give you data that's 15 minutes old. Via Angel One broker integration, finstack-mcp gives you live quotes — same as paid terminals.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-num">03</div>
+        <div class="why-title">58 tools. One pip install.</div>
+        <p class="why-text">No API keys to manage. No webhooks to configure. No JSON to parse. Just install and ask Claude. Works out of the box in 60 seconds.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div id="pricing">
+  <div class="section-wrap" style="text-align:center;">
+    <div class="section-label reveal">pricing</div>
+    <h2 class="section-title reveal">Start free.<br>Scale when ready.</h2>
+    <p class="section-sub reveal" style="margin:0 auto 52px;">The core toolkit is MIT licensed and always free. Premium tiers add managed briefings and workspace features.</p>
+    <div class="pricing-grid reveal-group">
+      <div class="pricing-card tilt-card">
+        <div class="pricing-plan">Open Source</div>
+        <div class="pricing-price">FREE<span class="price-unit"> /forever</span></div>
+        <div class="pricing-desc">Self-hosted. MIT licensed.<br>Full 58-tool access.</div>
+        <ul class="pricing-features">
+          <li>All 58 MCP tools</li>
+          <li>Indian &amp; global markets</li>
+          <li>Options, fundamentals, ESG</li>
+          <li>Angel One broker integration</li>
+          <li>MIT license</li>
+        </ul>
+        <a href="https://pypi.org/project/finstack-mcp/" target="_blank" class="pricing-btn secondary">pip install →</a>
+      </div>
+      <div class="pricing-card featured tilt-card">
+        <div class="pricing-badge">COMING SOON</div>
+        <div class="pricing-plan">FinStack Brief</div>
+        <div class="pricing-price">₹499<span class="price-unit"> /mo</span></div>
+        <div class="pricing-desc">Daily AI-generated market briefings delivered to you.</div>
+        <ul class="pricing-features">
+          <li>Everything in OSS</li>
+          <li>Morning market brief (email)</li>
+          <li>Portfolio alerts</li>
+          <li>Custom watchlist analysis</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#waitlist" class="pricing-btn green">Join waitlist →</a>
+      </div>
+      <div class="pricing-card tilt-card">
+        <div class="pricing-plan">Creator Desk</div>
+        <div class="pricing-price">₹2,999<span class="price-unit"> /mo</span></div>
+        <div class="pricing-desc">For analysts, traders, and content creators.</div>
+        <ul class="pricing-features">
+          <li>Everything in Brief</li>
+          <li>Managed Claude workspace</li>
+          <li>Research report generation</li>
+          <li>Multi-portfolio tracking</li>
+          <li>API access</li>
+        </ul>
+        <a href="#waitlist" class="pricing-btn secondary">Join waitlist →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WAITLIST -->
+<div id="waitlist">
+  <div class="section-wrap">
+    <div class="waitlist-inner">
+      <div class="section-label reveal">early access</div>
+      <h2 class="section-title reveal" style="font-size:clamp(28px,4vw,44px);">Get notified<br>when Brief launches.</h2>
+      <p style="color:var(--muted);font-size:15px;margin-top:10px;" class="reveal">No spam. One email when we launch.</p>
+      <form class="waitlist-form reveal" action="https://formspree.io/f/xreoegpo" method="POST">
+        <input type="email" name="email" class="waitlist-input" placeholder="your@email.com" required />
+        <button type="submit" class="waitlist-btn">Notify me</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <strong>Arthex</strong> · finstack-mcp <span class="footer-mono">v0.6.0</span> · MIT License · © 2025
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/finstacklabs/finstack-mcp" target="_blank">GitHub</a>
+    <a href="https://pypi.org/project/finstack-mcp/" target="_blank">PyPI</a>
+    <a href="https://youtu.be/PWK89gBbHEM" target="_blank">Demo</a>
+    <a href="https://x.com/finstacklabs1" target="_blank">Twitter</a>
+    <a href="mailto:arunodayya32@gmail.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // CURSOR GLOW
+  const glow = document.getElementById('cursor-glow');
+  let mx = window.innerWidth/2, my = window.innerHeight/2;
+  let gx = mx, gy = my;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function animGlow() {
+    gx += (mx - gx) * 0.08;
+    gy += (my - gy) * 0.08;
+    glow.style.left = gx + 'px';
+    glow.style.top = gy + 'px';
+    requestAnimationFrame(animGlow);
+  })();
+
+  // HERO HEADLINE SPLIT
+  const headline = document.getElementById('hero-headline');
+  const wordDefs = [
+    { text: 'They', cls: '' },
+    { text: 'charge', cls: '' },
+    { text: '$97,000+/year.', cls: 'strike' },
+    { text: 'We', cls: '' },
+    { text: 'made', cls: '' },
+    { text: 'it', cls: '' },
+    { text: 'free.', cls: 'green' },
+  ];
+  wordDefs.forEach((w, i) => {
+    const outer = document.createElement('span');
+    outer.className = 'word';
+    const inner = document.createElement('span');
+    inner.className = 'word-inner' + (w.cls ? ' ' + w.cls : '');
+    inner.textContent = w.text;
+    inner.style.animationDelay = (0.28 + i * 0.09) + 's';
+    outer.appendChild(inner);
+    headline.appendChild(outer);
+    if (i < wordDefs.length - 1) {
+      headline.appendChild(document.createTextNode(' '));
     }
+  });
 
-    navToggle.addEventListener("click", () => {
-      const isOpen = mobileMenu.classList.toggle("open");
-      navToggle.classList.toggle("open", isOpen);
-      navToggle.setAttribute("aria-expanded", String(isOpen));
-      document.body.style.overflow = isOpen ? "hidden" : "";
+  // TICKER TAPE
+  const competitors = [
+    { name: 'Bloomberg', price: '$31,980/yr' },
+    { name: 'Sensibull', price: '₹15,600/yr' },
+    { name: 'Morningstar', price: '$17,500/yr' },
+    { name: 'Trendlyne', price: '₹4,950/yr' },
+    { name: 'Refinitiv', price: '$22,000/yr' },
+    { name: 'Zerodha', price: '₹6,000/yr' },
+    { name: 'Screener', price: '₹4,999/yr' },
+    { name: 'FactSet', price: '$12,000/yr' },
+  ];
+
+  function buildTickerHTML() {
+    return competitors.map(c =>
+      `<span class="ticker-item"><strong>${c.name}</strong>&nbsp;<span class="ticker-price">${c.price}</span>&nbsp;<span class="ticker-sep">·</span></span>`
+    ).join('');
+  }
+
+  const track = document.getElementById('ticker-track');
+  const chunk = buildTickerHTML();
+  track.innerHTML = chunk + chunk; // duplicate for seamless loop
+
+  // COPY BUTTON
+  function copyInstall() {
+    navigator.clipboard.writeText('pip install finstack-mcp').then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'COPIED!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = 'pip install finstack-mcp';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'COPIED!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
     });
+  }
+  window.copyInstall = copyInstall;
 
-    mobileLinks.forEach((link) => {
-      link.addEventListener("click", closeMobileMenu);
-    });
+  // SCROLL REVEAL
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal, .reveal-group').forEach(el => revealObs.observe(el));
 
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 980) {
-        closeMobileMenu();
+  // COUNTER ANIMATION
+  function animCounter(el, target, suffix, duration) {
+    let start = null;
+    (function step(ts) {
+      if (!start) start = ts;
+      const prog = Math.min((ts - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - prog, 3);
+      el.textContent = Math.floor(ease * target) + suffix;
+      if (prog < 1) requestAnimationFrame(step);
+    })(performance.now());
+  }
+
+  const counterObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !e.target.dataset.counted) {
+        e.target.dataset.counted = '1';
+        animCounter(e.target, parseInt(e.target.dataset.target), e.target.dataset.suffix || '', 1500);
       }
     });
-  </script>
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+
+  // 3D TILT
+  document.querySelectorAll('.tilt-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.transition = 'box-shadow 0.3s, border-color 0.3s';
+    });
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+      const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+      card.style.transform = `perspective(800px) rotateX(${-dy * 7}deg) rotateY(${dx * 7}deg) translateZ(6px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s, border-color 0.3s';
+      card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0)';
+    });
+  });
+
+  // TERMINAL ANIMATION
+  const termLines = [
+    { type: 'prompt', text: 'pip install finstack-mcp', delay: 200 },
+    { type: 'output', text: 'Collecting finstack-mcp...', delay: 900 },
+    { type: 'output', text: 'Downloading finstack_mcp-0.6.0-py3-none-any.whl (148 kB)', delay: 1200 },
+    { type: 'output', text: 'Installing collected packages: finstack-mcp', delay: 1700 },
+    { type: 'success', text: 'Successfully installed finstack-mcp-0.6.0 ✓', delay: 2100 },
+    { type: 'blank', delay: 2500 },
+    { type: 'claude', text: '─── Claude Desktop ─────────────────────────────────', delay: 2900 },
+    { type: 'blank', delay: 3000 },
+    { type: 'claude', text: 'You: What\'s the credit rating for Reliance Industries?', delay: 3300 },
+    { type: 'blank', delay: 3500 },
+    { type: 'tool', text: '⚙  get_credit_rating({ company: "Reliance Industries" })', delay: 3800 },
+    { type: 'blank', delay: 4000 },
+    { type: 'result', text: '  CRISIL   →  AAA / Stable', delay: 4300 },
+    { type: 'result', text: '  ICRA     →  AAA(Stable)', delay: 4550 },
+    { type: 'result', text: '  CARE     →  AAA / Stable', delay: 4800 },
+    { type: 'result', text: '  Updated  →  March 2025', delay: 5000 },
+    { type: 'blank', delay: 5200 },
+    { type: 'claude', text: 'Claude: Reliance holds the highest rating from all three', delay: 5600 },
+    { type: 'claude', text: '  agencies. AAA/Stable = near-zero default risk. ✓', delay: 5950 },
+  ];
+
+  let termStarted = false;
+  const termObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !termStarted) {
+        termStarted = true;
+        runTerminal();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const termWin = document.getElementById('terminal-window');
+  if (termWin) termObs.observe(termWin);
+
+  function runTerminal() {
+    const body = document.getElementById('terminal-body');
+    const cursor = document.getElementById('term-cursor');
+    termLines.forEach(line => {
+      setTimeout(() => {
+        const el = document.createElement('span');
+        if (line.type === 'blank') {
+          el.className = 't-blank';
+        } else {
+          el.className = 't-line';
+          const cls = line.type === 'prompt' ? 't-cmd' :
+                      line.type === 'output' ? 't-output' :
+                      line.type === 'success' ? 't-success' :
+                      line.type === 'claude' ? 't-claude' :
+                      line.type === 'tool' ? 't-tool' : 't-result';
+          if (line.type === 'prompt') {
+            el.innerHTML = `<span class="t-prompt">❯</span> <span class="${cls}">${line.text}</span>`;
+          } else {
+            el.innerHTML = `<span class="${cls}">${line.text}</span>`;
+          }
+        }
+        body.insertBefore(el, cursor);
+        body.scrollTop = body.scrollHeight;
+      }, line.delay);
+    });
+  }
+</script>
 </body>
 </html>

@@ -320,138 +320,273 @@ body{
 <!-- ═══════════════ CARD 0 — MASTER PINNED CARD ═══════════════ -->
 <div class="section">
 <div class="day-tag">PINNED CARD — Use on X, LinkedIn, Instagram, GitHub banner, everywhere</div>
-<div class="card" style="width:1200px;height:630px;background:#f7f4ef;border:1.5px solid #e2ddd5;border-radius:16px;position:relative;overflow:hidden;display:flex;flex-direction:column;">
+<div class="card" style="width:1200px;height:630px;background:#f8f7f3;border:1.5px solid #dedad2;border-radius:14px;position:relative;overflow:hidden;display:flex;flex-direction:column;font-family:'Inter',sans-serif;">
 
-  <!-- top bar -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 36px 14px;border-bottom:1px solid #e2ddd5;flex-shrink:0;background:#f3f0ea;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <div style="width:8px;height:8px;border-radius:50%;background:#16a34a;box-shadow:0 0 6px #16a34a55;"></div>
-      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#16a34a;letter-spacing:.06em;">finstack-mcp</span>
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#bbb;letter-spacing:.1em;text-transform:uppercase;">by Arthex</span>
+  <!-- 3px accent strip: red → green -->
+  <div style="height:3px;background:linear-gradient(90deg,#dc2626 0%,#ef4444 35%,#16a34a 65%,#15803d 100%);flex-shrink:0;"></div>
+
+  <!-- ── TOP BAR ── -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 28px 10px;border-bottom:1px solid #dedad2;flex-shrink:0;background:#f2efe9;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:#16a34a;box-shadow:0 0 6px #16a34a77;"></div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#16a34a;letter-spacing:.04em;">finstack-mcp</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#bbb;letter-spacing:.12em;text-transform:uppercase;">by Arthex</span>
+      <span style="width:1px;height:14px;background:#dedad2;margin:0 4px;"></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ccc;letter-spacing:.06em;">v0.6.1 · 58 tools · MIT</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ccc;letter-spacing:.08em;">github.com/finstacklabs/finstack-mcp</span>
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:6px;padding:5px 16px;box-shadow:0 1px 6px rgba(22,163,74,.18);">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#16a34a;">pip install finstack-mcp</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HEADLINE ── -->
+  <div style="padding:11px 28px 10px;border-bottom:1px solid #dedad2;flex-shrink:0;background:#f8f7f3;">
+    <span style="font-size:30px;font-weight:900;letter-spacing:-.04em;color:#0a0a0a;line-height:1;">They charge&nbsp;</span>
+    <span style="font-size:30px;font-weight:900;letter-spacing:-.04em;color:#dc2626;line-height:1;text-decoration:line-through;text-decoration-thickness:3px;opacity:.8;">$97,000+/year</span>
+    <span style="font-size:30px;font-weight:900;letter-spacing:-.04em;color:#0a0a0a;">&nbsp;for this data.&nbsp;</span>
+    <span style="font-size:30px;font-weight:900;letter-spacing:-.04em;color:#16a34a;">We made it free.</span>
+  </div>
+
+  <!-- ── TABLE: two equal columns ── -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0;">
+
+    <!-- ═══ LEFT COLUMN ═══ -->
+    <div style="display:flex;flex-direction:column;border-right:1px solid #dedad2;">
+
+      <!-- col header -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:5px 18px;background:#ebe7de;border-bottom:1px solid #dedad2;flex-shrink:0;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.14em;color:#aaa;font-weight:600;">Feature</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.14em;color:#aaa;font-weight:600;">Who charges</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.14em;color:#16a34a;font-weight:700;">Ours</span>
+      </div>
+
+      <!-- row 1 -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:rgba(22,163,74,.04);">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12.5px;color:#222;font-weight:600;">Real-time NSE data (Angel One)</span>
+          <span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;font-family:'JetBrains Mono',monospace;letter-spacing:.05em;flex-shrink:0;">NEW</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Zerodha</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">₹6,000/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 2 -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">Options chain + PCR analysis</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Sensibull</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">₹15,600/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 3 -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:#fafaf8;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">Options Greeks (Δ Γ Θ Vega Rho)</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Sensibull</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">₹15,600/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 4 -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">Max Pain · IV summary · PCR trend</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Sensibull</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">₹15,600/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 5 -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:#fafaf8;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">FII/DII flows · Insider trading</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Trendlyne</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">₹4,950/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 6 -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">Stock screener · Backtesting</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Screener Pro</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">₹4,999/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 7 -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:#fafaf8;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">India VIX · GIFT Nifty pre-market</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Bloomberg</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$31,980/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 8 -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">Promoter shareholding · Pledge %</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Screener Pro</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">₹4,999/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 9 — ONLY US -->
+      <div style="display:grid;grid-template-columns:1fr 126px 52px;padding:9px 18px;align-items:center;background:linear-gradient(90deg,rgba(22,163,74,.07),rgba(22,163,74,.03));border-top:1.5px solid #86efac;">
+        <span style="font-size:12.5px;color:#15803d;font-weight:700;">LTCG/STCG tax calculator 🇮🇳</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Nobody</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#aaa;">has this</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:800;color:#fff;background:#16a34a;padding:3px 6px;border-radius:5px;white-space:nowrap;">ONLY US</span>
+      </div>
+
+    </div>
+
+    <!-- ═══ RIGHT COLUMN ═══ -->
+    <div style="display:flex;flex-direction:column;">
+
+      <!-- col header -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:5px 18px;background:#ebe7de;border-bottom:1px solid #dedad2;flex-shrink:0;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.14em;color:#aaa;font-weight:600;">Feature</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.14em;color:#aaa;font-weight:600;">Who charges</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.14em;color:#16a34a;font-weight:700;">Ours</span>
+      </div>
+
+      <!-- row 1 -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">Income stmt · Balance sheet · Ratios</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Bloomberg</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$31,980/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 2 -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:#fafaf8;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">RBI rates · CRR · SLR · MSF</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Bloomberg</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$31,980/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 3 -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">India macro · CPI · GDP growth</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Refinitiv</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$22,000/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 4 -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:#fafaf8;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">AMFI MF flows · AUM · SIP data</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Morningstar</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$17,500/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 5 -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">India G-Sec yield curve (T-bill→30yr)</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Bloomberg</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$31,980/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 6 -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:#fafaf8;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">Fundamentals · Screener · Portfolio</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">FactSet</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$12,000/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 7 — NEW: credit ratings -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:rgba(22,163,74,.04);">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12.5px;color:#222;font-weight:600;">Credit ratings (CRISIL/ICRA/CARE)</span>
+          <span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;font-family:'JetBrains Mono',monospace;flex-shrink:0;">NEW</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Bloomberg</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$24,000/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 8 — NEW: BRSR/ESG -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;border-bottom:1px solid #edeae3;align-items:center;background:rgba(22,163,74,.04);">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12.5px;color:#222;font-weight:600;">BRSR/ESG data (SEBI-mandated)</span>
+          <span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;font-family:'JetBrains Mono',monospace;flex-shrink:0;">NEW</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">Bloomberg ESG</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$24,000/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+      <!-- row 9 — Dividend deep history -->
+      <div style="display:grid;grid-template-columns:1fr 136px 52px;padding:9px 18px;align-items:center;background:#fafaf8;border-top:1px solid #edeae3;">
+        <span style="font-size:12.5px;color:#444;font-weight:500;">Dividend history deep (10yr) · Yield</span>
+        <div style="display:flex;flex-direction:column;gap:0px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;font-weight:500;">FactSet</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;color:#dc2626;">$12,000/yr</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;padding:3px 8px;border-radius:5px;border:1px solid #86efac;">FREE</span>
+      </div>
+
+    </div>
+
+  </div><!-- end table grid -->
+
+  <!-- ── TOTAL BAR ── -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 28px;background:#0a0a0a;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:24px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#555;letter-spacing:.08em;text-transform:uppercase;">8 paid platforms replaced</span>
+      <span style="color:#222;font-size:11px;">·</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#4ade80;">Bloomberg · Sensibull · Morningstar · Refinitiv · Trendlyne · Screener · Zerodha · FactSet</span>
     </div>
     <div style="display:flex;align-items:center;gap:20px;">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#aaa;letter-spacing:.06em;">v0.6.0 · 58 tools · MIT</span>
-      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:5px;padding:4px 12px;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#16a34a;">pip install finstack-mcp</span>
+      <div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#444;text-transform:uppercase;letter-spacing:.1em;">Their total</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:900;color:#dc2626;text-decoration:line-through;opacity:.7;margin-left:8px;">$97,000+/yr</span>
+      </div>
+      <div style="width:1px;height:20px;background:#222;"></div>
+      <div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#444;text-transform:uppercase;letter-spacing:.1em;">Ours</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:900;color:#4ade80;margin-left:8px;">$0</span>
       </div>
     </div>
   </div>
-
-  <!-- headline row -->
-  <div style="padding:16px 36px 12px;border-bottom:1px solid #e2ddd5;flex-shrink:0;display:flex;align-items:baseline;justify-content:space-between;background:#f7f4ef;">
-    <div>
-      <span style="font-size:30px;font-weight:900;letter-spacing:-.03em;color:#0a0a0a;line-height:1;">They charge </span>
-      <span style="font-size:30px;font-weight:900;letter-spacing:-.03em;color:#dc2626;line-height:1;text-decoration:line-through;text-decoration-thickness:3px;opacity:.7;">$97,000+/year</span>
-      <span style="font-size:30px;font-weight:900;letter-spacing:-.03em;color:#0a0a0a;"> for this data. </span>
-      <span style="font-size:30px;font-weight:900;letter-spacing:-.03em;color:#16a34a;">We made it free.</span>
-    </div>
-    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#ccc;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">github.com/finstacklabs/finstack-mcp</div>
-  </div>
-
-  <!-- table body — two columns -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden;">
-
-    <!-- LEFT COLUMN -->
-    <div style="border-right:1px solid #e2ddd5;display:flex;flex-direction:column;">
-      <!-- col header -->
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;background:#ede9e1;border-bottom:1px solid #e2ddd5;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#aaa;">Feature</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#aaa;">Who charges</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#16a34a;">Ours</span>
-      </div>
-      <!-- rows -->
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">Real-time NSE data (Angel One)</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Zerodha ₹500/mo</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">FII/DII institutional flow</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Trendlyne ₹4,950/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">Income stmt · Balance sheet · Ratios</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Bloomberg $24k/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">Options chain + PCR analysis</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Sensibull ₹1,300/mo</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">Options Greeks (Δ Γ Θ Vega)</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Sensibull ₹1,300/mo</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">Max Pain · IV summary</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Sensibull ₹1,300/mo</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">Stock screener · Backtesting</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Trendlyne ₹4,950/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;align-items:center;background:rgba(22,163,74,.06);border-top:1px solid #bbf7d0;">
-        <span style="font-size:12px;color:#15803d;font-weight:600;">LTCG/STCG tax calculator</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa;">Nobody has this</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">ONLY US</span>
-      </div>
-    </div>
-
-    <!-- RIGHT COLUMN -->
-    <div style="display:flex;flex-direction:column;">
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;background:#ede9e1;border-bottom:1px solid #e2ddd5;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#aaa;">Feature</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#aaa;">Who charges</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#16a34a;">Ours</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">NSE Insider trading (SAST)</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Trendlyne ₹4,950/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">Promoter / FII / DII shareholding</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Screener ₹4,999/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">RBI rates · CRR · SLR · MSF</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Bloomberg $32k/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">India macro · CPI · GDP growth</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Refinitiv $22k/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">AMFI MF flows · AUM · SIP data</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Morningstar $17k/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">India G-Sec yield curve</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Bloomberg $32k/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;border-bottom:1px solid #ede9e1;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">Credit ratings (CRISIL/ICRA/CARE)</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Bloomberg $24k/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 52px;padding:6px 18px;align-items:center;">
-        <span style="font-size:12px;color:#555;font-weight:500;">BRSR/ESG data (SEBI-mandated)</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;opacity:.75;">Bloomberg ESG $24k/yr</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:#16a34a;">FREE</span>
-      </div>
-    </div>
-
-  </div><!-- end grid -->
 
 </div><!-- end card -->
 <div class="post-box">
@@ -544,7 +679,7 @@ If you work in finance or build AI tools — this is worth 2 minutes of your tim
     </div>
   </div>
   <div class="c1-brand">
-    <span class="brand-l">Arthex · finstack-mcp v0.6.0</span>
+    <span class="brand-l">Arthex · finstack-mcp v0.6.1</span>
     <span class="brand-r">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
@@ -649,7 +784,7 @@ Launching on Product Hunt April 1st. Would love your support.</div>
     <div class="sensibull-tag" style="margin-top:16px;">Sensibull Pro: ₹1,300/mo → finstack-mcp: FREE</div>
   </div>
   <div class="c2-brand" style="background:#f8f8f8;border-top:1px solid #ebebeb;">
-    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.6.0</span>
+    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.6.1</span>
     <span class="brand-r" style="color:#ccc;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
@@ -742,7 +877,7 @@ Link in bio to install.
     </div>
   </div>
   <div class="c3-brand" style="background:#f4f1e8;border-top:1px solid #ece9df;">
-    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.6.0</span>
+    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.6.1</span>
     <span class="brand-r" style="color:#ccc;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
@@ -837,7 +972,7 @@ This is what open source looks like when it's pointed at finance.</div>
     </div>
   </div>
   <div class="c4-brand" style="background:#f2f2f2;border-top:1px solid #e8e8e8;">
-    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.6.0</span>
+    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.6.1</span>
     <span class="brand-r" style="color:#ccc;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
@@ -939,7 +1074,7 @@ Link in bio.
     </div>
   </div>
   <div class="c5-brand" style="background:#f0ede6;border-top:1px solid #e4e2da;">
-    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.6.0 · 58 tools</span>
+    <span class="brand-l" style="color:#aaa;">Arthex · finstack-mcp v0.6.1 · 58 tools</span>
     <span class="brand-r" style="color:#ccc;">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
@@ -1118,7 +1253,7 @@ finstack-mcp is an open-source MCP server for Indian and global financial data. 
     <div class="c7-cmd"><span>$ </span>pip install finstack-mcp</div>
   </div>
   <div class="c7-brand">
-    <span class="c7-brand brand-l">Arthex · finstack-mcp v0.6.0</span>
+    <span class="c7-brand brand-l">Arthex · finstack-mcp v0.6.1</span>
     <span class="c7-brand brand-r">github.com/finstacklabs/finstack-mcp</span>
   </div>
 </div>
