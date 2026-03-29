@@ -1713,6 +1713,202 @@ document.getElementById('wl-search').addEventListener('input', function () {
   });
 });
 
+// ─── REAL DATA LAYER ─────────────────────────────────────────────────────────
+// Connects to dashboard-api/main.py running at localhost:8000.
+// Falls back gracefully to fake demo data if the API isn't running.
+
+const API = 'http://localhost:8000';
+let isLive = false;
+
+async function apiFetch(path) {
+  const r = await fetch(API + path, { signal: AbortSignal.timeout(6000) });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+function showLiveMode() {
+  // Show LIVE badge next to version in nav
+  const badge = document.createElement('span');
+  badge.textContent = '⬤ LIVE';
+  badge.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700;color:#3fb950;margin-left:8px;animation:pulse 2s infinite;';
+  const ver = document.querySelector('#nav-version');
+  if (ver) ver.appendChild(badge);
+}
+
+async function loadLiveNifty() {
+  try {
+    const d = await apiFetch('/api/nifty');
+    const items = [
+      { key: 'NIFTY50',   elId: 'nav-nifty',    label: 'NIFTY 50' },
+      { key: 'BANKNIFTY', elId: 'nav-banknifty', label: 'BANKNIFTY' },
+    ];
+    items.forEach(({ key, elId, label }) => {
+      const el = document.getElementById(elId);
+      if (!el || !d[key] || d[key].error) return;
+      const nd = d[key];
+      const price = nd.last_price || nd.price || nd.current;
+      const chg = nd.change_percent || nd.pChange || 0;
+      if (!price) return;
+      const cls = chg >= 0 ? 'green' : 'red';
+      const sign = chg >= 0 ? '+' : '';
+      el.innerHTML = `<span class="muted" style="font-size:10px;">${label}</span> <span class="mono">${Number(price).toLocaleString('en-IN', {maximumFractionDigits:2})}</span> <span class="${cls}">${sign}${Number(chg).toFixed(2)}%</span>`;
+    });
+  } catch (_) {}
+}
+
+async function loadLiveVix() {
+  try {
+    const d = await apiFetch('/api/vix');
+    const el = document.getElementById('nav-vix');
+    if (!el || !d) return;
+    const vix = d.current_vix || d.vix || d.last_price;
+    if (!vix) return;
+    const v = Number(vix).toFixed(1);
+    const cls = v < 15 ? 'green' : v < 20 ? 'gold' : 'red';
+    const sig = v < 15 ? '↓ Calm' : v < 20 ? '→ Neutral' : '↑ Fear';
+    el.innerHTML = `<span class="muted" style="font-size:10px;">INDIA VIX</span> <span class="mono ${cls}">${v}</span> <span class="${cls}">${sig}</span>`;
+  } catch (_) {}
+}
+
+async function loadLiveQuote(symbol) {
+  try {
+    const d = await apiFetch(`/api/quote/${symbol}`);
+    if (!d || d.error) return null;
+    return d;
+  } catch (_) { return null; }
+}
+
+async function loadLiveFiiDii() {
+  try {
+    const d = await apiFetch('/api/fii-dii');
+    if (!d || d.error) return;
+    // Update FII/DII flow tab if visible
+    const fiiNet = d.fii?.net || d.fii_net;
+    const diiNet = d.dii?.net || d.dii_net;
+    const fiiEl = document.getElementById('live-fii-net');
+    const diiEl = document.getElementById('live-dii-net');
+    if (fiiEl && fiiNet !== undefined) {
+      const v = Number(fiiNet);
+      fiiEl.textContent = (v >= 0 ? '+' : '') + v.toLocaleString('en-IN') + ' Cr';
+      fiiEl.className = v >= 0 ? 'green' : 'red';
+    }
+    if (diiEl && diiNet !== undefined) {
+      const v = Number(diiNet);
+      diiEl.textContent = (v >= 0 ? '+' : '') + v.toLocaleString('en-IN') + ' Cr';
+      diiEl.className = v >= 0 ? 'green' : 'red';
+    }
+  } catch (_) {}
+}
+
+async function loadLiveMacro() {
+  try {
+    const d = await apiFetch('/api/macro');
+    if (!d) return;
+    // Patch macro tab cards with real values
+    const patch = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined && val !== null) el.textContent = val;
+    };
+    const rbi = d.rbi;
+    if (rbi && !rbi.error) {
+      patch('macro-repo', rbi.repo_rate ? rbi.repo_rate + '%' : null);
+      patch('macro-crr',  rbi.crr ? rbi.crr + '%' : null);
+    }
+    const mac = d.macro;
+    if (mac && !mac.error) {
+      const cpi = mac.cpi_inflation || mac.cpi;
+      const gdp = mac.gdp_growth || mac.gdp;
+      patch('macro-cpi', cpi ? Number(cpi).toFixed(2) + '%' : null);
+      patch('macro-gdp', gdp ? Number(gdp).toFixed(1) + '%' : null);
+    }
+  } catch (_) {}
+}
+
+async function loadLiveChart() {
+  // Replace fake chart data with real historical data for active stock
+  if (!isLive || !window.candleSeries) return;
+  try {
+    const sym = STOCKS[activeStock]?.symbol;
+    if (!sym) return;
+    const periodMap = { '1D': '5d', '1W': '1mo', '1M': '3mo', '3M': '6mo', '1Y': '2y' };
+    const intervalMap = { '1D': '5m', '1W': '1d', '1M': '1d', '3M': '1d', '1Y': '1wk' };
+    const tf = document.querySelector('.tf-btn.active')?.textContent || '1M';
+    const period   = periodMap[tf]   || '3mo';
+    const interval = intervalMap[tf] || '1d';
+    const d = await apiFetch(`/api/historical/${sym}.NS?period=${period}&interval=${interval}`);
+    if (!d || d.error || !d.data) return;
+    const candles = d.data.map(row => ({
+      time: row.date || row.Date,
+      open:  row.open  || row.Open,
+      high:  row.high  || row.High,
+      low:   row.low   || row.Low,
+      close: row.close || row.Close,
+    })).filter(c => c.time && c.open);
+    if (candles.length > 5) {
+      window.candleSeries.setData(candles);
+      window.chart?.timeScale().fitContent();
+    }
+  } catch (_) {}
+}
+
+async function refreshLivePrices() {
+  if (!isLive) return;
+  const sym = STOCKS[activeStock]?.symbol;
+  if (!sym) return;
+  const d = await loadLiveQuote(sym);
+  if (!d) return;
+  const ltp = d.ltp || d.last_price || d.price;
+  const chg = d.change_percent || d.pChange || 0;
+  const chgAmt = d.change || d.net_change || 0;
+  if (!ltp) return;
+  // Update chart header
+  const ltpEl = document.getElementById('chart-ltp');
+  const chgEl = document.getElementById('chart-chg');
+  if (ltpEl) ltpEl.textContent = '₹' + Number(ltp).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  if (chgEl) {
+    const sign = chgAmt >= 0 ? '+' : '';
+    const cls = chgAmt >= 0 ? 'green' : 'red';
+    chgEl.textContent = `${sign}₹${Number(chgAmt).toFixed(2)} (${sign}${Number(chg).toFixed(2)}%)`;
+    chgEl.className = cls;
+  }
+  // Update watchlist row for this stock
+  const rows = document.querySelectorAll('.wl-item');
+  if (rows[activeStock]) {
+    const priceEl = rows[activeStock].querySelector('.wl-price');
+    const chgElW  = rows[activeStock].querySelector('.wl-chg');
+    if (priceEl) priceEl.textContent = '₹' + Number(ltp).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    if (chgElW) {
+      const sign = chg >= 0 ? '+' : '';
+      chgElW.textContent = sign + Number(chg).toFixed(2) + '%';
+      chgElW.className = 'wl-chg ' + (chg >= 0 ? 'green' : 'red');
+    }
+  }
+}
+
+async function connectRealData() {
+  try {
+    await apiFetch('/api/health');
+    isLive = true;
+    showLiveMode();
+    // Load all live data in parallel
+    await Promise.all([
+      loadLiveNifty(),
+      loadLiveVix(),
+      loadLiveFiiDii(),
+      loadLiveMacro(),
+    ]);
+    // Load real chart data for the default stock
+    setTimeout(loadLiveChart, 500);
+    // Real price refresh every 10s (NSE has 15-min delay; Angel One is real-time)
+    setInterval(refreshLivePrices, 10000);
+    setInterval(loadLiveNifty, 30000);
+    setInterval(loadLiveVix, 60000);
+  } catch (_) {
+    // API not running — stay in demo mode with fake data, no error shown
+    console.info('[finstack] Demo mode — start dashboard-api/main.py for live data');
+  }
+}
+
 // ─── INIT ────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1726,6 +1922,8 @@ document.addEventListener('DOMContentLoaded', () => {
   updateMarketStatus();
   setInterval(updateMarketStatus, 30000);
   setInterval(updatePrices, 3000);
+  // Try to connect to real API (non-blocking, fails silently if not running)
+  connectRealData();
 });
 </script>
 </body>
