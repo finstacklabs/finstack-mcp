@@ -696,43 +696,46 @@
 
     <!-- DRAWING TOOLBAR -->
     <div id="draw-toolbar">
-      <div class="draw-tool active" id="dt-cursor" data-tool="cursor" title="">
+      <!-- Cursor -->
+      <div class="draw-tool active" id="dt-cursor" data-tool="cursor">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l9 4.5-4.5 1.5L5 12 2 2z" fill="currentColor"/></svg>
-        <span class="dt-tip">Cursor (default)</span>
+        <span class="dt-tip">Cursor</span>
       </div>
-      <div class="draw-tool" id="dt-hline" data-tool="hline" title="">
+      <!-- Horizontal level — FREE, works -->
+      <div class="draw-tool" id="dt-hline" data-tool="hline">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="1" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2,2"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
-        <span class="dt-tip">Horizontal Level</span>
+        <span class="dt-tip">Horizontal Level (click to place)</span>
       </div>
-      <div class="draw-tool" id="dt-tline" data-tool="tline" title="">
+      <!-- Trend line — FREE, works (2 clicks) -->
+      <div class="draw-tool" id="dt-tline" data-tool="tline">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="2" y1="12" x2="12" y2="2" stroke="currentColor" stroke-width="1.5"/><circle cx="2" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="2" r="1.5" fill="currentColor"/></svg>
-        <span class="dt-tip">Trend Line</span>
+        <span class="dt-tip">Trend Line (2 clicks)</span>
       </div>
-      <div class="draw-tool" id="dt-fib" data-tool="fib" title="">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="1" y1="4" x2="13" y2="4" stroke="currentColor" stroke-width="1"/><line x1="1" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1"/><line x1="1" y1="10" x2="13" y2="10" stroke="currentColor" stroke-width="1"/><text x="1" y="13" font-size="4" fill="currentColor">Fib</text></svg>
-        <span class="dt-tip">Fibonacci Retracement</span>
+      <!-- Ray — FREE, works -->
+      <div class="draw-tool" id="dt-ray" data-tool="ray">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="2" y1="10" x2="13" y2="4" stroke="currentColor" stroke-width="1.5"/><circle cx="2" cy="10" r="1.5" fill="currentColor"/><polygon points="13,2 13,6 11,4" fill="currentColor"/></svg>
+        <span class="dt-tip">Ray (extends right)</span>
+      </div>
+      <!-- Fibonacci — Pro -->
+      <div class="draw-tool" id="dt-fib" data-tool="fib">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="1" y1="3" x2="13" y2="3" stroke="currentColor" stroke-width="1"/><line x1="1" y1="6" x2="13" y2="6" stroke="currentColor" stroke-width="1"/><line x1="1" y1="9" x2="13" y2="9" stroke="currentColor" stroke-width="1"/><line x1="1" y1="12" x2="13" y2="12" stroke="currentColor" stroke-width="1"/></svg>
+        <span class="dt-tip">Fibonacci Retracement (Pro)</span>
         <span class="pro-lock-badge">🔒</span>
       </div>
-      <div class="draw-tool" id="dt-rect" data-tool="rect" title="">
+      <!-- Rectangle — Pro (visual only for now) -->
+      <div class="draw-tool" id="dt-rect" data-tool="rect">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="4" width="10" height="6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
-        <span class="dt-tip">Rectangle</span>
-        <span class="pro-lock-badge">🔒</span>
-      </div>
-      <div class="draw-tool" id="dt-text" data-tool="text" title="">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><text x="2" y="11" font-size="11" font-weight="700" fill="currentColor">T</text></svg>
-        <span class="dt-tip">Text Label</span>
+        <span class="dt-tip">Rectangle (Pro)</span>
         <span class="pro-lock-badge">🔒</span>
       </div>
       <div class="draw-sep"></div>
-      <div class="draw-tool" id="dt-magnet" data-tool="magnet" title="">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2h6v5a3 3 0 01-6 0V2z" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="2" y1="2" x2="4" y2="2" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="2" x2="12" y2="2" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span class="dt-tip">Magnet (snap to OHLC)</span>
-      </div>
-      <div class="draw-tool" id="dt-eye" data-tool="eye" title="">
+      <!-- Eye -->
+      <div class="draw-tool" id="dt-eye" data-tool="eye">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="7" rx="5" ry="3" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
-        <span class="dt-tip">Show/Hide Drawings</span>
+        <span class="dt-tip">Show / Hide All Drawings</span>
       </div>
-      <div class="draw-tool" id="dt-trash" data-tool="trash" title="">
+      <!-- Trash -->
+      <div class="draw-tool" id="dt-trash" data-tool="trash">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="4" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="1" y1="4" x2="13" y2="4" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="2" x2="9" y2="2" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="6.5" x2="5" y2="10" stroke="currentColor" stroke-width="1"/><line x1="9" y1="6.5" x2="9" y2="10" stroke="currentColor" stroke-width="1"/></svg>
         <span class="dt-tip">Clear All Drawings</span>
       </div>
@@ -1306,8 +1309,15 @@ let ma20Series = null;
 let activeIndicators = new Set(['MA20']);
 let stockPrices = STOCKS.map(s => ({ ltp: s.ltp, change: s.change, changeAmt: s.changeAmt }));
 let activeDrawTool = 'cursor';
-let drawnPriceLines = [];
+let drawnPriceLines = [];   // horizontal price lines
+let drawnTrendLines = [];   // {series, p1, p2} trend line objects
 let drawingsVisible = true;
+
+// Trend line state machine
+const tlineState = { active: false, p1: null, previewSeries: null };
+
+// Ray line state machine (extends infinitely right)
+const rayState = { active: false, p1: null };
 
 // ─── WATCHLIST RENDER ────────────────────────────────────────────────────────
 
@@ -1419,29 +1429,180 @@ function initChart() {
 
   loadChart();
 
-  // Horizontal line drawing: click on chart
-  const wrap = document.getElementById('chart-container-wrap');
-  wrap.addEventListener('click', function(e) {
-    if (activeDrawTool !== 'hline') return;
-    // Convert pixel Y to price using chart coordinate
-    const rect = container.getBoundingClientRect();
-    const y = e.clientY - rect.top;
-    const price = candleSeries.coordinateToPrice(y);
+  // ── Subscribe to chart clicks for drawing tools ──────────────────────────
+  chart.subscribeClick(function(param) {
+    if (!param.point || !param.time) return;
+    const price = candleSeries.coordinateToPrice(param.point.y);
     if (price == null) return;
-    const line = candleSeries.createPriceLine({
-      price: price,
-      color: '#f7a600',
-      lineWidth: 1,
-      lineStyle: LightweightCharts.LineStyle.Dashed,
-      axisLabelVisible: true,
-      title: '— ' + fmt(price),
-    });
-    drawnPriceLines.push(line);
+    const time = param.time;
+
+    // ── HORIZONTAL LINE ──
+    if (activeDrawTool === 'hline') {
+      const line = candleSeries.createPriceLine({
+        price,
+        color: '#f7a600',
+        lineWidth: 1,
+        lineStyle: LightweightCharts.LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: fmt(price),
+      });
+      drawnPriceLines.push(line);
+      return;
+    }
+
+    // ── TREND LINE (2-click: p1 then p2) ──
+    if (activeDrawTool === 'tline') {
+      if (!tlineState.active) {
+        // First click — mark p1, start preview
+        tlineState.active = true;
+        tlineState.p1 = { time, price };
+        // Create a preview line series (will update on mousemove)
+        tlineState.previewSeries = chart.addLineSeries({
+          color: 'rgba(41,98,255,0.5)',
+          lineWidth: 1,
+          lineStyle: LightweightCharts.LineStyle.Dashed,
+          priceLineVisible: false,
+          lastValueVisible: false,
+          crosshairMarkerVisible: false,
+        });
+        tlineState.previewSeries.setData([{ time, value: price }]);
+        showToast('Click a second point to complete the trend line');
+      } else {
+        // Second click — finalize
+        const p1 = tlineState.p1;
+        const p2 = { time, price };
+
+        // Remove preview
+        if (tlineState.previewSeries) {
+          chart.removeSeries(tlineState.previewSeries);
+          tlineState.previewSeries = null;
+        }
+        tlineState.active = false;
+        tlineState.p1 = null;
+
+        // Draw the final trend line extended across the visible range
+        const extendedData = buildTrendLineData(p1, p2);
+        const series = chart.addLineSeries({
+          color: '#2962ff',
+          lineWidth: 1,
+          priceLineVisible: false,
+          lastValueVisible: false,
+          crosshairMarkerVisible: false,
+        });
+        series.setData(extendedData);
+        drawnTrendLines.push({ series, p1, p2 });
+      }
+      return;
+    }
+
+    // ── RAY (from point, extends right) ──
+    if (activeDrawTool === 'ray') {
+      const series = chart.addLineSeries({
+        color: '#26a69a',
+        lineWidth: 1,
+        lineStyle: LightweightCharts.LineStyle.Solid,
+        priceLineVisible: false,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false,
+      });
+      // Ray: start at clicked point, extend to "far future"
+      const endTime = time + 60 * 60 * 24 * 365 * 5; // ~5 years forward
+      const slope = 0; // horizontal ray by default
+      series.setData([{ time, value: price }, { time: endTime, value: price }]);
+      drawnTrendLines.push({ series, p1: { time, price }, p2: { time: endTime, price } });
+      return;
+    }
+
+    // ── FIBONACCI RETRACEMENT (Pro gated) ──
+    if (activeDrawTool === 'fib') {
+      if (!isPro()) { openUpgradeModal(); return; }
+      if (!tlineState.active) {
+        tlineState.active = true;
+        tlineState.p1 = { time, price };
+        showToast('Click the end point to draw Fibonacci levels');
+      } else {
+        const p1 = tlineState.p1;
+        const p2 = { time, price };
+        tlineState.active = false;
+        tlineState.p1 = null;
+        drawFibonacci(p1, p2);
+      }
+      return;
+    }
+  });
+
+  // ── Preview trend line on mouse move ─────────────────────────────────────
+  chart.subscribeCrosshairMove(function(param) {
+    if (!tlineState.active || !tlineState.previewSeries || !param.point || !param.time) return;
+    if (activeDrawTool !== 'tline' && activeDrawTool !== 'fib') return;
+    const price = candleSeries.coordinateToPrice(param.point.y);
+    if (price == null) return;
+    const p1 = tlineState.p1;
+    // Update preview: just show 2 points
+    const pts = [
+      { time: Math.min(p1.time, param.time), value: p1.time <= param.time ? p1.price : price },
+      { time: Math.max(p1.time, param.time), value: p1.time <= param.time ? price : p1.price },
+    ];
+    if (pts[0].time !== pts[1].time) tlineState.previewSeries.setData(pts);
   });
 
   window.addEventListener('resize', () => {
     chart.applyOptions({ width: container.offsetWidth, height: container.offsetHeight });
   });
+}
+
+// ── Build trend line data extended across chart timerange ──────────────────
+function buildTrendLineData(p1, p2) {
+  // Extend line from well before p1 to well after p2
+  const slope = (p2.price - p1.price) / (p2.time - p1.time);
+  const farPast   = p1.time - (p2.time - p1.time) * 2;
+  const farFuture = p2.time + (p2.time - p1.time) * 3;
+  const pricePast   = p1.price + slope * (farPast - p1.time);
+  const priceFuture = p1.price + slope * (farFuture - p1.time);
+  // Must be sorted by time, no duplicate times
+  return [
+    { time: farPast,   value: +pricePast.toFixed(2) },
+    { time: p1.time,   value: +p1.price.toFixed(2) },
+    { time: p2.time,   value: +p2.price.toFixed(2) },
+    { time: farFuture, value: +priceFuture.toFixed(2) },
+  ].filter((d, i, arr) => i === 0 || d.time > arr[i-1].time);
+}
+
+// ── Draw Fibonacci retracement levels ─────────────────────────────────────
+function drawFibonacci(p1, p2) {
+  const hi = Math.max(p1.price, p2.price);
+  const lo = Math.min(p1.price, p2.price);
+  const diff = hi - lo;
+  const levels = [
+    { ratio: 0,     color: '#ef5350', label: '0%'     },
+    { ratio: 0.236, color: '#f7a600', label: '23.6%'  },
+    { ratio: 0.382, color: '#26a69a', label: '38.2%'  },
+    { ratio: 0.5,   color: '#2962ff', label: '50%'    },
+    { ratio: 0.618, color: '#26a69a', label: '61.8%'  },
+    { ratio: 0.786, color: '#f7a600', label: '78.6%'  },
+    { ratio: 1,     color: '#ef5350', label: '100%'   },
+  ];
+  const startTime = Math.min(p1.time, p2.time);
+  const endTime   = Math.max(p1.time, p2.time) + (Math.max(p1.time, p2.time) - Math.min(p1.time, p2.time)) * 2;
+
+  levels.forEach(({ ratio, color, label }) => {
+    const price = lo + diff * (1 - ratio);
+    const series = chart.addLineSeries({
+      color,
+      lineWidth: 1,
+      lineStyle: LightweightCharts.LineStyle.Dashed,
+      priceLineVisible: false,
+      lastValueVisible: true,
+      title: `Fib ${label}`,
+      crosshairMarkerVisible: false,
+    });
+    series.setData([
+      { time: startTime, value: +price.toFixed(2) },
+      { time: endTime,   value: +price.toFixed(2) },
+    ]);
+    drawnTrendLines.push({ series, p1, p2 });
+  });
+  showToast('Fibonacci retracement drawn (7 levels)');
 }
 
 function computeMA(data, period) {
@@ -1499,7 +1660,7 @@ function loadChart(noShimmer) {
 
 // ─── DRAWING TOOLBAR ─────────────────────────────────────────────────────────
 
-const PRO_TOOLS = new Set(['fib', 'rect', 'text']);
+const PRO_TOOLS = new Set(['rect', 'text']); // fib handled separately (Pro check inside click handler)
 
 function initDrawToolbar() {
   const wrap = document.getElementById('chart-container-wrap');
@@ -1515,8 +1676,16 @@ function initDrawToolbar() {
       }
 
       if (tool === 'trash') {
+        // Clear horizontal lines
         drawnPriceLines.forEach(line => { try { candleSeries.removePriceLine(line); } catch(e){} });
         drawnPriceLines = [];
+        // Clear trend lines + fib
+        drawnTrendLines.forEach(({ series }) => { try { chart.removeSeries(series); } catch(e){} });
+        drawnTrendLines = [];
+        // Cancel any in-progress tline draw
+        if (tlineState.previewSeries) { try { chart.removeSeries(tlineState.previewSeries); } catch(e){} }
+        tlineState.active = false; tlineState.p1 = null; tlineState.previewSeries = null;
+        showToast('All drawings cleared');
         return;
       }
 
@@ -1525,7 +1694,11 @@ function initDrawToolbar() {
         drawnPriceLines.forEach(line => {
           try { line.applyOptions({ visible: drawingsVisible }); } catch(e) {}
         });
+        drawnTrendLines.forEach(({ series }) => {
+          try { series.applyOptions({ visible: drawingsVisible }); } catch(e) {}
+        });
         btn.style.color = drawingsVisible ? '' : 'var(--muted2)';
+        showToast(drawingsVisible ? 'Drawings visible' : 'Drawings hidden');
         return;
       }
 
