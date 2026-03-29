@@ -6,7 +6,7 @@
   <title>Arthex · finstack-mcp Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,7 +17,9 @@
       --panel2: #2a2e39;
       --border: #2a2e39;
       --border2: #363a45;
-      --text: #d1d4dc;
+      --text: #b2b5be;
+      --text-strong: #d1d4dc;
+      --text-price: #e0e3eb;
       --muted: #787b86;
       --muted2: #4c525e;
       --green: #26a69a;
@@ -28,35 +30,50 @@
       --gold-bg: rgba(247,166,0,0.10);
       --blue: #2962ff;
       --accent: #2962ff;
-      --hover: #2a2e39;
+      --hover: rgba(255,255,255,0.04);
       --pro-gold: #f7a600;
     }
 
     html, body {
       height: 100%;
-      font-family: 'Inter', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Trebuchet MS', 'Inter', sans-serif;
       background: var(--bg);
       color: var(--text);
-      font-size: 13px;
-      line-height: 1.4;
+      font-size: 12px;
+      line-height: 1.5;
+      letter-spacing: 0.1px;
       overflow: hidden;
     }
 
-    .mono { font-family: 'JetBrains Mono', monospace; }
+    .mono { font-family: 'Roboto Mono', 'JetBrains Mono', monospace; font-size: 11px; }
     .green { color: var(--green-bright); }
     .red { color: var(--red-bright); }
     .muted { color: var(--muted); }
     .gold { color: var(--gold); }
 
+    /* ─── DELAY BANNER ─── */
+    #delay-banner {
+      background: rgba(247,166,0,0.1);
+      border-bottom: 1px solid rgba(247,166,0,0.25);
+      padding: 5px 16px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: #f7a600; flex-shrink: 0;
+    }
+    #delay-banner a { color: #f7a600; text-decoration: underline; margin-left: 4px; }
+    #delay-banner button {
+      margin-left: auto; background: none; border: none;
+      color: #f7a600; cursor: pointer; font-size: 16px; line-height: 1; padding: 0 4px;
+    }
+
     /* ─── NAV ─── */
     #nav {
-      height: 44px;
+      height: 36px;
       background: var(--panel);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      padding: 0 16px;
-      gap: 20px;
+      padding: 0 12px;
+      gap: 16px;
       flex-shrink: 0;
       z-index: 100;
     }
@@ -64,10 +81,10 @@
     .nav-brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-weight: 700;
-      font-size: 14px;
-      letter-spacing: -0.3px;
+      font-size: 12px;
+      letter-spacing: -0.2px;
       white-space: nowrap;
     }
 
@@ -116,7 +133,7 @@
     }
 
     /* ─── MAIN LAYOUT ─── */
-    #app { display: flex; flex-direction: column; height: calc(100vh - 44px); }
+    #app { display: flex; flex-direction: column; height: calc(100vh - 36px); }
 
     #main-row { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
@@ -152,19 +169,19 @@
     .watchlist-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
     .stock-item {
-      padding: 9px 12px; cursor: pointer;
-      border-bottom: 1px solid transparent;
+      padding: 7px 10px; cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
       transition: background 0.1s; user-select: none;
     }
     .stock-item:hover { background: var(--hover); }
     .stock-item.active { background: rgba(41,98,255,0.08); border-left: 2px solid var(--accent); }
 
     .stock-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
-    .stock-symbol { font-weight: 700; font-size: 12.5px; letter-spacing: 0.2px; }
-    .stock-ltp { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 600; }
-    .stock-row2 { display: flex; justify-content: space-between; align-items: center; }
-    .stock-name { color: var(--muted2); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
-    .stock-chg { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; }
+    .stock-symbol { font-weight: 600; font-size: 12px; letter-spacing: 0.1px; color: var(--text-strong); }
+    .stock-ltp { font-family: 'Roboto Mono', 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; color: var(--text-price); }
+    .stock-row2 { display: flex; justify-content: space-between; align-items: center; margin-top: 1px; }
+    .stock-name { color: var(--muted2); font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
+    .stock-chg { font-family: 'Roboto Mono', 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; }
 
     .flash-green { animation: flash-g 0.5s ease; }
     .flash-red   { animation: flash-r 0.5s ease; }
@@ -231,11 +248,11 @@
       display: flex; align-items: center; gap: 16px; flex-shrink: 0;
     }
 
-    .chart-symbol { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
-    .chart-name { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .chart-symbol { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-strong); }
+    .chart-name { font-size: 10px; color: var(--muted); margin-top: 1px; }
     .chart-price-block { margin-left: 4px; }
-    .chart-ltp { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; line-height: 1; }
-    .chart-change { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; margin-top: 2px; }
+    .chart-ltp { font-family: 'Roboto Mono', 'JetBrains Mono', monospace; font-size: 18px; font-weight: 500; line-height: 1; color: var(--text-price); }
+    .chart-change { font-family: 'Roboto Mono', 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; margin-top: 2px; }
 
     .chart-meta { display: flex; gap: 16px; margin-left: auto; align-items: center; }
     .meta-item { font-size: 11px; color: var(--muted); }
@@ -651,6 +668,13 @@
     <div class="nav-badge" id="nav-version">v0.6.1 · 58 tools</div>
     <button id="nav-pro-badge" onclick="openUpgradeModal()">Upgrade</button>
   </div>
+</div>
+
+<!-- DATA DELAY WARNING -->
+<div id="delay-banner">
+  <span>⚠</span>
+  <span>Chart data is <strong>15 minutes delayed</strong>. Do not use for intraday trading. <a href="#" onclick="document.getElementById('delay-banner').style.display='none'">Configure Angel One for real-time →</a></span>
+  <button onclick="document.getElementById('delay-banner').style.display='none'">×</button>
 </div>
 
 <!-- APP -->
@@ -1376,10 +1400,14 @@ function initChart() {
   });
 
   volumeSeries = chart.addHistogramSeries({
-    color: '#26a69a',
     priceFormat: { type: 'volume' },
     priceScaleId: 'volume',
-    scaleMargins: { top: 0.8, bottom: 0 },
+    scaleMargins: { top: 0.85, bottom: 0 },
+  });
+  chart.priceScale('volume').applyOptions({
+    drawTicks: false,
+    borderVisible: false,
+    scaleMargins: { top: 0.85, bottom: 0 },
   });
 
   ma20Series = chart.addLineSeries({
@@ -1923,6 +1951,7 @@ async function connectRealData() {
     await apiFetch('/api/health');
     isLive = true;
     showLiveMode();
+    document.getElementById('delay-banner')?.style.setProperty('display', 'none');
     await Promise.all([loadLiveNifty(), loadLiveVix(), loadLiveFiiDii(), loadLiveMacro()]);
     setTimeout(loadLiveChart, 500);
     setInterval(refreshLivePrices, 10000);
