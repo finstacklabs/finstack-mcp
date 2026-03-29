@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arthex · Ideas — Indian Market Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #131722;
+      --panel: #1e222d;
+      --border: #2a2e39;
+      --text: #d1d4dc;
+      --muted: #787b86;
+      --green: #26a69a;
+      --red: #ef5350;
+      --blue: #2962ff;
+      --gold: #f7a600;
+      --green-bg: rgba(38, 166, 154, 0.12);
+      --red-bg: rgba(239, 83, 80, 0.12);
+      --gold-bg: rgba(247, 166, 0, 0.12);
+      --blue-bg: rgba(41, 98, 255, 0.12);
+      --hover: #232733;
+    }
+
+    html { font-size: 13px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* ─── NAV ─── */
+    #nav {
+      height: 48px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 0;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse-dot 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }
+      50% { opacity: 0.6; box-shadow: 0 0 14px var(--green); }
+    }
+
+    .nav-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 16px;
+      flex-shrink: 0;
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .nav-tab {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .nav-tab:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .nav-tab.active { color: var(--text); background: rgba(41, 98, 255, 0.15); }
+    .nav-tab.active::after {
+      content: '';
+      display: block;
+      height: 2px;
+      background: var(--blue);
+      border-radius: 1px;
+      margin-top: 2px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .nav-badge {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      border: 1px solid var(--border);
+      padding: 3px 7px;
+      border-radius: 4px;
+    }
+
+    .btn-pro {
+      background: linear-gradient(135deg, #f7a600, #ff6d00);
+      color: #000;
+      font-weight: 700;
+      font-size: 11px;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-pro:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ─── PAGE LAYOUT ─── */
+    #page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* ─── FILTER BAR ─── */
+    #filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 0 12px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .filter-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .filter-tab:hover { color: var(--text); border-color: var(--muted); background: var(--hover); }
+
+    .filter-tab.active {
+      color: var(--green);
+      border-color: var(--green);
+      background: var(--green-bg);
+      font-weight: 600;
+    }
+
+    .filter-sep { flex: 1; }
+
+    .search-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    #search-input {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 12px 7px 32px;
+      color: var(--text);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      width: 220px;
+      outline: none;
+      transition: border-color 0.15s, width 0.2s;
+    }
+
+    #search-input:focus { border-color: var(--blue); width: 280px; }
+    #search-input::placeholder { color: var(--muted); }
+
+    .btn-post-idea {
+      background: var(--blue);
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, transform 0.1s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-post-idea:hover { background: #1a4fcc; transform: translateY(-1px); }
+    .btn-post-idea svg { flex-shrink: 0; }
+
+    /* ─── CONTENT ROW ─── */
+    #content-row {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 20px;
+      padding-top: 20px;
+      align-items: start;
+    }
+
+    /* ─── IDEAS GRID ─── */
+    #ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    /* ─── IDEA CARD ─── */
+    .idea-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .idea-card.visible {
+      animation: card-fadein 0.35s ease forwards;
+    }
+
+    @keyframes card-fadein {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .idea-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(41,98,255,0.2);
+      border-color: rgba(41, 98, 255, 0.3);
+    }
+
+    /* Chart area */
+    .card-chart {
+      height: 72px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-chart svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .card-chart-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, var(--panel) 100%);
+      pointer-events: none;
+    }
+
+    .card-body {
+      padding: 11px 13px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .card-symbol {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .direction-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .direction-badge.bullish { background: var(--green-bg); color: var(--green); border: 1px solid rgba(38,166,154,0.3); }
+    .direction-badge.bearish { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,83,80,0.3); }
+    .direction-badge.neutral { background: var(--gold-bg); color: var(--gold); border: 1px solid rgba(247,166,0,0.3); }
+
+    .card-tf {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-left: auto;
+      background: rgba(255,255,255,0.04);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .card-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: rgba(41, 98, 255, 0.1);
+      color: #6b8fff;
+      border: 1px solid rgba(41, 98, 255, 0.15);
+      font-weight: 500;
+    }
+
+    .card-author-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding-top: 4px;
+      border-top: 1px solid var(--border);
+    }
+
+    .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .author-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .verified-badge {
+      color: var(--blue);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: 'Inter', sans-serif;
+      padding: 3px 6px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+
+    .stat-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .stat-btn.liked { color: var(--red); }
+    .stat-btn.liked svg { fill: var(--red); }
+
+    .stat-btn svg { transition: transform 0.1s; }
+    .stat-btn.like-burst svg { animation: like-pop 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+    @keyframes like-pop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.5); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); }
+    }
+
+    .stat-time { margin-left: auto; font-size: 10px; color: var(--muted); }
+
+    /* ─── SIDEBAR ─── */
+    #sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: sticky;
+      top: 68px;
+    }
+
+    .sidebar-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 11px 14px 9px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .trending-list {
+      padding: 6px 0;
+    }
+
+    .trending-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .trending-item:hover { background: var(--hover); }
+
+    .trending-rank {
+      width: 16px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .trending-symbol {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      flex: 1;
+      color: var(--text);
+    }
+
+    .trending-count {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .contributor-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .contributor-item:hover { background: var(--hover); }
+
+    .contributor-rank {
+      width: 16px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .contributor-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2962ff, #26a69a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .contributor-info { flex: 1; min-width: 0; }
+
+    .contributor-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .contributor-ideas {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .sidebar-about {
+      padding: 12px 14px 14px;
+    }
+
+    .sidebar-about p {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .btn-dashboard-link {
+      display: block;
+      text-align: center;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .btn-dashboard-link:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-bg);
+    }
+
+    /* ─── EMPTY STATE ─── */
+    #empty-state {
+      display: none;
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    #empty-state svg { margin-bottom: 16px; opacity: 0.4; }
+    #empty-state p { font-size: 14px; }
+
+    /* ─── POST IDEA MODAL ─── */
+    #modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 500;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 0;
+    }
+
+    #modal-overlay.open {
+      display: flex;
+    }
+
+    #post-modal {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px 16px 0 0;
+      width: 100%;
+      max-width: 640px;
+      padding: 24px 28px 32px;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    #modal-overlay.open #post-modal {
+      transform: translateY(0);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.15s;
+    }
+
+    .modal-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .form-field { display: flex; flex-direction: column; gap: 5px; }
+    .form-field.full { grid-column: 1 / -1; }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .form-select, .form-input, .form-textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 9px 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23787b86' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+
+    .form-select:focus, .form-input:focus, .form-textarea:focus { border-color: var(--blue); }
+    .form-select option { background: var(--panel); }
+
+    .form-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+
+    .direction-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dir-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .dir-btn:hover { background: var(--hover); }
+    .dir-btn.active-bullish { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+    .dir-btn.active-bearish { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+    .dir-btn.active-neutral { background: var(--gold-bg); border-color: var(--gold); color: var(--gold); }
+
+    .tf-toggle {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tf-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tf-btn:hover { background: var(--hover); }
+    .tf-btn.active { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+
+    .tags-input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      min-height: 36px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 6px 10px;
+      cursor: text;
+      transition: border-color 0.15s;
+    }
+
+    .tags-input-row:focus-within { border-color: var(--blue); }
+
+    .tag-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: var(--blue-bg);
+      color: #6b8fff;
+      border: 1px solid rgba(41, 98, 255, 0.2);
+    }
+
+    .tag-pill button {
+      background: none;
+      border: none;
+      color: #6b8fff;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    #tags-input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      min-width: 80px;
+      flex: 1;
+    }
+
+    #tags-input::placeholder { color: var(--muted); }
+
+    .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 9px 18px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-cancel:hover { border-color: var(--muted); color: var(--text); }
+
+    .btn-publish {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 9px 22px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-publish:hover { background: #1a4fcc; transform: translateY(-1px); }
+
+    /* ─── TOAST ─── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--panel);
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--green);
+      z-index: 900;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      pointer-events: none;
+    }
+
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ─── DETAIL OVERLAY ─── */
+    #detail-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(6px);
+      z-index: 400;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #detail-overlay.open { display: flex; }
+
+    #detail-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: detail-in 0.25s ease;
+    }
+
+    @keyframes detail-in {
+      from { opacity: 0; transform: scale(0.96) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .detail-chart {
+      height: 160px;
+      background: var(--bg);
+      position: relative;
+      border-radius: 14px 14px 0 0;
+      overflow: hidden;
+    }
+
+    .detail-chart svg { width: 100%; height: 100%; }
+
+    .detail-chart-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, var(--panel) 100%);
+      pointer-events: none;
+    }
+
+    .detail-body { padding: 20px 24px 24px; }
+
+    .detail-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .detail-symbol-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .detail-symbol {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .detail-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .detail-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+
+    .detail-title {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .detail-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    .detail-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+
+    .detail-author-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .detail-author-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .detail-author-name { font-size: 13px; font-weight: 600; }
+    .detail-author-meta { font-size: 11px; color: var(--muted); }
+
+    .detail-stats {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: auto;
+    }
+
+    /* Comments */
+    .comments-section h3 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .comment {
+      display: flex;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comment:last-of-type { border-bottom: none; }
+
+    .comment-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .comment-body { flex: 1; }
+    .comment-author { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+    .comment-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .comment-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+    .comment-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-top: 14px;
+    }
+
+    .comment-input-row .comment-avatar {
+      background: linear-gradient(135deg, #2962ff, #26a69a);
+    }
+
+    #comment-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--text);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      resize: none;
+      min-height: 40px;
+      transition: border-color 0.15s;
+    }
+
+    #comment-input:focus { border-color: var(--blue); }
+    #comment-input::placeholder { color: var(--muted); }
+
+    .btn-comment-submit {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-comment-submit:hover { background: #1a4fcc; }
+
+    /* Related ideas */
+    .related-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .related-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+    .related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .related-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .related-card:hover { border-color: rgba(41,98,255,0.3); background: var(--hover); }
+
+    .related-symbol { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; margin-bottom: 5px; }
+    .related-title { font-size: 11px; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* Filter animations */
+    .ideas-fade-out { opacity: 0; transition: opacity 0.15s; }
+    .ideas-fade-in { opacity: 1; transition: opacity 0.2s; }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 1100px) {
+      #ideas-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      #nav { padding: 0 14px; gap: 0; }
+      .nav-badge { display: none; }
+      #page { padding: 0 12px 40px; }
+      #filter-bar { gap: 8px; }
+      #content-row { grid-template-columns: 1fr; }
+      #sidebar { position: static; }
+      #ideas-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .related-grid { grid-template-columns: 1fr; }
+      #post-modal { padding: 18px 16px 24px; }
+      #detail-overlay { padding: 0; align-items: flex-end; }
+      #detail-panel { border-radius: 14px 14px 0 0; max-height: 95vh; }
+    }
+
+    @media (max-width: 480px) {
+      .filter-tab { padding: 5px 10px; font-size: 11px; }
+      #search-input { width: 160px; }
+      #search-input:focus { width: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav id="nav">
+  <a href="./index.html" class="nav-brand">
+    <span class="nav-dot"></span>
+    <span>Arthex · finstack-mcp</span>
+  </a>
+  <div class="nav-sep"></div>
+  <div class="nav-tabs">
+    <a href="./dashboard.html" class="nav-tab">Dashboard</a>
+    <span class="nav-tab active" style="color:var(--text);font-weight:600;cursor:default;">Ideas</span>
+    <a href="./dashboard.html#screener" class="nav-tab">Screener</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-badge">v0.6.1 · 58 tools</span>
+    <button class="btn-pro">PRO</button>
+  </div>
+</nav>
+
+<!-- ─── PAGE ─── -->
+<div id="page">
+
+  <!-- Filter Bar -->
+  <div id="filter-bar">
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="bullish">▲ Bullish</button>
+      <button class="filter-tab" data-filter="bearish">▼ Bearish</button>
+      <button class="filter-tab" data-filter="nifty">Nifty</button>
+      <button class="filter-tab" data-filter="largecap">NSE Large Cap</button>
+      <button class="filter-tab" data-filter="hot">🔥 Hot</button>
+    </div>
+    <div class="filter-sep"></div>
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="search-input" type="text" placeholder="Search ideas..." autocomplete="off" />
+    </div>
+    <button class="btn-post-idea" id="open-post-modal">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Post Idea
+    </button>
+  </div>
+
+  <!-- Content Row -->
+  <div id="content-row">
+
+    <!-- Ideas Grid -->
+    <div>
+      <div id="ideas-grid">
+        <!-- cards injected by JS -->
+        <div id="empty-state" style="display:none;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <p>No ideas match your filter.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <!-- Trending -->
+      <div class="sidebar-card">
+        <div class="sidebar-header">Trending Symbols</div>
+        <div class="trending-list">
+          <div class="trending-item">
+            <span class="trending-rank">1</span>
+            <span class="trending-symbol">NIFTY50</span>
+            <span class="trending-count">47 ideas</span>
+          </div>
+          <div class="trending-item">
+            <span class="trending-rank">2</span>
+            <span class="trending-symbol">RELIANCE</span>
+            <span class="trending-count">31 ideas</span>
+          </div>
+          <div class="trending-item">
+            <span class="trending-rank">3</span>
+            <span class="trending-symbol">HDFCBANK</span>
+            <span class="trending-count">24 ideas</span>
+          </div>
+          <div class="trending-item">
+            <span class="trending-rank">4</span>
+            <span class="trending-symbol">BANKNIFTY</span>
+            <span class="trending-count">22 ideas</span>
+          </div>
+          <div class="trending-item">
+            <span class="trending-rank">5</span>
+            <span class="trending-symbol">SBIN</span>
+            <span class="trending-count">18 ideas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Contributors -->
+      <div class="sidebar-card">
+        <div class="sidebar-header">Top Contributors This Week</div>
+        <div class="trending-list">
+          <div class="contributor-item">
+            <span class="contributor-rank">1</span>
+            <div class="contributor-avatar" style="background: linear-gradient(135deg, #26a69a, #2962ff);">FF</div>
+            <div class="contributor-info">
+              <div class="contributor-name">fundamentals_first</div>
+              <div class="contributor-ideas">12 ideas</div>
+            </div>
+            <span class="verified-badge" title="Verified">✓</span>
+          </div>
+          <div class="contributor-item">
+            <span class="contributor-rank">2</span>
+            <div class="contributor-avatar" style="background: linear-gradient(135deg, #f7a600, #ef5350);">OG</div>
+            <div class="contributor-info">
+              <div class="contributor-name">options_guru_99</div>
+              <div class="contributor-ideas">9 ideas</div>
+            </div>
+          </div>
+          <div class="contributor-item">
+            <span class="contributor-rank">3</span>
+            <div class="contributor-avatar" style="background: linear-gradient(135deg, #2962ff, #26a69a);">VT</div>
+            <div class="contributor-info">
+              <div class="contributor-name">vishwanath_trades</div>
+              <div class="contributor-ideas">8 ideas</div>
+            </div>
+            <span class="verified-badge" title="Verified">✓</span>
+          </div>
+          <div class="contributor-item">
+            <span class="contributor-rank">4</span>
+            <div class="contributor-avatar" style="background: linear-gradient(135deg, #ef5350, #f7a600);">CM</div>
+            <div class="contributor-info">
+              <div class="contributor-name">chartmaster_in</div>
+              <div class="contributor-ideas">7 ideas</div>
+            </div>
+          </div>
+          <div class="contributor-item">
+            <span class="contributor-rank">5</span>
+            <div class="contributor-avatar" style="background: linear-gradient(135deg, #26a69a, #f7a600);">AD</div>
+            <div class="contributor-info">
+              <div class="contributor-name">auto_deep_dive</div>
+              <div class="contributor-ideas">6 ideas</div>
+            </div>
+            <span class="verified-badge" title="Verified">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="sidebar-card">
+        <div class="sidebar-header">About Arthex Ideas</div>
+        <div class="sidebar-about">
+          <p>Community-driven market analysis for Indian traders. Every idea is posted by real community members.</p>
+          <p style="color:var(--muted);font-size:11px;">Free to read · Free to post.<br/>Powered by finstack-mcp data.</p>
+          <a href="./dashboard.html" class="btn-dashboard-link">View Dashboard →</a>
+        </div>
+      </div>
+    </aside>
+
+  </div><!-- /content-row -->
+</div><!-- /page -->
+
+<!-- ─── POST IDEA MODAL ─── -->
+<div id="modal-overlay">
+  <div id="post-modal">
+    <div class="modal-title">
+      <span>Post a New Idea</span>
+      <button class="modal-close" id="close-modal">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label">Symbol</label>
+        <select class="form-select" id="form-symbol">
+          <option>RELIANCE</option><option>NIFTY50</option><option>BANKNIFTY</option>
+          <option>HDFCBANK</option><option>SBIN</option><option>INFY</option>
+          <option>TCS</option><option>WIPRO</option><option>TATAMOTORS</option>
+          <option>BAJFINANCE</option><option>ICICIBANK</option><option>KOTAKBANK</option>
+          <option>AXISBANK</option><option>LT</option><option>MARUTI</option>
+          <option>ASIANPAINT</option><option>TITAN</option><option>SUNPHARMA</option>
+          <option>POWERGRID</option><option>NTPC</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Timeframe</label>
+        <div class="tf-toggle">
+          <button class="tf-btn" data-tf="1H">1H</button>
+          <button class="tf-btn active" data-tf="4H">4H</button>
+          <button class="tf-btn" data-tf="1D">1D</button>
+          <button class="tf-btn" data-tf="1W">1W</button>
+          <button class="tf-btn" data-tf="1M">1M</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-field" style="margin-bottom:14px;">
+      <label class="form-label">Direction</label>
+      <div class="direction-toggle">
+        <button class="dir-btn active-bullish" data-dir="bullish">▲ Bullish</button>
+        <button class="dir-btn" data-dir="bearish">▼ Bearish</button>
+        <button class="dir-btn" data-dir="neutral">→ Neutral</button>
+      </div>
+    </div>
+    <div class="form-field" style="margin-bottom:14px;">
+      <label class="form-label">Title</label>
+      <input class="form-input" id="form-title" type="text" placeholder="Brief, clear title for your idea..." maxlength="120" />
+    </div>
+    <div class="form-field" style="margin-bottom:14px;">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" id="form-desc" placeholder="Explain your analysis — levels, indicators, catalysts, risk/reward..."></textarea>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Tags</label>
+      <div class="tags-input-row" id="tags-container">
+        <input id="tags-input" type="text" placeholder="+ add tag, press Enter" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancel-modal">Cancel</button>
+      <button class="btn-publish" id="publish-btn">Publish Idea →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DETAIL OVERLAY ─── -->
+<div id="detail-overlay">
+  <div id="detail-panel">
+    <!-- injected by JS -->
+  </div>
+</div>
+
+<!-- ─── TOAST ─── -->
+<div id="toast">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+  <span id="toast-msg">Idea published!</span>
+</div>
+
+<script>
+'use strict';
+
+// ─── DATA ───────────────────────────────────────────────────────
+const BASE_IDEAS = [
+  {
+    id: 1, symbol: 'RELIANCE', direction: 'bullish',
+    title: 'Reliance breaking out of 6-month consolidation — target ₹3,100',
+    author: 'vishwanath_trades', avatar: 'VT', verified: true,
+    timeframe: '1D', published: '2 hours ago',
+    description: 'Classic cup & handle formation on the daily chart. OBV confirming with breakout above ₹2,850 resistance. RSI at 62 — not overbought yet. FII bought ₹450 Cr last week. Target: ₹3,100 in 45 days. SL: ₹2,790.',
+    likes: 312, comments: 24, views: 2140,
+    tags: ['breakout', 'cup-handle', 'fii-buying'],
+    chartData: { start: 2400, end: 2891, trend: 'up' }
+  },
+  {
+    id: 2, symbol: 'NIFTY50', direction: 'bearish',
+    title: 'Nifty forming H&S pattern — watch for breakdown below 24,400',
+    author: 'chartmaster_in', avatar: 'CM', verified: false,
+    timeframe: '4H', published: '5 hours ago',
+    description: 'Head and Shoulders pattern visible on the 4H chart. Neckline at 24,400. VIX rising from 13.8 to 14.2. FII net sellers for 3rd consecutive session. If 24,400 breaks, next support at 23,800.',
+    likes: 187, comments: 31, views: 3210,
+    tags: ['head-shoulders', 'nifty', 'resistance'],
+    chartData: { start: 23800, end: 24812, trend: 'flat' }
+  },
+  {
+    id: 3, symbol: 'HDFCBANK', direction: 'bullish',
+    title: 'HDFC Bank — golden cross forming, strong institutional support',
+    author: 'deepa_analyst', avatar: 'DA', verified: true,
+    timeframe: '1W', published: '1 day ago',
+    description: 'MA50 about to cross above MA200 — golden cross. DII consistently buying for 5 sessions. NIM expansion story intact. Q4 results beat expectations. Risk/reward 1:3 at current levels.',
+    likes: 94, comments: 8, views: 876,
+    tags: ['golden-cross', 'banking', 'dii-buying'],
+    chartData: { start: 1450, end: 1642, trend: 'up' }
+  },
+  {
+    id: 4, symbol: 'BANKNIFTY', direction: 'bullish',
+    title: 'Bank Nifty options — 52,000 CE open interest buildup for this expiry',
+    author: 'options_guru_99', avatar: 'OG', verified: false,
+    timeframe: '1D', published: '3 hours ago',
+    description: 'Massive CE writing at 52,500 and 53,000 strikes. PCR at 0.92 — slightly bearish but improving. Max Pain at 52,000. Expect rangebound 51,500–52,500 this week.',
+    likes: 223, comments: 19, views: 1890,
+    tags: ['options', 'pcr', 'max-pain', 'banknifty'],
+    chartData: { start: 50000, end: 52341, trend: 'up' }
+  },
+  {
+    id: 5, symbol: 'SBIN', direction: 'bullish',
+    title: 'SBI — NPA cycle turning, strong buy for 2026',
+    author: 'fundamentals_first', avatar: 'FF', verified: true,
+    timeframe: '1M', published: '2 days ago',
+    description: 'Gross NPA at 4-year low of 2.24%. Loan growth 14% YoY. RoE expanding to 19.2%. At 1.1x book value — undervalued vs private peers at 2-3x. PSU banking sector getting re-rated. Target ₹950 in 12 months.',
+    likes: 445, comments: 52, views: 5120,
+    tags: ['psu-bank', 'fundamental', 'undervalued', 'npa-cycle'],
+    chartData: { start: 634, end: 812, trend: 'up' }
+  },
+  {
+    id: 6, symbol: 'INFY', direction: 'bearish',
+    title: 'Infosys — headwinds from US discretionary spending cuts',
+    author: 'it_sector_watch', avatar: 'IS', verified: false,
+    timeframe: '1W', published: '4 hours ago',
+    description: 'Revenue guidance cut from 4-7% to 3.5-5.5%. US BFSI clients deferring projects. EBIT margin pressure from salary hikes. Technically at 200-day MA support — if this breaks, next support at ₹1,420.',
+    likes: 78, comments: 14, views: 934,
+    tags: ['it-sector', 'guidance-cut', 'resistance'],
+    chartData: { start: 1888, end: 1567, trend: 'down' }
+  },
+  {
+    id: 7, symbol: 'RELIANCE', direction: 'bullish',
+    title: 'Jio Financial listed at premium — Reliance sum-of-parts undervalued',
+    author: 'sumofparts_analyst', avatar: 'SP', verified: true,
+    timeframe: '1M', published: '1 day ago',
+    description: 'Adding Jio Financial (₹280/share × 6.1% stake), Jio Platforms, Retail separately: combined NAV of ₹3,400+. Core energy business at near-zero value. Deep value play for patient investors.',
+    likes: 198, comments: 27, views: 2340,
+    tags: ['sum-of-parts', 'jio', 'value'],
+    chartData: { start: 2400, end: 2891, trend: 'up' }
+  },
+  {
+    id: 8, symbol: 'BAJFINANCE', direction: 'bearish',
+    title: 'Bajaj Finance — premium valuation at risk as RBI scrutiny increases',
+    author: 'risk_manager_in', avatar: 'RM', verified: false,
+    timeframe: '1D', published: '6 hours ago',
+    description: "RBI's draft guidelines on digital lending could impact Bajaj's 40%+ digital disbursals. Credit costs inching up. Stock at 34x trailing P/E vs 5-year average of 28x. Overvalued. SL ₹7,200 for short.",
+    likes: 112, comments: 33, views: 1456,
+    tags: ['nbfc', 'rbi-risk', 'valuation'],
+    chartData: { start: 8190, end: 6789, trend: 'down' }
+  },
+  {
+    id: 9, symbol: 'TATAMOTORS', direction: 'bullish',
+    title: 'Tata Motors — JLR margin expansion + EV optionality',
+    author: 'auto_deep_dive', avatar: 'AD', verified: true,
+    timeframe: '1W', published: '3 days ago',
+    description: 'JLR EBIT margin hit 9.4% in Q3 — highest in 7 years. India CV segment gaining share. Tata.ev brand at 12% EV market share. Net debt-free by FY27. Technical: W bottom forming on weekly. Target ₹950.',
+    likes: 334, comments: 41, views: 4120,
+    tags: ['auto', 'jlr', 'ev', 'turnaround'],
+    chartData: { start: 620, end: 780, trend: 'up' }
+  },
+  {
+    id: 10, symbol: 'NIFTY50', direction: 'bullish',
+    title: 'Pre-budget rally setup — historical data says buy now',
+    author: 'seasonal_trader', avatar: 'ST', verified: false,
+    timeframe: '1M', published: '1 day ago',
+    description: 'Analysed last 10 Union Budget cycles. Nifty rallied in the 30 days before budget 7/10 times, avg gain 4.2%. FII positioning light — room to add. Domestic flows strong. Risk: global selloff or geopolitical event.',
+    likes: 267, comments: 38, views: 3780,
+    tags: ['seasonal', 'budget', 'statistical'],
+    chartData: { start: 21000, end: 24812, trend: 'up' }
+  },
+  {
+    id: 11, symbol: 'WIPRO', direction: 'neutral',
+    title: 'Wipro — turnaround still in early stages, accumulate on dips',
+    author: 'value_hunter_in', avatar: 'VH', verified: true,
+    timeframe: '1W', published: '5 hours ago',
+    description: 'New CEO\'s restructuring showing early results. Attrition down to 14.6% from 23%. Deal TCV up 18% YoY. Not out of woods yet but risk/reward improving. Accumulate ₹460–480. Target ₹560 over 9 months.',
+    likes: 55, comments: 9, views: 612,
+    tags: ['it-sector', 'turnaround', 'accumulate'],
+    chartData: { start: 392, end: 487, trend: 'up' }
+  },
+  {
+    id: 12, symbol: 'HDFCBANK', direction: 'neutral',
+    title: 'HDFC Bank merger integration — 18 months in, what changed?',
+    author: 'banking_research', avatar: 'BR', verified: true,
+    timeframe: '1M', published: '2 days ago',
+    description: 'Post merger: loan/deposit ratio improved to 87% from 110%. CASA ratio stabilised at 38%. Merger drag fading. ROA trajectory upward to 1.8% by FY27. Neutral for now — wait for Q4 results confirmation.',
+    likes: 143, comments: 22, views: 1890,
+    tags: ['banking', 'merger', 'hdfc'],
+    chartData: { start: 1363, end: 1642, trend: 'up' }
+  }
+];
+
+const FAKE_COMMENTS = {
+  bullish: [
+    { author: 'nse_bull_2024', avatar: 'NB', color: '#26a69a', text: 'Great setup! The volume confirmation makes this very convincing. I\'ve been accumulating at these levels.', time: '1 hour ago' },
+    { author: 'quant_desk_in', avatar: 'QD', color: '#2962ff', text: 'RSI divergence also supports the bullish case. Keep an eye on FII data this week.', time: '3 hours ago' },
+    { author: 'priya_markets', avatar: 'PM', color: '#f7a600', text: 'Added to my watchlist. What\'s your stop loss if the setup fails?', time: '5 hours ago' },
+    { author: 'momentum_hunter', avatar: 'MH', color: '#ef5350', text: 'Similar pattern played out on Tata Steel last quarter — worked beautifully. Good luck!', time: '8 hours ago' }
+  ],
+  bearish: [
+    { author: 'contra_view', avatar: 'CV', color: '#ef5350', text: 'Bearish thesis is solid. Global macro also not supportive for risk assets right now.', time: '2 hours ago' },
+    { author: 'options_flow', avatar: 'OF', color: '#2962ff', text: 'Put OI data on weekly expiry is also building. Aligns with your view.', time: '4 hours ago' },
+    { author: 'fii_tracker', avatar: 'FT', color: '#26a69a', text: 'FII selling has been consistent. Until that reverses, hard to be bullish.', time: '6 hours ago' },
+    { author: 'vix_watch', avatar: 'VW', color: '#f7a600', text: 'VIX chart is the key — once it spikes above 16, panic selling can accelerate.', time: '1 day ago' }
+  ],
+  neutral: [
+    { author: 'wait_and_watch', avatar: 'WW', color: '#f7a600', text: 'Good balanced view. I\'m also on the sidelines until Q4 results are out.', time: '30 min ago' },
+    { author: 'sector_rotate', avatar: 'SR', color: '#2962ff', text: 'Risk/reward isn\'t great right now. Better opportunities in PSU space.', time: '2 hours ago' },
+    { author: 'long_only_in', avatar: 'LO', color: '#26a69a', text: 'SIP investors can ignore the noise and keep buying at current levels.', time: '5 hours ago' },
+    { author: 'tech_analyst_7', avatar: 'TA', color: '#ef5350', text: 'Waiting for a clear breakout or breakdown. No point trading the range.', time: '1 day ago' }
+  ]
+};
+
+// ─── STATE ──────────────────────────────────────────────────────
+let IDEAS = [];
+let likedIds = new Set();
+let activeFilter = 'all';
+let searchQuery = '';
+let selectedDirection = 'bullish';
+let selectedTf = '4H';
+let formTags = [];
+let nextId = 100;
+
+// ─── LOCALSTORAGE ───────────────────────────────────────────────
+function loadState() {
+  try {
+    const saved = localStorage.getItem('arthex_ideas_v1');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      IDEAS = parsed.ideas || [...BASE_IDEAS];
+      likedIds = new Set(parsed.likedIds || []);
+      nextId = parsed.nextId || 100;
+    } else {
+      IDEAS = [...BASE_IDEAS];
+    }
+  } catch (e) {
+    IDEAS = [...BASE_IDEAS];
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('arthex_ideas_v1', JSON.stringify({
+      ideas: IDEAS,
+      likedIds: [...likedIds],
+      nextId
+    }));
+  } catch (e) {}
+}
+
+// ─── SPARKLINE GENERATOR ────────────────────────────────────────
+function generateSparklinePoints(chartData, width, height, padding = 6) {
+  const { start, end, trend } = chartData;
+  const count = 22;
+  const points = [];
+  const range = Math.abs(end - start);
+
+  for (let i = 0; i < count; i++) {
+    const progress = i / (count - 1);
+    let base;
+    if (trend === 'up') {
+      base = start + (end - start) * Math.pow(progress, 0.8);
+    } else if (trend === 'down') {
+      base = start + (end - start) * Math.pow(progress, 0.8);
+    } else {
+      // flat / H&S shape
+      const midPeak = Math.sin(progress * Math.PI * 1.2) * range * 0.4;
+      base = start + (end - start) * progress * 0.1 + midPeak;
+    }
+    const noise = (Math.sin(i * 7.3 + start) * 0.5 + Math.sin(i * 3.1) * 0.3) * range * 0.08;
+    points.push(base + noise);
+  }
+
+  const minVal = Math.min(...points);
+  const maxVal = Math.max(...points);
+  const valRange = maxVal - minVal || 1;
+
+  return points.map((v, i) => {
+    const x = padding + (i / (count - 1)) * (width - padding * 2);
+    const y = padding + (1 - (v - minVal) / valRange) * (height - padding * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+}
+
+function getChartColor(direction) {
+  if (direction === 'bullish') return '#26a69a';
+  if (direction === 'bearish') return '#ef5350';
+  return '#2962ff';
+}
+
+function buildSparklineSVG(idea, width, height) {
+  const pts = generateSparklinePoints(idea.chartData, width, height);
+  const color = getChartColor(idea.direction);
+
+  // Build gradient fill
+  const ptArr = pts.split(' ').map(p => p.split(',').map(Number));
+  const firstX = ptArr[0][0], lastX = ptArr[ptArr.length - 1][0];
+  const lastY = ptArr[ptArr.length - 1][1];
+  const fillPts = pts + ` ${lastX},${height} ${firstX},${height}`;
+  const gradId = `g${idea.id}`;
+
+  return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${color}" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <polygon points="${fillPts}" fill="url(#${gradId})"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// ─── FORMAT HELPERS ─────────────────────────────────────────────
+function fmtNum(n) {
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return String(n);
+}
+
+function dirLabel(d) {
+  if (d === 'bullish') return '▲ BULLISH';
+  if (d === 'bearish') return '▼ BEARISH';
+  return '→ NEUTRAL';
+}
+
+function avatarGradient(avatar) {
+  const chars = avatar.charCodeAt(0) + (avatar.charCodeAt(1) || 0);
+  const colors = [
+    ['#2962ff','#26a69a'], ['#26a69a','#f7a600'], ['#ef5350','#f7a600'],
+    ['#f7a600','#2962ff'], ['#26a69a','#ef5350'], ['#2962ff','#ef5350']
+  ];
+  return colors[chars % colors.length];
+}
+
+// ─── CARD BUILDER ───────────────────────────────────────────────
+function buildCard(idea) {
+  const liked = likedIds.has(idea.id);
+  const [c1, c2] = avatarGradient(idea.avatar);
+  const card = document.createElement('div');
+  card.className = 'idea-card';
+  card.dataset.id = idea.id;
+
+  card.innerHTML = `
+    <div class="card-chart">
+      ${buildSparklineSVG(idea, 300, 72)}
+      <div class="card-chart-overlay"></div>
+    </div>
+    <div class="card-body">
+      <div class="card-header-row">
+        <span class="card-symbol">${idea.symbol}</span>
+        <span class="direction-badge ${idea.direction}">${dirLabel(idea.direction)}</span>
+        <span class="card-tf">${idea.timeframe}</span>
+      </div>
+      <div class="card-title">${escHtml(idea.title)}</div>
+      <div class="card-desc">${escHtml(idea.description)}</div>
+      <div class="card-tags">
+        ${idea.tags.slice(0, 3).map(t => `<span class="tag">#${t}</span>`).join('')}
+      </div>
+      <div class="card-author-row">
+        <div class="avatar" style="background:linear-gradient(135deg,${c1},${c2})">${idea.avatar}</div>
+        <span class="author-name">${idea.author}</span>
+        ${idea.verified ? '<span class="verified-badge" title="Verified">✓</span>' : ''}
+      </div>
+      <div class="card-footer">
+        <button class="stat-btn like-btn${liked ? ' liked' : ''}" data-id="${idea.id}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span class="like-count">${fmtNum(idea.likes)}</span>
+        </button>
+        <span class="stat-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          ${idea.comments}
+        </span>
+        <span class="stat-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          ${fmtNum(idea.views)}
+        </span>
+        <span class="stat-time">${idea.published}</span>
+      </div>
+    </div>`;
+
+  // Click card body (not like button) → open detail
+  card.addEventListener('click', (e) => {
+    if (!e.target.closest('.like-btn')) {
+      openDetail(idea.id);
+    }
+  });
+
+  // Like button
+  card.querySelector('.like-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleLike(idea.id, card);
+  });
+
+  return card;
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ─── TOGGLE LIKE ────────────────────────────────────────────────
+function toggleLike(id, cardEl) {
+  const idea = IDEAS.find(i => i.id === id);
+  if (!idea) return;
+
+  const btn = cardEl.querySelector('.like-btn');
+  const countEl = cardEl.querySelector('.like-count');
+
+  if (likedIds.has(id)) {
+    likedIds.delete(id);
+    idea.likes--;
+    btn.classList.remove('liked');
+    btn.querySelector('svg').setAttribute('fill', 'none');
+  } else {
+    likedIds.add(id);
+    idea.likes++;
+    btn.classList.add('liked');
+    btn.querySelector('svg').setAttribute('fill', 'currentColor');
+    btn.classList.add('like-burst');
+    setTimeout(() => btn.classList.remove('like-burst'), 350);
+  }
+
+  countEl.textContent = fmtNum(idea.likes);
+  saveState();
+}
+
+// ─── FILTER LOGIC ───────────────────────────────────────────────
+const LARGECAP = new Set(['RELIANCE','HDFCBANK','INFY','TCS','ICICIBANK','WIPRO','SBIN','KOTAKBANK','AXISBANK','LT','TATAMOTORS','BAJFINANCE','MARUTI','TITAN','ASIANPAINT','SUNPHARMA']);
+
+function filterIdeas() {
+  let result = [...IDEAS];
+
+  if (activeFilter === 'bullish') result = result.filter(i => i.direction === 'bullish');
+  else if (activeFilter === 'bearish') result = result.filter(i => i.direction === 'bearish');
+  else if (activeFilter === 'nifty') result = result.filter(i => i.symbol.includes('NIFTY') || i.symbol === 'BANKNIFTY');
+  else if (activeFilter === 'largecap') result = result.filter(i => LARGECAP.has(i.symbol));
+  else if (activeFilter === 'hot') result = [...result].sort((a, b) => b.likes - a.likes);
+
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    result = result.filter(i =>
+      i.title.toLowerCase().includes(q) ||
+      i.description.toLowerCase().includes(q) ||
+      i.symbol.toLowerCase().includes(q) ||
+      i.author.toLowerCase().includes(q) ||
+      i.tags.some(t => t.toLowerCase().includes(q))
+    );
+  }
+
+  return result;
+}
+
+// ─── RENDER GRID ────────────────────────────────────────────────
+const grid = document.getElementById('ideas-grid');
+const emptyState = document.getElementById('empty-state');
+
+let observer;
+
+function setupObserver() {
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+}
+
+function renderGrid(animate = true) {
+  setupObserver();
+
+  // Fade out
+  const existing = grid.querySelectorAll('.idea-card');
+  if (animate && existing.length > 0) {
+    existing.forEach(c => { c.style.transition = 'opacity 0.15s'; c.style.opacity = '0'; });
+    setTimeout(() => _doRender(), 160);
+  } else {
+    _doRender();
+  }
+}
+
+function _doRender() {
+  // Clear cards but not empty-state
+  const existingCards = grid.querySelectorAll('.idea-card');
+  existingCards.forEach(c => c.remove());
+
+  const filtered = filterIdeas();
+
+  if (filtered.length === 0) {
+    emptyState.style.display = 'block';
+    grid.appendChild(emptyState);
+    return;
+  }
+
+  emptyState.style.display = 'none';
+
+  filtered.forEach((idea, idx) => {
+    const card = buildCard(idea);
+    card.style.animationDelay = `${idx * 40}ms`;
+    grid.appendChild(card);
+    // Trigger observer on next frame
+    requestAnimationFrame(() => observer.observe(card));
+  });
+}
+
+// ─── FILTER TABS ────────────────────────────────────────────────
+document.querySelectorAll('.filter-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderGrid(true);
+  });
+});
+
+// ─── SEARCH ─────────────────────────────────────────────────────
+let searchTimeout;
+document.getElementById('search-input').addEventListener('input', (e) => {
+  searchQuery = e.target.value.trim();
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => renderGrid(true), 200);
+});
+
+// ─── POST MODAL ─────────────────────────────────────────────────
+const modalOverlay = document.getElementById('modal-overlay');
+
+function openModal() {
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('open-post-modal').addEventListener('click', openModal);
+document.getElementById('close-modal').addEventListener('click', closeModal);
+document.getElementById('cancel-modal').addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) closeModal();
+});
+
+// Direction toggle
+let _selectedDir = 'bullish';
+document.querySelectorAll('.dir-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    _selectedDir = btn.dataset.dir;
+    document.querySelectorAll('.dir-btn').forEach(b => {
+      b.className = 'dir-btn';
+    });
+    btn.classList.add(`active-${_selectedDir}`);
+  });
+});
+
+// Timeframe toggle
+let _selectedTf = '4H';
+document.querySelectorAll('.tf-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    _selectedTf = btn.dataset.tf;
+    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Tags input
+let _formTags = [];
+const tagsContainer = document.getElementById('tags-container');
+const tagsInputEl = document.getElementById('tags-input');
+
+function renderTagPills() {
+  const existing = tagsContainer.querySelectorAll('.tag-pill');
+  existing.forEach(p => p.remove());
+  _formTags.forEach((tag, i) => {
+    const pill = document.createElement('span');
+    pill.className = 'tag-pill';
+    pill.innerHTML = `#${escHtml(tag)} <button type="button" data-i="${i}">✕</button>`;
+    pill.querySelector('button').addEventListener('click', () => {
+      _formTags.splice(i, 1);
+      renderTagPills();
+    });
+    tagsContainer.insertBefore(pill, tagsInputEl);
+  });
+}
+
+tagsInputEl.addEventListener('keydown', (e) => {
+  if ((e.key === 'Enter' || e.key === ',') && tagsInputEl.value.trim()) {
+    e.preventDefault();
+    const tag = tagsInputEl.value.trim().replace(/^#/, '').replace(/,/g, '');
+    if (tag && _formTags.length < 5) {
+      _formTags.push(tag);
+      renderTagPills();
+      tagsInputEl.value = '';
+    }
+  } else if (e.key === 'Backspace' && !tagsInputEl.value && _formTags.length > 0) {
+    _formTags.pop();
+    renderTagPills();
+  }
+});
+
+// Publish
+document.getElementById('publish-btn').addEventListener('click', () => {
+  const symbol = document.getElementById('form-symbol').value.trim();
+  const title = document.getElementById('form-title').value.trim();
+  const desc = document.getElementById('form-desc').value.trim();
+
+  if (!title) {
+    document.getElementById('form-title').focus();
+    document.getElementById('form-title').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('form-title').style.borderColor = '', 1500);
+    return;
+  }
+
+  const trend = _selectedDir === 'bullish' ? 'up' : _selectedDir === 'bearish' ? 'down' : 'flat';
+  const newIdea = {
+    id: nextId++,
+    symbol: symbol || 'NIFTY50',
+    direction: _selectedDir,
+    title,
+    author: 'you',
+    avatar: 'YO',
+    verified: false,
+    timeframe: _selectedTf,
+    published: 'just now',
+    description: desc || 'No description provided.',
+    likes: 0,
+    comments: 0,
+    views: 1,
+    tags: _formTags.length ? _formTags : ['new-idea'],
+    chartData: { start: 100, end: _selectedDir === 'bullish' ? 118 : _selectedDir === 'bearish' ? 84 : 102, trend }
+  };
+
+  IDEAS.unshift(newIdea);
+  saveState();
+  closeModal();
+
+  // Reset form
+  document.getElementById('form-title').value = '';
+  document.getElementById('form-desc').value = '';
+  _formTags = [];
+  renderTagPills();
+
+  // Re-render (all filter so new idea shows)
+  activeFilter = 'all';
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-filter="all"]').classList.add('active');
+  renderGrid(false);
+
+  showToast('Idea published! 🎉');
+});
+
+// ─── TOAST ──────────────────────────────────────────────────────
+const toastEl = document.getElementById('toast');
+const toastMsg = document.getElementById('toast-msg');
+let toastTimer;
+
+function showToast(msg) {
+  toastMsg.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3200);
+}
+
+// ─── DETAIL VIEW ────────────────────────────────────────────────
+const detailOverlay = document.getElementById('detail-overlay');
+const detailPanel = document.getElementById('detail-panel');
+
+function openDetail(id) {
+  const idea = IDEAS.find(i => i.id === id);
+  if (!idea) return;
+
+  const [c1, c2] = avatarGradient(idea.avatar);
+  const liked = likedIds.has(idea.id);
+  const comments = FAKE_COMMENTS[idea.direction] || FAKE_COMMENTS.bullish;
+  const related = IDEAS.filter(i => i.id !== idea.id && (i.symbol === idea.symbol || i.direction === idea.direction)).slice(0, 2);
+
+  detailPanel.innerHTML = `
+    <div class="detail-chart">
+      ${buildSparklineSVG(idea, 720, 160)}
+      <div class="detail-chart-gradient"></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-header-row">
+        <div>
+          <div class="detail-symbol-row">
+            <span class="detail-symbol">${idea.symbol}</span>
+            <span class="direction-badge ${idea.direction}">${dirLabel(idea.direction)}</span>
+            <span class="card-tf">${idea.timeframe}</span>
+          </div>
+        </div>
+        <button class="detail-close" id="close-detail">✕</button>
+      </div>
+
+      <div class="detail-title">${escHtml(idea.title)}</div>
+      <div class="detail-desc">${escHtml(idea.description)}</div>
+
+      <div class="detail-tags">
+        ${idea.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
+      </div>
+
+      <div class="detail-author-row">
+        <div class="detail-author-avatar" style="background:linear-gradient(135deg,${c1},${c2})">${idea.avatar}</div>
+        <div>
+          <div class="detail-author-name">${idea.author}${idea.verified ? ' <span class="verified-badge">✓</span>' : ''}</div>
+          <div class="detail-author-meta">Published ${idea.published}</div>
+        </div>
+        <div class="detail-stats">
+          <span class="stat-btn detail-like-btn${liked ? ' liked' : ''}" data-id="${idea.id}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span class="detail-like-count">${fmtNum(idea.likes)}</span>
+          </span>
+          <span class="stat-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            ${fmtNum(idea.views)}
+          </span>
+        </div>
+      </div>
+
+      <div class="comments-section">
+        <h3>Comments (${idea.comments + comments.length})</h3>
+        ${comments.map(c => `
+          <div class="comment">
+            <div class="comment-avatar" style="background:${c.color}20;color:${c.color};border:1px solid ${c.color}30;">${c.avatar}</div>
+            <div class="comment-body">
+              <div class="comment-author" style="color:${c.color}">${c.author}</div>
+              <div class="comment-text">${escHtml(c.text)}</div>
+              <div class="comment-time">${c.time}</div>
+            </div>
+          </div>`).join('')}
+        <div class="comment-input-row">
+          <div class="comment-avatar" style="background:linear-gradient(135deg,#2962ff,#26a69a)">YO</div>
+          <textarea id="comment-input" placeholder="Share your thoughts on this idea..." rows="1"></textarea>
+          <button class="btn-comment-submit" id="submit-comment">Post</button>
+        </div>
+      </div>
+
+      ${related.length > 0 ? `
+      <div class="related-section">
+        <h3>Related Ideas</h3>
+        <div class="related-grid">
+          ${related.map(r => `
+            <div class="related-card" data-id="${r.id}">
+              <div class="related-symbol">${r.symbol} <span class="direction-badge ${r.direction}" style="font-size:9px;padding:1px 5px;">${dirLabel(r.direction)}</span></div>
+              <div class="related-title">${escHtml(r.title)}</div>
+            </div>`).join('')}
+        </div>
+      </div>` : ''}
+    </div>`;
+
+  // Events
+  detailPanel.querySelector('#close-detail').addEventListener('click', closeDetail);
+
+  const dlBtn = detailPanel.querySelector('.detail-like-btn');
+  if (dlBtn) {
+    dlBtn.addEventListener('click', () => {
+      const cardEl = grid.querySelector(`[data-id="${idea.id}"]`);
+      if (cardEl) {
+        toggleLike(idea.id, cardEl);
+      } else {
+        // toggle without card ref
+        if (likedIds.has(idea.id)) {
+          likedIds.delete(idea.id);
+          idea.likes--;
+          dlBtn.classList.remove('liked');
+          dlBtn.querySelector('svg').setAttribute('fill', 'none');
+        } else {
+          likedIds.add(idea.id);
+          idea.likes++;
+          dlBtn.classList.add('liked');
+          dlBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+        }
+        dlBtn.querySelector('.detail-like-count').textContent = fmtNum(idea.likes);
+        saveState();
+      }
+      // sync detail count
+      dlBtn.querySelector('.detail-like-count').textContent = fmtNum(idea.likes);
+    });
+  }
+
+  // Comment submit
+  const submitBtn = detailPanel.querySelector('#submit-comment');
+  const commentInput = detailPanel.querySelector('#comment-input');
+  if (submitBtn && commentInput) {
+    submitBtn.addEventListener('click', () => {
+      const val = commentInput.value.trim();
+      if (!val) return;
+      const newComment = document.createElement('div');
+      newComment.className = 'comment';
+      newComment.innerHTML = `
+        <div class="comment-avatar" style="background:linear-gradient(135deg,#2962ff,#26a69a);color:#fff">YO</div>
+        <div class="comment-body">
+          <div class="comment-author" style="color:#26a69a">you</div>
+          <div class="comment-text">${escHtml(val)}</div>
+          <div class="comment-time">just now</div>
+        </div>`;
+      commentInput.parentElement.parentElement.insertBefore(newComment, commentInput.parentElement);
+      commentInput.value = '';
+      showToast('Comment posted!');
+    });
+  }
+
+  // Related card clicks
+  detailPanel.querySelectorAll('.related-card').forEach(rc => {
+    rc.addEventListener('click', () => {
+      openDetail(parseInt(rc.dataset.id, 10));
+    });
+  });
+
+  detailOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  detailOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+detailOverlay.addEventListener('click', (e) => {
+  if (e.target === detailOverlay) closeDetail();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeDetail();
+    closeModal();
+  }
+});
+
+// ─── INIT ────────────────────────────────────────────────────────
+loadState();
+renderGrid(false);
+</script>
+</body>
+</html>

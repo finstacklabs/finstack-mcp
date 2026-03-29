@@ -12,22 +12,24 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d1117;
-      --panel: #161b22;
-      --border: #21262d;
-      --border2: #30363d;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --muted2: #6e7681;
-      --green: #238636;
-      --green-bright: #3fb950;
-      --red: #da3633;
-      --red-bright: #f85149;
-      --gold: #d29922;
-      --gold-bg: rgba(210,153,34,0.12);
-      --blue: #1f6feb;
-      --accent: #388bfd;
-      --hover: #1c2128;
+      --bg: #131722;
+      --panel: #1e222d;
+      --panel2: #2a2e39;
+      --border: #2a2e39;
+      --border2: #363a45;
+      --text: #d1d4dc;
+      --muted: #787b86;
+      --muted2: #4c525e;
+      --green: #26a69a;
+      --green-bright: #26a69a;
+      --red: #ef5350;
+      --red-bright: #ef5350;
+      --gold: #f7a600;
+      --gold-bg: rgba(247,166,0,0.10);
+      --blue: #2962ff;
+      --accent: #2962ff;
+      --hover: #2a2e39;
+      --pro-gold: #f7a600;
     }
 
     html, body {
@@ -70,8 +72,7 @@
     }
 
     .nav-brand .dot {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: var(--green-bright);
       box-shadow: 0 0 6px var(--green-bright);
@@ -83,790 +84,532 @@
       50% { opacity: 0.6; box-shadow: 0 0 12px var(--green-bright); }
     }
 
-    .nav-sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+    .nav-sep { width: 1px; height: 20px; background: var(--border2); flex-shrink: 0; }
 
-    .nav-indices {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex: 1;
-    }
+    .nav-indices { display: flex; align-items: center; gap: 20px; flex: 1; }
 
-    .nav-index {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      cursor: default;
-    }
-
+    .nav-index { display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: default; }
     .nav-index .label { color: var(--muted); font-weight: 500; }
     .nav-index .val { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 12px; }
     .nav-index .chg { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-left: auto;
-    }
+    .nav-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
 
-    .market-status {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-    }
-
+    .market-status { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; }
     .status-dot.open { background: var(--green-bright); animation: pulse-dot 1.5s ease-in-out infinite; }
     .status-dot.closed { background: var(--muted2); }
 
     .nav-badge {
-      font-size: 10px;
-      color: var(--muted2);
+      font-size: 10px; color: var(--muted2);
       font-family: 'JetBrains Mono', monospace;
-      border: 1px solid var(--border);
-      padding: 2px 6px;
-      border-radius: 4px;
+      border: 1px solid var(--border2);
+      padding: 2px 6px; border-radius: 4px;
+    }
+
+    #nav-pro-badge {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 4px;
+      background: var(--gold); color: var(--bg);
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+      border: none; font-family: 'Inter', sans-serif;
     }
 
     /* ─── MAIN LAYOUT ─── */
-    #app {
-      display: flex;
-      flex-direction: column;
-      height: calc(100vh - 44px);
-    }
+    #app { display: flex; flex-direction: column; height: calc(100vh - 44px); }
 
-    #main-row {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-      min-height: 0;
-    }
+    #main-row { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
     /* ─── WATCHLIST ─── */
     #watchlist {
-      width: 220px;
-      flex-shrink: 0;
+      width: 220px; flex-shrink: 0;
       border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      background: var(--panel);
-      overflow: hidden;
+      display: flex; flex-direction: column;
+      background: var(--panel); overflow: hidden;
     }
 
     .watchlist-header {
       padding: 10px 12px 8px;
       border-bottom: 1px solid var(--border);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.8px;
-      color: var(--muted);
-      text-transform: uppercase;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.8px; color: var(--muted); text-transform: uppercase;
     }
 
-    .watchlist-search {
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--border);
-    }
+    .watchlist-search { padding: 8px 10px; border-bottom: 1px solid var(--border); }
 
     .watchlist-search input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      border-radius: 5px;
-      padding: 5px 8px;
-      color: var(--text);
-      font-size: 12px;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      transition: border-color 0.15s;
+      width: 100%; background: var(--bg);
+      border: 1px solid var(--border2); border-radius: 5px;
+      padding: 5px 8px; color: var(--text); font-size: 12px;
+      font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.15s;
     }
-
     .watchlist-search input:focus { border-color: var(--accent); }
     .watchlist-search input::placeholder { color: var(--muted2); }
 
-    .watchlist-list {
-      flex: 1;
-      overflow-y: auto;
-    }
-
+    .watchlist-list { flex: 1; overflow-y: auto; }
     .watchlist-list::-webkit-scrollbar { width: 4px; }
     .watchlist-list::-webkit-scrollbar-track { background: transparent; }
     .watchlist-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
     .stock-item {
-      padding: 9px 12px;
-      cursor: pointer;
+      padding: 9px 12px; cursor: pointer;
       border-bottom: 1px solid transparent;
-      transition: background 0.1s;
-      user-select: none;
+      transition: background 0.1s; user-select: none;
     }
-
     .stock-item:hover { background: var(--hover); }
+    .stock-item.active { background: rgba(41,98,255,0.08); border-left: 2px solid var(--accent); }
 
-    .stock-item.active {
-      background: rgba(56, 139, 253, 0.08);
-      border-left: 2px solid var(--accent);
-    }
-
-    .stock-row1 {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2px;
-    }
-
-    .stock-symbol {
-      font-weight: 700;
-      font-size: 12.5px;
-      letter-spacing: 0.2px;
-    }
-
-    .stock-ltp {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12.5px;
-      font-weight: 600;
-    }
-
-    .stock-row2 {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .stock-name {
-      color: var(--muted2);
-      font-size: 10.5px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 110px;
-    }
-
-    .stock-chg {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
-      font-weight: 500;
-    }
+    .stock-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+    .stock-symbol { font-weight: 700; font-size: 12.5px; letter-spacing: 0.2px; }
+    .stock-ltp { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 600; }
+    .stock-row2 { display: flex; justify-content: space-between; align-items: center; }
+    .stock-name { color: var(--muted2); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
+    .stock-chg { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; }
 
     .flash-green { animation: flash-g 0.5s ease; }
     .flash-red   { animation: flash-r 0.5s ease; }
-
-    @keyframes flash-g {
-      0%   { background: rgba(35,134,54,0.4); }
-      100% { background: transparent; }
-    }
-    @keyframes flash-r {
-      0%   { background: rgba(218,54,51,0.4); }
-      100% { background: transparent; }
-    }
+    @keyframes flash-g { 0% { background: rgba(38,166,154,0.3); } 100% { background: transparent; } }
+    @keyframes flash-r { 0% { background: rgba(239,83,80,0.3); } 100% { background: transparent; } }
 
     .watchlist-add {
-      padding: 10px 12px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--muted);
-      font-size: 12px;
-      cursor: pointer;
-      transition: color 0.15s;
+      padding: 10px 12px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 6px;
+      color: var(--muted); font-size: 12px; cursor: pointer; transition: color 0.15s;
     }
-
     .watchlist-add:hover { color: var(--accent); }
     .watchlist-add .plus { font-size: 16px; font-weight: 300; line-height: 1; }
 
+    /* ─── DRAWING TOOLBAR ─── */
+    #draw-toolbar {
+      width: 36px; flex-shrink: 0;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center;
+      padding: 6px 0; gap: 2px;
+      overflow: hidden;
+    }
+
+    .draw-tool {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 4px; cursor: pointer;
+      color: var(--muted); font-size: 14px;
+      transition: background 0.12s, color 0.12s;
+      position: relative; user-select: none;
+      border: 1px solid transparent;
+    }
+    .draw-tool:hover { background: var(--border2); color: var(--text); }
+    .draw-tool.active { background: rgba(41,98,255,0.15); color: var(--accent); border-color: rgba(41,98,255,0.3); }
+
+    .draw-tool .dt-tip {
+      position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%);
+      background: var(--panel2); border: 1px solid var(--border2);
+      border-radius: 4px; padding: 4px 8px;
+      font-size: 10.5px; white-space: nowrap; color: var(--text);
+      pointer-events: none; opacity: 0; transition: opacity 0.15s;
+      z-index: 999; font-family: 'Inter', sans-serif;
+    }
+    .draw-tool:hover .dt-tip { opacity: 1; }
+
+    .draw-sep { width: 20px; height: 1px; background: var(--border2); margin: 4px 0; flex-shrink: 0; }
+
+    .pro-lock-badge {
+      position: absolute; bottom: 2px; right: 2px;
+      font-size: 7px; line-height: 1;
+    }
+
     /* ─── CHART AREA ─── */
     #chart-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      background: var(--bg);
-      min-width: 0;
+      flex: 1; display: flex; flex-direction: column;
+      overflow: hidden; background: var(--bg); min-width: 0;
     }
 
     #chart-header {
       padding: 10px 16px 8px;
       border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-shrink: 0;
+      display: flex; align-items: center; gap: 16px; flex-shrink: 0;
     }
 
-    .chart-symbol-block {}
     .chart-symbol { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
     .chart-name { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .chart-price-block { margin-left: 4px; }
+    .chart-ltp { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; line-height: 1; }
+    .chart-change { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; margin-top: 2px; }
 
-    .chart-price-block {
-      margin-left: 4px;
-    }
-
-    .chart-ltp {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 22px;
-      font-weight: 600;
-      line-height: 1;
-    }
-
-    .chart-change {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      font-weight: 500;
-      margin-top: 2px;
-    }
-
-    .chart-meta {
-      display: flex;
-      gap: 16px;
-      margin-left: auto;
-      align-items: center;
-    }
-
+    .chart-meta { display: flex; gap: 16px; margin-left: auto; align-items: center; }
     .meta-item { font-size: 11px; color: var(--muted); }
     .meta-item span { color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
 
+    .chart-header-right { display: flex; align-items: center; gap: 8px; margin-left: 8px; }
+
+    .export-btn {
+      display: flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 4px;
+      border: 1px solid var(--border2); background: transparent;
+      color: var(--muted); font-size: 11px; font-family: 'Inter', sans-serif;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .export-btn:hover { border-color: var(--accent); color: var(--accent); }
+
     #chart-controls {
-      padding: 6px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
+      padding: 6px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
     }
 
     .tf-tabs {
-      display: flex;
-      gap: 2px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 2px;
+      display: flex; gap: 2px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 6px; padding: 2px;
     }
 
     .tf-tab {
-      padding: 3px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      color: var(--muted);
-      transition: all 0.15s;
-      user-select: none;
+      padding: 3px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+      color: var(--muted); transition: all 0.15s; user-select: none;
+      position: relative;
     }
-
     .tf-tab:hover { color: var(--text); }
     .tf-tab.active { background: var(--border2); color: var(--text); }
+    .tf-tab.pro-tab { color: var(--muted2); }
+    .tf-tab.pro-tab:hover { color: var(--muted); }
+    .tf-tab .tab-lock { font-size: 9px; margin-left: 2px; vertical-align: super; }
 
     .indicator-chips { display: flex; gap: 6px; margin-left: 12px; }
 
     .chip {
-      padding: 3px 9px;
-      border-radius: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid var(--border2);
-      color: var(--muted);
-      background: transparent;
-      font-family: 'JetBrains Mono', monospace;
-      transition: all 0.15s;
-      position: relative;
-      user-select: none;
+      padding: 3px 9px; border-radius: 4px;
+      font-size: 10.5px; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--border2); color: var(--muted);
+      background: transparent; font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s; position: relative; user-select: none;
     }
-
     .chip:hover { border-color: var(--accent); color: var(--accent); }
-    .chip.active { border-color: var(--blue); color: var(--accent); background: rgba(31,111,235,0.1); }
+    .chip.active { border-color: var(--blue); color: var(--accent); background: rgba(41,98,255,0.1); }
 
     .chip-tooltip {
-      position: absolute;
-      bottom: calc(100% + 6px);
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1c2128;
-      border: 1px solid var(--border2);
-      border-radius: 5px;
-      padding: 5px 8px;
-      font-size: 10.5px;
-      white-space: nowrap;
-      color: var(--text);
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.15s;
-      z-index: 999;
-      font-family: 'Inter', sans-serif;
-      font-weight: 400;
+      position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+      background: var(--panel2); border: 1px solid var(--border2); border-radius: 5px;
+      padding: 5px 8px; font-size: 10.5px; white-space: nowrap; color: var(--text);
+      pointer-events: none; opacity: 0; transition: opacity 0.15s;
+      z-index: 999; font-family: 'Inter', sans-serif; font-weight: 400;
     }
-
     .chip:hover .chip-tooltip { opacity: 1; }
 
     #chart-container-wrap {
-      flex: 1;
-      min-height: 0;
-      position: relative;
-      overflow: hidden;
+      flex: 1; min-height: 0; position: relative; overflow: hidden;
+      cursor: crosshair;
     }
+    #chart-container-wrap.cursor-default { cursor: default; }
 
-    #chart-container {
-      position: absolute;
-      inset: 0;
-    }
+    #chart-container { position: absolute; inset: 0; }
 
     .chart-shimmer {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%);
-      background-size: 200% 100%;
-      animation: shimmer 0.8s linear infinite;
-      z-index: 10;
-      pointer-events: none;
+      background-size: 200% 100%; animation: shimmer 0.8s linear infinite;
+      z-index: 10; pointer-events: none;
     }
-
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
     /* ─── INFO PANEL ─── */
     #info-panel {
-      width: 280px;
-      flex-shrink: 0;
+      width: 280px; flex-shrink: 0;
       border-left: 1px solid var(--border);
-      background: var(--panel);
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
+      background: var(--panel); overflow-y: auto;
+      display: flex; flex-direction: column;
     }
-
     #info-panel::-webkit-scrollbar { width: 4px; }
     #info-panel::-webkit-scrollbar-track { background: transparent; }
     #info-panel::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-    .info-top {
-      padding: 12px 14px 10px;
-      border-bottom: 1px solid var(--border);
-    }
-
+    .info-top { padding: 12px 14px 10px; border-bottom: 1px solid var(--border); }
     .info-symbol { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
     .info-name { font-size: 11px; color: var(--muted); margin-top: 1px; }
     .info-sector { font-size: 10.5px; color: var(--muted2); margin-top: 1px; }
 
-    .info-section {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 0;
-      font-size: 12px;
-    }
-
+    .info-section { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 12px; }
     .info-row .label { color: var(--muted); font-size: 11.5px; }
     .info-row .val { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; text-align: right; }
 
-    .info-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 2px 0;
-    }
-
-    .info-section-title {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--muted2);
-      margin-bottom: 6px;
-    }
+    .info-section-title { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted2); margin-bottom: 6px; }
 
     .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 1px 6px;
-      border-radius: 3px;
-      font-size: 10px;
-      font-weight: 600;
-      font-family: 'JetBrains Mono', monospace;
+      display: inline-flex; align-items: center; padding: 1px 6px;
+      border-radius: 3px; font-size: 10px; font-weight: 600; font-family: 'JetBrains Mono', monospace;
     }
-
-    .badge-green { background: rgba(35,134,54,0.2); color: var(--green-bright); border: 1px solid rgba(35,134,54,0.3); }
-    .badge-red { background: rgba(218,54,51,0.2); color: var(--red-bright); border: 1px solid rgba(218,54,51,0.3); }
-    .badge-gold { background: rgba(210,153,34,0.2); color: var(--gold); border: 1px solid rgba(210,153,34,0.3); }
-    .badge-blue { background: rgba(31,111,235,0.2); color: var(--accent); border: 1px solid rgba(31,111,235,0.3); }
+    .badge-green { background: rgba(38,166,154,0.15); color: var(--green-bright); border: 1px solid rgba(38,166,154,0.3); }
+    .badge-red { background: rgba(239,83,80,0.15); color: var(--red-bright); border: 1px solid rgba(239,83,80,0.3); }
+    .badge-gold { background: rgba(247,166,0,0.15); color: var(--gold); border: 1px solid rgba(247,166,0,0.3); }
+    .badge-blue { background: rgba(41,98,255,0.15); color: var(--accent); border: 1px solid rgba(41,98,255,0.3); }
 
     /* ─── BOTTOM SECTION ─── */
     #bottom-section {
-      height: 240px;
-      flex-shrink: 0;
+      height: 240px; flex-shrink: 0;
       border-top: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      background: var(--panel);
-      overflow: hidden;
+      display: flex; flex-direction: column;
+      background: var(--panel); overflow: hidden;
     }
 
     #bottom-tabs-bar {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       border-bottom: 1px solid var(--border);
-      padding: 0 16px;
-      gap: 0;
-      flex-shrink: 0;
-      position: relative;
+      padding: 0 16px; gap: 0; flex-shrink: 0; position: relative;
     }
 
     .bottom-tab {
-      padding: 8px 16px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-      position: relative;
-      user-select: none;
-      transition: color 0.15s;
-      white-space: nowrap;
+      padding: 8px 16px; font-size: 12px; font-weight: 500;
+      color: var(--muted); cursor: pointer; position: relative;
+      user-select: none; transition: color 0.2s; white-space: nowrap;
     }
-
     .bottom-tab:hover { color: var(--text); }
     .bottom-tab.active { color: var(--text); }
 
     .tab-underline {
-      position: absolute;
-      bottom: -1px;
-      height: 2px;
-      background: var(--green-bright);
-      border-radius: 1px 1px 0 0;
-      transition: left 0.2s ease, width 0.2s ease;
-      pointer-events: none;
+      position: absolute; bottom: -1px; height: 2px;
+      background: var(--green-bright); border-radius: 1px 1px 0 0;
+      transition: left 0.2s ease, width 0.2s ease; pointer-events: none;
     }
 
-    #bottom-content {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: auto;
-    }
-
+    #bottom-content { flex: 1; overflow-y: auto; overflow-x: auto; }
     #bottom-content::-webkit-scrollbar { height: 4px; width: 4px; }
     #bottom-content::-webkit-scrollbar-track { background: transparent; }
     #bottom-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-    .tab-panel { display: none; padding: 10px 16px; height: 100%; }
+    .tab-panel { display: none; padding: 10px 16px; height: 100%; transition: opacity 0.2s; }
     .tab-panel.active { display: block; }
 
     /* Options Chain */
-    .options-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11.5px;
-    }
-
+    .options-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
     .options-table th {
-      padding: 4px 8px;
-      text-align: right;
-      color: var(--muted2);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-      position: sticky;
-      top: 0;
-      background: var(--panel);
+      padding: 4px 8px; text-align: right; color: var(--muted2);
+      font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+      border-bottom: 1px solid var(--border); white-space: nowrap;
+      position: sticky; top: 0; background: var(--panel);
     }
-
     .options-table th.strike-col { text-align: center; color: var(--muted); }
-
     .options-table td {
-      padding: 5px 8px;
-      text-align: right;
+      padding: 5px 8px; text-align: right;
       font-family: 'JetBrains Mono', monospace;
-      border-bottom: 1px solid rgba(33,38,45,0.5);
-      font-size: 11px;
+      border-bottom: 1px solid rgba(42,46,57,0.5); font-size: 11px;
     }
-
-    .options-table td.strike-col {
-      text-align: center;
-      font-weight: 700;
-      font-size: 12px;
-    }
-
+    .options-table td.strike-col { text-align: center; font-weight: 700; font-size: 12px; }
     .options-table tr.atm-row { background: var(--gold-bg); }
     .options-table tr.atm-row td { color: var(--gold); }
-    .options-table tr.atm-row td.strike-col { color: var(--gold); }
     .options-table tr:hover td { background: var(--hover); }
 
-    .options-header-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 8px;
-    }
+    .options-header-row { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
 
     .max-pain-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--gold-bg);
-      border: 1px solid rgba(210,153,34,0.3);
-      border-radius: 5px;
-      padding: 3px 10px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--gold);
-      cursor: default;
-      position: relative;
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--gold-bg); border: 1px solid rgba(247,166,0,0.3);
+      border-radius: 5px; padding: 3px 10px; font-size: 12px; font-weight: 600;
+      color: var(--gold); cursor: default; position: relative;
     }
-
     .max-pain-tag .mp-tooltip {
-      position: absolute;
-      bottom: calc(100% + 5px);
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1c2128;
-      border: 1px solid var(--border2);
-      border-radius: 5px;
-      padding: 5px 9px;
-      font-size: 10.5px;
-      color: var(--text);
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.15s;
-      font-weight: 400;
-      z-index: 999;
+      position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%);
+      background: var(--panel2); border: 1px solid var(--border2); border-radius: 5px;
+      padding: 5px 9px; font-size: 10.5px; color: var(--text); white-space: nowrap;
+      pointer-events: none; opacity: 0; transition: opacity 0.15s; font-weight: 400; z-index: 999;
     }
-
     .max-pain-tag:hover .mp-tooltip { opacity: 1; }
 
     /* Screener */
-    .screener-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11.5px;
-    }
-
+    .screener-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
     .screener-table th {
-      padding: 4px 10px;
-      text-align: right;
-      color: var(--muted2);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-      position: sticky;
-      top: 0;
-      background: var(--panel);
-      transition: color 0.15s;
+      padding: 4px 10px; text-align: right; color: var(--muted2);
+      font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+      border-bottom: 1px solid var(--border); white-space: nowrap;
+      cursor: pointer; user-select: none; position: sticky; top: 0;
+      background: var(--panel); transition: color 0.15s;
     }
-
     .screener-table th:first-child { text-align: left; }
     .screener-table th:hover { color: var(--text); }
     .screener-table th .sort-icon { margin-left: 4px; opacity: 0.4; font-size: 9px; }
     .screener-table th.sorted .sort-icon { opacity: 1; color: var(--accent); }
-
     .screener-table td {
-      padding: 5px 10px;
-      text-align: right;
+      padding: 5px 10px; text-align: right;
       font-family: 'JetBrains Mono', monospace;
-      border-bottom: 1px solid rgba(33,38,45,0.5);
-      font-size: 11.5px;
+      border-bottom: 1px solid rgba(42,46,57,0.5); font-size: 11.5px;
     }
-
     .screener-table td:first-child { text-align: left; font-family: 'Inter', sans-serif; font-weight: 600; }
     .screener-table td:nth-child(2) { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--muted); }
     .screener-table tr:hover td { background: var(--hover); cursor: pointer; }
 
     /* FII/DII */
-    .fiidii-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .fiidii-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 10px 12px;
-    }
-
-    .fiidii-card-title {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--muted2);
-      margin-bottom: 8px;
-    }
-
-    .fiidii-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11.5px;
-      margin-bottom: 4px;
-    }
-
+    .fiidii-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .fiidii-card { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; }
+    .fiidii-card-title { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted2); margin-bottom: 8px; }
+    .fiidii-row { display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 4px; }
     .fiidii-row .lbl { color: var(--muted); }
     .fiidii-row .amt { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
-
-    .fiidii-net {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12.5px;
-      font-weight: 700;
-      margin-top: 6px;
-      padding-top: 6px;
-      border-top: 1px solid var(--border);
-      font-family: 'JetBrains Mono', monospace;
-    }
+    .fiidii-net { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
 
     .flow-bars-section { margin-top: 4px; }
-    .flow-bars-title {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--muted2);
-      margin-bottom: 8px;
-    }
-
-    .flow-bar-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-
+    .flow-bars-title { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted2); margin-bottom: 8px; }
+    .flow-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
     .flow-bar-label { font-size: 10.5px; color: var(--muted); width: 28px; text-align: right; font-family: 'JetBrains Mono', monospace; }
     .flow-bar-track { flex: 1; height: 12px; background: var(--bg); border-radius: 2px; overflow: hidden; display: flex; }
-    .flow-bar-neg { height: 100%; background: rgba(218,54,51,0.6); border-radius: 2px 0 0 2px; }
-    .flow-bar-pos { height: 100%; background: rgba(35,134,54,0.6); border-radius: 0 2px 2px 0; }
+    .flow-bar-neg { height: 100%; background: rgba(239,83,80,0.6); border-radius: 2px 0 0 2px; }
+    .flow-bar-pos { height: 100%; background: rgba(38,166,154,0.6); border-radius: 0 2px 2px 0; }
     .flow-bar-val { font-size: 10.5px; font-family: 'JetBrains Mono', monospace; width: 70px; text-align: right; }
 
     /* Macro */
-    .macro-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .macro-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 10px 12px;
-    }
-
-    .macro-card-label {
-      font-size: 10px;
-      color: var(--muted2);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .macro-card-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .macro-card-sub {
-      font-size: 10.5px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
+    .macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .macro-card { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; }
+    .macro-card-label { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 5px; }
+    .macro-card-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; line-height: 1; }
+    .macro-card-sub { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
 
     /* News */
     .news-list { display: flex; flex-direction: column; gap: 2px; }
-
-    .news-item {
-      padding: 8px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.1s;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
+    .news-item { padding: 8px 10px; border-radius: 5px; cursor: pointer; transition: background 0.1s; display: flex; flex-direction: column; gap: 3px; }
     .news-item:hover { background: var(--hover); }
+    .news-headline { font-size: 12.5px; font-weight: 500; line-height: 1.35; color: var(--text); }
+    .news-meta { display: flex; align-items: center; gap: 8px; font-size: 10.5px; color: var(--muted2); }
+    .news-source { background: rgba(41,98,255,0.12); color: var(--accent); border: 1px solid rgba(41,98,255,0.2); padding: 1px 5px; border-radius: 3px; font-size: 10px; font-weight: 600; }
 
-    .news-headline {
-      font-size: 12.5px;
-      font-weight: 500;
-      line-height: 1.35;
-      color: var(--text);
+    /* ─── PORTFOLIO TAB ─── */
+    .portfolio-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .portfolio-table th { padding: 4px 10px; text-align: right; color: var(--muted2); font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--panel); }
+    .portfolio-table th:first-child { text-align: left; }
+    .portfolio-table td { padding: 6px 10px; text-align: right; font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid rgba(42,46,57,0.5); font-size: 11.5px; }
+    .portfolio-table td:first-child { text-align: left; font-family: 'Inter', sans-serif; font-weight: 700; }
+    .portfolio-table tr:hover td { background: var(--hover); }
+    .portfolio-summary { margin-top: 10px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+    .portfolio-summary-item { font-size: 12px; }
+    .portfolio-summary-item .ps-label { color: var(--muted); font-size: 10.5px; margin-bottom: 2px; }
+    .portfolio-summary-item .ps-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+    .add-trade-btn { margin-left: auto; padding: 5px 14px; background: var(--accent); color: #fff; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .add-trade-btn:hover { background: #1a4fd6; }
+
+    /* ─── PRO GATE ─── */
+    .pro-gate { position: relative; overflow: hidden; height: 100%; }
+    .pro-blur-content { filter: blur(4px); pointer-events: none; user-select: none; }
+    .pro-overlay {
+      position: absolute; inset: 0;
+      background: rgba(19, 23, 34, 0.85);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+      backdrop-filter: blur(2px);
+    }
+    .pro-lock-icon { font-size: 28px; }
+    .pro-lock-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .pro-lock-sub { font-size: 12px; color: var(--muted); }
+    .pro-upgrade-btn {
+      margin-top: 8px; padding: 8px 20px;
+      background: var(--gold); color: var(--bg);
+      border: none; border-radius: 4px;
+      font-weight: 700; cursor: pointer; font-size: 13px;
+      font-family: 'Inter', sans-serif;
+    }
+    .pro-upgrade-btn:hover { background: #e09600; }
+
+    .pro-gate.pro-unlocked .pro-blur-content { filter: none; pointer-events: auto; user-select: auto; }
+    .pro-gate.pro-unlocked .pro-overlay { display: none; }
+
+    /* ─── UPGRADE MODAL ─── */
+    #upgrade-modal {
+      position: fixed; inset: 0; z-index: 9000;
+      display: none;
+    }
+    .modal-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(3px);
+    }
+    .modal-box {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: var(--panel); width: 420px; max-width: 95vw;
+      border-radius: 10px; border: 1px solid var(--border2);
+      border-top: 2px solid var(--gold);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      padding: 24px; z-index: 1;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .modal-header span { font-size: 15px; font-weight: 700; color: var(--text); }
+    .modal-header button { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; line-height: 1; padding: 0 4px; }
+    .modal-header button:hover { color: var(--text); }
+    .modal-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+    .big-price { font-size: 36px; font-weight: 800; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+    .price-period { font-size: 14px; color: var(--muted); }
+    .modal-sub { font-size: 11.5px; color: var(--muted); margin-bottom: 16px; }
+    .modal-features { list-style: none; margin-bottom: 20px; display: flex; flex-direction: column; gap: 7px; }
+    .modal-features li { font-size: 13px; color: var(--text); }
+    .modal-features li::before { display: none; }
+    .modal-pay-btn {
+      width: 100%; padding: 12px; background: var(--gold); color: var(--bg);
+      border: none; border-radius: 6px; font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: 'Inter', sans-serif; margin-bottom: 8px;
+    }
+    .modal-pay-btn:hover { background: #e09600; }
+    .modal-note { font-size: 11px; color: var(--muted2); text-align: center; margin-bottom: 12px; }
+    .modal-trial-btn {
+      width: 100%; padding: 10px; background: transparent; color: var(--accent);
+      border: 1px solid var(--accent); border-radius: 6px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+    .modal-trial-btn:hover { background: rgba(41,98,255,0.1); }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--green-bright); color: #fff;
+      padding: 12px 24px; border-radius: 6px;
+      font-weight: 600; font-size: 14px;
+      z-index: 9999; animation: fadeInUp 0.3s ease;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
-    .news-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 10.5px;
-      color: var(--muted2);
-    }
-
-    .news-source {
-      background: rgba(31,111,235,0.15);
-      color: var(--accent);
-      border: 1px solid rgba(31,111,235,0.2);
-      padding: 1px 5px;
-      border-radius: 3px;
-      font-size: 10px;
-      font-weight: 600;
-    }
-
-    /* Footer */
+    /* ─── FOOTER ─── */
     #footer {
-      padding: 5px 16px;
-      border-top: 1px solid var(--border);
-      font-size: 10px;
-      color: var(--muted2);
-      background: var(--panel);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      padding: 5px 16px; border-top: 1px solid var(--border);
+      font-size: 10px; color: var(--muted2);
+      background: var(--panel); flex-shrink: 0;
+      display: flex; align-items: center; gap: 4px;
     }
-
     #footer a { color: var(--accent); text-decoration: none; }
     #footer a:hover { text-decoration: underline; }
 
-    /* Price pulse animation */
+    /* Price pulse */
     .price-pulse { animation: price-pulse-anim 3s ease-in-out infinite; }
-
-    @keyframes price-pulse-anim {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.65; }
-    }
+    @keyframes price-pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.65; } }
 
     /* Scrollbar global */
     * { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
   </style>
 </head>
 <body>
+
+<!-- UPGRADE MODAL -->
+<div id="upgrade-modal">
+  <div class="modal-backdrop" onclick="closeUpgradeModal()"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>Arthex · Dashboard Pro</span>
+      <button onclick="closeUpgradeModal()">×</button>
+    </div>
+    <div class="modal-price">
+      <span class="big-price">₹299</span><span class="price-period">/month</span>
+    </div>
+    <div class="modal-sub">vs Bloomberg $31,980/yr — you do the math</div>
+    <ul class="modal-features">
+      <li>✓ Portfolio tracker + XIRR calculator</li>
+      <li>✓ Price alerts (email + Telegram)</li>
+      <li>✓ All drawing tools (Fib, channels, patterns)</li>
+      <li>✓ Data export (CSV/Excel)</li>
+      <li>✓ 30m and 4H chart timeframes</li>
+      <li>✓ Real-time Angel One integration</li>
+      <li>✓ Daily market brief at 8:15 AM</li>
+    </ul>
+    <button class="modal-pay-btn" onclick="simulatePayment()">Pay ₹299 with Razorpay →</button>
+    <div class="modal-note">Payments via Razorpay · Cancel anytime · 7-day refund</div>
+    <button class="modal-trial-btn" onclick="startTrial()">Try free for 7 days (no card needed)</button>
+  </div>
+</div>
 
 <!-- NAV -->
 <div id="nav">
@@ -880,19 +623,19 @@
   <div class="nav-sep"></div>
 
   <div class="nav-indices">
-    <div class="nav-index">
+    <div class="nav-index" id="nav-nifty">
       <span class="label">NIFTY 50</span>
       <span class="val price-pulse" id="nav-nifty-val">24,812.45</span>
       <span class="chg green" id="nav-nifty-chg">+0.88%</span>
     </div>
     <div class="nav-sep"></div>
-    <div class="nav-index">
+    <div class="nav-index" id="nav-banknifty">
       <span class="label">BANKNIFTY</span>
       <span class="val price-pulse" id="nav-bank-val">52,341.20</span>
       <span class="chg green" id="nav-bank-chg">+1.23%</span>
     </div>
     <div class="nav-sep"></div>
-    <div class="nav-index">
+    <div class="nav-index" id="nav-vix">
       <span class="label">INDIA VIX</span>
       <span class="val" id="nav-vix-val">14.2</span>
       <span class="chg green" id="nav-vix-chg">↓ Calm</span>
@@ -905,7 +648,8 @@
       <span id="status-text"></span>
     </div>
     <div class="nav-sep"></div>
-    <div class="nav-badge">v0.6.1 · 58 tools</div>
+    <div class="nav-badge" id="nav-version">v0.6.1 · 58 tools</div>
+    <button id="nav-pro-badge" onclick="openUpgradeModal()">Upgrade</button>
   </div>
 </div>
 
@@ -923,6 +667,50 @@
       <div class="watchlist-add">
         <span class="plus">+</span>
         <span>Add Symbol</span>
+      </div>
+    </div>
+
+    <!-- DRAWING TOOLBAR -->
+    <div id="draw-toolbar">
+      <div class="draw-tool active" id="dt-cursor" data-tool="cursor" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l9 4.5-4.5 1.5L5 12 2 2z" fill="currentColor"/></svg>
+        <span class="dt-tip">Cursor (default)</span>
+      </div>
+      <div class="draw-tool" id="dt-hline" data-tool="hline" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="1" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2,2"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
+        <span class="dt-tip">Horizontal Level</span>
+      </div>
+      <div class="draw-tool" id="dt-tline" data-tool="tline" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="2" y1="12" x2="12" y2="2" stroke="currentColor" stroke-width="1.5"/><circle cx="2" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="2" r="1.5" fill="currentColor"/></svg>
+        <span class="dt-tip">Trend Line</span>
+      </div>
+      <div class="draw-tool" id="dt-fib" data-tool="fib" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="1" y1="4" x2="13" y2="4" stroke="currentColor" stroke-width="1"/><line x1="1" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1"/><line x1="1" y1="10" x2="13" y2="10" stroke="currentColor" stroke-width="1"/><text x="1" y="13" font-size="4" fill="currentColor">Fib</text></svg>
+        <span class="dt-tip">Fibonacci Retracement</span>
+        <span class="pro-lock-badge">🔒</span>
+      </div>
+      <div class="draw-tool" id="dt-rect" data-tool="rect" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="4" width="10" height="6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        <span class="dt-tip">Rectangle</span>
+        <span class="pro-lock-badge">🔒</span>
+      </div>
+      <div class="draw-tool" id="dt-text" data-tool="text" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><text x="2" y="11" font-size="11" font-weight="700" fill="currentColor">T</text></svg>
+        <span class="dt-tip">Text Label</span>
+        <span class="pro-lock-badge">🔒</span>
+      </div>
+      <div class="draw-sep"></div>
+      <div class="draw-tool" id="dt-magnet" data-tool="magnet" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2h6v5a3 3 0 01-6 0V2z" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="2" y1="2" x2="4" y2="2" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="2" x2="12" y2="2" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span class="dt-tip">Magnet (snap to OHLC)</span>
+      </div>
+      <div class="draw-tool" id="dt-eye" data-tool="eye" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="7" rx="5" ry="3" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
+        <span class="dt-tip">Show/Hide Drawings</span>
+      </div>
+      <div class="draw-tool" id="dt-trash" data-tool="trash" title="">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="4" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="1" y1="4" x2="13" y2="4" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="2" x2="9" y2="2" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="6.5" x2="5" y2="10" stroke="currentColor" stroke-width="1"/><line x1="9" y1="6.5" x2="9" y2="10" stroke="currentColor" stroke-width="1"/></svg>
+        <span class="dt-tip">Clear All Drawings</span>
       </div>
     </div>
 
@@ -944,6 +732,13 @@
           <div class="meta-item">Vol <span id="ch-vol">8.4M</span></div>
           <div class="meta-item">Avg Vol <span id="ch-avgvol">4.6M</span></div>
         </div>
+        <div class="chart-header-right">
+          <button class="export-btn" onclick="handleExportClick()">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v7M3 5l3 3 3-3M1 10h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Export
+            <span class="pro-lock-badge" id="export-lock-badge" style="font-size:10px;margin-left:2px;">🔒</span>
+          </button>
+        </div>
       </div>
 
       <div id="chart-controls">
@@ -953,6 +748,8 @@
           <div class="tf-tab active" data-tf="1M">1M</div>
           <div class="tf-tab" data-tf="3M">3M</div>
           <div class="tf-tab" data-tf="1Y">1Y</div>
+          <div class="tf-tab pro-tab" data-tf="30m" data-pro="1" title="Pro feature">30m<span class="tab-lock">🔒</span></div>
+          <div class="tf-tab pro-tab" data-tf="4H" data-pro="1" title="Pro feature">4H<span class="tab-lock">🔒</span></div>
         </div>
 
         <div class="indicator-chips">
@@ -974,7 +771,7 @@
         </div>
       </div>
 
-      <div id="chart-container-wrap">
+      <div id="chart-container-wrap" class="cursor-default">
         <div id="chart-container"></div>
       </div>
     </div>
@@ -1081,6 +878,9 @@
       <div class="bottom-tab" data-panel="fiidii">FII / DII Flow</div>
       <div class="bottom-tab" data-panel="macro">Macro</div>
       <div class="bottom-tab" data-panel="news">News</div>
+      <div class="bottom-tab" data-panel="portfolio" id="tab-portfolio">
+        Portfolio <span style="font-size:9px;vertical-align:super;" id="portfolio-lock-badge">🔒</span>
+      </div>
       <div class="tab-underline" id="tab-underline"></div>
     </div>
 
@@ -1139,13 +939,13 @@
                 <div class="fiidii-card-title">FII · Today</div>
                 <div class="fiidii-row"><span class="lbl">Bought</span><span class="amt green">+₹3,241 Cr</span></div>
                 <div class="fiidii-row"><span class="lbl">Sold</span><span class="amt red">−₹4,892 Cr</span></div>
-                <div class="fiidii-net"><span class="red">Net</span><span class="red">−₹1,651 Cr</span></div>
+                <div class="fiidii-net"><span class="red">Net</span><span class="red" id="live-fii-net">−₹1,651 Cr</span></div>
               </div>
               <div class="fiidii-card">
                 <div class="fiidii-card-title">DII · Today</div>
                 <div class="fiidii-row"><span class="lbl">Bought</span><span class="amt green">+₹5,123 Cr</span></div>
                 <div class="fiidii-row"><span class="lbl">Sold</span><span class="amt red">−₹3,456 Cr</span></div>
-                <div class="fiidii-net"><span class="green">Net</span><span class="green">+₹1,667 Cr</span></div>
+                <div class="fiidii-net"><span class="green">Net</span><span class="green" id="live-dii-net">+₹1,667 Cr</span></div>
               </div>
             </div>
           </div>
@@ -1161,17 +961,17 @@
         <div class="macro-grid">
           <div class="macro-card">
             <div class="macro-card-label">RBI Repo Rate</div>
-            <div class="macro-card-val" style="color:var(--gold);">6.25%</div>
+            <div class="macro-card-val" style="color:var(--gold);" id="macro-repo">6.25%</div>
             <div class="macro-card-sub">Unchanged · Apr 2026</div>
           </div>
           <div class="macro-card">
             <div class="macro-card-label">India CPI</div>
-            <div class="macro-card-val" style="color:var(--gold);">4.85%</div>
+            <div class="macro-card-val" style="color:var(--gold);" id="macro-cpi">4.85%</div>
             <div class="macro-card-sub">Mar 2026 · Above 4% target</div>
           </div>
           <div class="macro-card">
             <div class="macro-card-label">GDP Growth</div>
-            <div class="macro-card-val" style="color:var(--green-bright);">8.2%</div>
+            <div class="macro-card-val" style="color:var(--green-bright);" id="macro-gdp">8.2%</div>
             <div class="macro-card-sub">FY25 Estimate · Strong</div>
           </div>
           <div class="macro-card">
@@ -1197,6 +997,80 @@
         <div class="news-list" id="news-list"></div>
       </div>
 
+      <!-- PORTFOLIO (Pro-gated) -->
+      <div class="tab-panel" id="panel-portfolio">
+        <div class="pro-gate" id="portfolio-gate">
+          <div class="pro-blur-content">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <span style="font-size:13px;font-weight:700;">My Portfolio</span>
+              <button class="add-trade-btn" onclick="openAddTrade()">+ Add Trade</button>
+            </div>
+            <table class="portfolio-table">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Qty</th>
+                  <th>Buy Avg</th>
+                  <th>LTP</th>
+                  <th>P&amp;L</th>
+                  <th>Return %</th>
+                </tr>
+              </thead>
+              <tbody id="portfolio-tbody">
+                <tr>
+                  <td>RELIANCE</td>
+                  <td>50</td>
+                  <td>₹2,650.00</td>
+                  <td class="green">₹2,891.00</td>
+                  <td class="green">+₹12,050</td>
+                  <td class="green">+9.1%</td>
+                </tr>
+                <tr>
+                  <td>TCS</td>
+                  <td>20</td>
+                  <td>₹3,200.00</td>
+                  <td class="green">₹3,456.00</td>
+                  <td class="green">+₹5,120</td>
+                  <td class="green">+8.0%</td>
+                </tr>
+                <tr>
+                  <td>SBIN</td>
+                  <td>100</td>
+                  <td>₹780.00</td>
+                  <td class="green">₹812.00</td>
+                  <td class="green">+₹3,200</td>
+                  <td class="green">+4.1%</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="portfolio-summary">
+              <div class="portfolio-summary-item">
+                <div class="ps-label">Total Invested</div>
+                <div class="ps-val">₹4,55,000</div>
+              </div>
+              <div class="portfolio-summary-item">
+                <div class="ps-label">Current Value</div>
+                <div class="ps-val">₹4,75,370</div>
+              </div>
+              <div class="portfolio-summary-item">
+                <div class="ps-label">Total P&amp;L</div>
+                <div class="ps-val green">+₹20,370 (+4.47%)</div>
+              </div>
+              <div class="portfolio-summary-item">
+                <div class="ps-label">XIRR</div>
+                <div class="ps-val green">18.2% p.a.</div>
+              </div>
+            </div>
+          </div>
+          <div class="pro-overlay">
+            <div class="pro-lock-icon">🔒</div>
+            <div class="pro-lock-title">Dashboard Pro</div>
+            <div class="pro-lock-sub">₹299/mo — unlock portfolio tracker, alerts &amp; more</div>
+            <button class="pro-upgrade-btn" onclick="openUpgradeModal()">Upgrade →</button>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /bottom-content -->
   </div><!-- /bottom-section -->
 
@@ -1212,7 +1086,114 @@
 <script>
 'use strict';
 
-// ─── DATA ───────────────────────────────────────────────────────────────────
+// ─── PRO / PAYMENT ────────────────────────────────────────────────────────────
+
+const STORAGE_KEY = 'finstack_pro';
+
+function isPro() {
+  const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+  if (!data) return false;
+  if (Date.now() > data.expires) {
+    localStorage.removeItem(STORAGE_KEY);
+    return false;
+  }
+  return true;
+}
+
+function activatePro(paymentId) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    payment_id: paymentId,
+    activated: Date.now(),
+    expires: Date.now() + (30 * 24 * 60 * 60 * 1000),
+    plan: 'dashboard_pro'
+  }));
+}
+
+function openUpgradeModal() {
+  document.getElementById('upgrade-modal').style.display = 'block';
+}
+
+function closeUpgradeModal() {
+  document.getElementById('upgrade-modal').style.display = 'none';
+}
+
+function simulatePayment() {
+  const payId = 'pay_demo_' + Date.now();
+  activatePro(payId);
+  closeUpgradeModal();
+  applyProFeatures();
+  showToast('Pro unlocked! Welcome to Arthex Dashboard Pro.');
+}
+
+function startTrial() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    payment_id: 'trial_' + Date.now(),
+    activated: Date.now(),
+    expires: Date.now() + (7 * 24 * 60 * 60 * 1000),
+    plan: 'trial'
+  }));
+  closeUpgradeModal();
+  applyProFeatures();
+  showToast('7-day trial started! Explore all Pro features.');
+}
+
+function applyProFeatures() {
+  document.querySelectorAll('.pro-gate').forEach(el => el.classList.add('pro-unlocked'));
+  document.querySelectorAll('.pro-lock-badge').forEach(el => { el.style.display = 'none'; });
+  const portLock = document.getElementById('portfolio-lock-badge');
+  if (portLock) portLock.style.display = 'none';
+  updateProBadge();
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+function updateProBadge() {
+  const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+  const navEl = document.getElementById('nav-pro-badge');
+  if (!navEl) return;
+  if (!data) {
+    navEl.textContent = 'Upgrade';
+    navEl.style.background = 'var(--gold)';
+    navEl.style.color = 'var(--bg)';
+    navEl.onclick = openUpgradeModal;
+    return;
+  }
+  const daysLeft = Math.ceil((data.expires - Date.now()) / 86400000);
+  const isTrial = data.plan === 'trial';
+  navEl.textContent = isTrial ? `Trial (${daysLeft}d left)` : 'Pro ✓';
+  navEl.style.background = isTrial ? 'var(--gold)' : 'var(--green-bright)';
+  navEl.style.color = 'var(--bg)';
+  navEl.onclick = () => showToast(isTrial
+    ? `Trial ends in ${daysLeft} days. Upgrade to keep access.`
+    : `Pro active · ${daysLeft} days remaining`);
+}
+
+function checkExpiry() {
+  if (!isPro() && document.querySelector('.pro-unlocked')) {
+    document.querySelectorAll('.pro-unlocked').forEach(el => el.classList.remove('pro-unlocked'));
+    showToast('Your Pro trial has expired. Upgrade to continue.');
+    updateProBadge();
+    // Re-show lock badges
+    document.querySelectorAll('.pro-lock-badge').forEach(el => { el.style.display = ''; });
+    const portLock = document.getElementById('portfolio-lock-badge');
+    if (portLock) portLock.style.display = '';
+  }
+}
+
+setInterval(checkExpiry, 60000);
+
+function handleExportClick() {
+  if (!isPro()) { openUpgradeModal(); return; }
+  showToast('Exporting data as CSV...');
+}
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
 
 const STOCKS = [
   { symbol: 'RELIANCE',   name: 'Reliance Industries',      sector: 'Oil & Gas',      ltp: 2891.45, change: 1.24,  changeAmt: 35.40,  high: 2915.00, low: 2856.20, open: 2856.05, vol: '8.4M', mcap: '₹19.6L Cr', pe: '22.4×', eps: '₹128.90', divy: '0.44%', w52: '2,188 — 3,217', startPrice: 2400 },
@@ -1280,14 +1261,7 @@ function generateOHLCV(startPrice, days) {
     const high = Math.max(open, close) * (1 + Math.random() * 0.01);
     const low  = Math.min(open, close) * (1 - Math.random() * 0.01);
     const volume = Math.floor(Math.random() * 5000000 + 2000000);
-    data.push({
-      time: date.toISOString().split('T')[0],
-      open: +open.toFixed(2),
-      high: +high.toFixed(2),
-      low:  +low.toFixed(2),
-      close: +close.toFixed(2),
-      value: volume
-    });
+    data.push({ time: date.toISOString().split('T')[0], open: +open.toFixed(2), high: +high.toFixed(2), low: +low.toFixed(2), close: +close.toFixed(2), value: volume });
     price = close;
   }
   return data;
@@ -1307,6 +1281,9 @@ let volumeSeries = null;
 let ma20Series = null;
 let activeIndicators = new Set(['MA20']);
 let stockPrices = STOCKS.map(s => ({ ltp: s.ltp, change: s.change, changeAmt: s.changeAmt }));
+let activeDrawTool = 'cursor';
+let drawnPriceLines = [];
+let drawingsVisible = true;
 
 // ─── WATCHLIST RENDER ────────────────────────────────────────────────────────
 
@@ -1317,16 +1294,16 @@ function renderWatchlist() {
     const p = stockPrices[i];
     const isUp = p.change >= 0;
     const el = document.createElement('div');
-    el.className = 'stock-item' + (i === activeStockIdx ? ' active' : '');
+    el.className = 'wl-item stock-item' + (i === activeStockIdx ? ' active' : '');
     el.dataset.idx = i;
     el.innerHTML = `
       <div class="stock-row1">
         <span class="stock-symbol">${s.symbol}</span>
-        <span class="stock-ltp mono ${isUp ? 'green' : 'red'}" id="wl-ltp-${i}">₹${fmt(p.ltp)}</span>
+        <span class="stock-ltp wl-price mono ${isUp ? 'green' : 'red'}" id="wl-ltp-${i}">₹${fmt(p.ltp)}</span>
       </div>
       <div class="stock-row2">
         <span class="stock-name">${s.name}</span>
-        <span class="stock-chg ${isUp ? 'green' : 'red'}" id="wl-chg-${i}">${isUp ? '+' : ''}${fmt(p.change)}%</span>
+        <span class="stock-chg wl-chg ${isUp ? 'green' : 'red'}" id="wl-chg-${i}">${isUp ? '+' : ''}${fmt(p.change)}%</span>
       </div>
     `;
     el.addEventListener('click', () => selectStock(i));
@@ -1341,12 +1318,8 @@ function selectStock(idx) {
   const s = STOCKS[idx];
   const p = stockPrices[idx];
 
-  // Watchlist highlight
-  document.querySelectorAll('.stock-item').forEach((el, i) => {
-    el.classList.toggle('active', i === idx);
-  });
+  document.querySelectorAll('.stock-item').forEach((el, i) => el.classList.toggle('active', i === idx));
 
-  // Chart header
   document.getElementById('ch-symbol').textContent = s.symbol;
   document.getElementById('ch-name').textContent = s.name + ' · NSE';
   const isUp = p.change >= 0;
@@ -1360,7 +1333,6 @@ function selectStock(idx) {
   document.getElementById('ch-low').textContent = fmt(s.low);
   document.getElementById('ch-vol').textContent = s.vol;
 
-  // Info panel
   document.getElementById('ip-symbol').textContent = s.symbol;
   document.getElementById('ip-name').textContent = s.name;
   document.getElementById('ip-sector').textContent = s.sector + ' · NSE';
@@ -1376,7 +1348,6 @@ function selectStock(idx) {
   document.getElementById('ip-eps').textContent = s.eps;
   document.getElementById('ip-divy').textContent = s.divy;
 
-  // Chart
   loadChart();
 }
 
@@ -1386,33 +1357,33 @@ function initChart() {
   const container = document.getElementById('chart-container');
 
   chart = LightweightCharts.createChart(container, {
-    layout: { background: { color: '#0d1117' }, textColor: '#e6edf3' },
-    grid: { vertLines: { color: '#21262d' }, horzLines: { color: '#21262d' } },
+    layout: { background: { color: '#131722' }, textColor: '#d1d4dc' },
+    grid: { vertLines: { color: '#2a2e39' }, horzLines: { color: '#2a2e39' } },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-    rightPriceScale: { borderColor: '#30363d' },
-    timeScale: { borderColor: '#30363d', timeVisible: true },
+    rightPriceScale: { borderColor: '#363a45' },
+    timeScale: { borderColor: '#363a45', timeVisible: true },
     width: container.offsetWidth,
     height: container.offsetHeight,
   });
 
   candleSeries = chart.addCandlestickSeries({
-    upColor: '#238636',
-    downColor: '#da3633',
-    borderUpColor: '#238636',
-    borderDownColor: '#da3633',
-    wickUpColor: '#238636',
-    wickDownColor: '#da3633',
+    upColor: '#26a69a',
+    downColor: '#ef5350',
+    borderUpColor: '#26a69a',
+    borderDownColor: '#ef5350',
+    wickUpColor: '#26a69a',
+    wickDownColor: '#ef5350',
   });
 
   volumeSeries = chart.addHistogramSeries({
-    color: '#238636',
+    color: '#26a69a',
     priceFormat: { type: 'volume' },
     priceScaleId: 'volume',
     scaleMargins: { top: 0.8, bottom: 0 },
   });
 
   ma20Series = chart.addLineSeries({
-    color: '#388bfd',
+    color: '#2962ff',
     lineWidth: 1,
     priceLineVisible: false,
     lastValueVisible: false,
@@ -1420,11 +1391,28 @@ function initChart() {
 
   loadChart();
 
-  window.addEventListener('resize', () => {
-    chart.applyOptions({
-      width: container.offsetWidth,
-      height: container.offsetHeight,
+  // Horizontal line drawing: click on chart
+  const wrap = document.getElementById('chart-container-wrap');
+  wrap.addEventListener('click', function(e) {
+    if (activeDrawTool !== 'hline') return;
+    // Convert pixel Y to price using chart coordinate
+    const rect = container.getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    const price = candleSeries.coordinateToPrice(y);
+    if (price == null) return;
+    const line = candleSeries.createPriceLine({
+      price: price,
+      color: '#f7a600',
+      lineWidth: 1,
+      lineStyle: LightweightCharts.LineStyle.Dashed,
+      axisLabelVisible: true,
+      title: '— ' + fmt(price),
     });
+    drawnPriceLines.push(line);
+  });
+
+  window.addEventListener('resize', () => {
+    chart.applyOptions({ width: container.offsetWidth, height: container.offsetHeight });
   });
 }
 
@@ -1453,7 +1441,10 @@ function loadChart(noShimmer) {
 
   const render = () => {
     const candle = data.map(d => ({ time: d.time, open: d.open, high: d.high, low: d.low, close: d.close }));
-    const vol = data.map(d => ({ time: d.time, value: d.value, color: d.close >= d.open ? 'rgba(35,134,54,0.5)' : 'rgba(218,54,51,0.5)' }));
+    const vol = data.map(d => ({
+      time: d.time, value: d.value,
+      color: d.close >= d.open ? 'rgba(38,166,154,0.4)' : 'rgba(239,83,80,0.4)'
+    }));
 
     candleSeries.setData(candle);
     volumeSeries.setData(vol);
@@ -1478,11 +1469,69 @@ function loadChart(noShimmer) {
   }
 }
 
+// ─── DRAWING TOOLBAR ─────────────────────────────────────────────────────────
+
+const PRO_TOOLS = new Set(['fib', 'rect', 'text']);
+
+function initDrawToolbar() {
+  const wrap = document.getElementById('chart-container-wrap');
+
+  document.querySelectorAll('.draw-tool').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tool = btn.dataset.tool;
+
+      // Pro tools: open modal
+      if (PRO_TOOLS.has(tool) && !isPro()) {
+        openUpgradeModal();
+        return;
+      }
+
+      if (tool === 'trash') {
+        drawnPriceLines.forEach(line => { try { candleSeries.removePriceLine(line); } catch(e){} });
+        drawnPriceLines = [];
+        return;
+      }
+
+      if (tool === 'eye') {
+        drawingsVisible = !drawingsVisible;
+        drawnPriceLines.forEach(line => {
+          try { line.applyOptions({ visible: drawingsVisible }); } catch(e) {}
+        });
+        btn.style.color = drawingsVisible ? '' : 'var(--muted2)';
+        return;
+      }
+
+      if (tool === 'magnet') {
+        btn.classList.toggle('active');
+        return;
+      }
+
+      // Set active draw tool
+      activeDrawTool = tool;
+      document.querySelectorAll('.draw-tool').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Update cursor
+      if (tool === 'cursor') {
+        wrap.classList.add('cursor-default');
+        wrap.classList.remove('cursor-crosshair');
+      } else {
+        wrap.classList.remove('cursor-default');
+        wrap.classList.add('cursor-crosshair');
+      }
+    });
+  });
+}
+
 // ─── TIMEFRAME TABS ──────────────────────────────────────────────────────────
 
 document.getElementById('tf-tabs').addEventListener('click', e => {
   const tab = e.target.closest('.tf-tab');
   if (!tab) return;
+  if (tab.dataset.pro && !isPro()) {
+    openUpgradeModal();
+    return;
+  }
   document.querySelectorAll('.tf-tab').forEach(t => t.classList.remove('active'));
   tab.classList.add('active');
   activeTF = tab.dataset.tf;
@@ -1516,18 +1565,17 @@ function initBottomTabs() {
     underline.style.width = tab.offsetWidth + 'px';
   }
 
-  // Set initial
   const activeTab = document.querySelector('.bottom-tab.active');
-  if (activeTab) {
-    requestAnimationFrame(() => moveUnderline(activeTab));
-  }
+  if (activeTab) requestAnimationFrame(() => moveUnderline(activeTab));
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
+      // Portfolio tab: if not pro, switch to panel but gate shows overlay
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+      const panel = document.getElementById('panel-' + tab.dataset.panel);
+      if (panel) panel.classList.add('active');
       moveUnderline(tab);
     });
   });
@@ -1538,7 +1586,6 @@ function initBottomTabs() {
 function renderOptionsChain() {
   const tbody = document.getElementById('options-tbody');
   tbody.innerHTML = '';
-
   OPTIONS_STRIKES.forEach(strike => {
     const distToAtm = Math.abs(strike - ATM_STRIKE) / ATM_STRIKE;
     const isAtm = strike === ATM_STRIKE;
@@ -1548,7 +1595,6 @@ function renderOptionsChain() {
     const peLTP = Math.max(5, (strike - ATM_STRIKE + 55 + Math.random() * 20)).toFixed(2);
     const ceOI = Math.floor((500000 / (distToAtm * 10 + 1)) + Math.random() * 50000);
     const peOI = Math.floor((480000 / (distToAtm * 10 + 1)) + Math.random() * 50000);
-
     const tr = document.createElement('tr');
     if (isAtm) tr.className = 'atm-row';
     tr.innerHTML = `
@@ -1590,23 +1636,21 @@ function renderScreener() {
 function renderFlowBars() {
   const container = document.getElementById('flow-bars');
   const maxVal = Math.max(...FII_FLOW_DATA.map(d => Math.max(Math.abs(d.fii), Math.abs(d.dii))));
-
   FII_FLOW_DATA.forEach(d => {
     const fiiPct = Math.abs(d.fii) / maxVal * 45;
     const diiPct = Math.abs(d.dii) / maxVal * 45;
     const fiiIsNeg = d.fii < 0;
     const diiIsNeg = d.dii < 0;
-
     const div = document.createElement('div');
     div.className = 'flow-bar-row';
     div.innerHTML = `
       <span class="flow-bar-label">${d.day}</span>
       <div class="flow-bar-track">
         <div class="flow-bar-neg" style="width:${fiiIsNeg ? fiiPct : 0}%"></div>
-        <div class="flow-bar-pos" style="width:${!fiiIsNeg ? fiiPct : 0}%; background:rgba(35,134,54,0.6);"></div>
+        <div class="flow-bar-pos" style="width:${!fiiIsNeg ? fiiPct : 0}%;background:rgba(38,166,154,0.6);"></div>
         <div style="width:8px;"></div>
         <div class="flow-bar-neg" style="width:${diiIsNeg ? diiPct : 0}%"></div>
-        <div class="flow-bar-pos" style="width:${!diiIsNeg ? diiPct : 0}%; background:rgba(56,139,253,0.6);"></div>
+        <div class="flow-bar-pos" style="width:${!diiIsNeg ? diiPct : 0}%;background:rgba(41,98,255,0.6);"></div>
       </div>
       <span class="flow-bar-val ${fiiIsNeg ? 'red' : 'green'}">${fiiIsNeg ? '−' : '+'}₹${Math.abs(d.fii)} Cr</span>
     `;
@@ -1632,11 +1676,16 @@ function renderNews() {
   });
 }
 
+// ─── PORTFOLIO ───────────────────────────────────────────────────────────────
+
+function openAddTrade() {
+  showToast('Add Trade form coming soon.');
+}
+
 // ─── MARKET STATUS ───────────────────────────────────────────────────────────
 
 function updateMarketStatus() {
   const now = new Date();
-  // Use IST — approximate by adding 5.5h offset to UTC
   const ist = new Date(now.getTime() + 5.5 * 3600000);
   const h = ist.getUTCHours();
   const m = ist.getUTCMinutes();
@@ -1658,17 +1707,14 @@ function updatePrices() {
     const delta = newLtp - s.ltp;
     const newChange = stockPrices[i].change + tweak * 100;
     const newChangeAmt = stockPrices[i].changeAmt + delta;
-
     const prevLtp = stockPrices[i].ltp;
     stockPrices[i] = { ltp: +newLtp.toFixed(2), change: +newChange.toFixed(2), changeAmt: +newChangeAmt.toFixed(2) };
 
-    // Update watchlist cell
     const ltpEl = document.getElementById('wl-ltp-' + i);
     const chgEl = document.getElementById('wl-chg-' + i);
     if (ltpEl) {
       ltpEl.textContent = '₹' + fmt(stockPrices[i].ltp);
       const isUp = newLtp >= prevLtp;
-      // Flash
       ltpEl.parentElement.parentElement.classList.remove('flash-green', 'flash-red');
       void ltpEl.parentElement.parentElement.offsetWidth;
       ltpEl.parentElement.parentElement.classList.add(isUp ? 'flash-green' : 'flash-red');
@@ -1676,13 +1722,11 @@ function updatePrices() {
     if (chgEl) {
       const isUp2 = stockPrices[i].change >= 0;
       chgEl.textContent = (isUp2 ? '+' : '') + fmt(stockPrices[i].change) + '%';
-      chgEl.className = 'stock-chg ' + (isUp2 ? 'green' : 'red');
+      chgEl.className = 'stock-chg wl-chg ' + (isUp2 ? 'green' : 'red');
     }
   });
 
-  // Update active stock header
   const p = stockPrices[activeStockIdx];
-  const s = STOCKS[activeStockIdx];
   const isUp = p.change >= 0;
   document.getElementById('ch-ltp').textContent = '₹' + fmt(p.ltp);
   const chEl = document.getElementById('ch-change');
@@ -1693,7 +1737,6 @@ function updatePrices() {
   ipChEl.innerHTML = fmtChange(p.change, p.changeAmt);
   ipChEl.className = 'val ' + (isUp ? 'green' : 'red');
 
-  // Nav indices pulse
   const niftyTweak = (Math.random() - 0.5) * 0.001;
   const niftyVal = document.getElementById('nav-nifty-val');
   const cur = parseFloat(niftyVal.textContent.replace(/,/g, ''));
@@ -1714,8 +1757,6 @@ document.getElementById('wl-search').addEventListener('input', function () {
 });
 
 // ─── REAL DATA LAYER ─────────────────────────────────────────────────────────
-// Connects to dashboard-api/main.py running at localhost:8000.
-// Falls back gracefully to fake demo data if the API isn't running.
 
 const API = 'http://localhost:8000';
 let isLive = false;
@@ -1727,10 +1768,9 @@ async function apiFetch(path) {
 }
 
 function showLiveMode() {
-  // Show LIVE badge next to version in nav
   const badge = document.createElement('span');
   badge.textContent = '⬤ LIVE';
-  badge.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700;color:#3fb950;margin-left:8px;animation:pulse 2s infinite;';
+  badge.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700;color:#26a69a;margin-left:8px;animation:pulse-dot 2s infinite;';
   const ver = document.querySelector('#nav-version');
   if (ver) ver.appendChild(badge);
 }
@@ -1782,7 +1822,6 @@ async function loadLiveFiiDii() {
   try {
     const d = await apiFetch('/api/fii-dii');
     if (!d || d.error) return;
-    // Update FII/DII flow tab if visible
     const fiiNet = d.fii?.net || d.fii_net;
     const diiNet = d.dii?.net || d.dii_net;
     const fiiEl = document.getElementById('live-fii-net');
@@ -1804,7 +1843,6 @@ async function loadLiveMacro() {
   try {
     const d = await apiFetch('/api/macro');
     if (!d) return;
-    // Patch macro tab cards with real values
     const patch = (id, val) => {
       const el = document.getElementById(id);
       if (el && val !== undefined && val !== null) el.textContent = val;
@@ -1812,7 +1850,6 @@ async function loadLiveMacro() {
     const rbi = d.rbi;
     if (rbi && !rbi.error) {
       patch('macro-repo', rbi.repo_rate ? rbi.repo_rate + '%' : null);
-      patch('macro-crr',  rbi.crr ? rbi.crr + '%' : null);
     }
     const mac = d.macro;
     if (mac && !mac.error) {
@@ -1825,16 +1862,14 @@ async function loadLiveMacro() {
 }
 
 async function loadLiveChart() {
-  // Replace fake chart data with real historical data for active stock
   if (!isLive || !window.candleSeries) return;
   try {
-    const sym = STOCKS[activeStock]?.symbol;
+    const sym = STOCKS[activeStockIdx]?.symbol;
     if (!sym) return;
-    const periodMap = { '1D': '5d', '1W': '1mo', '1M': '3mo', '3M': '6mo', '1Y': '2y' };
-    const intervalMap = { '1D': '5m', '1W': '1d', '1M': '1d', '3M': '1d', '1Y': '1wk' };
-    const tf = document.querySelector('.tf-btn.active')?.textContent || '1M';
-    const period   = periodMap[tf]   || '3mo';
-    const interval = intervalMap[tf] || '1d';
+    const periodMap =   { '1D': '5d',  '1W': '1mo', '1M': '3mo', '3M': '6mo', '1Y': '2y' };
+    const intervalMap = { '1D': '5m',  '1W': '1d',  '1M': '1d',  '3M': '1d',  '1Y': '1wk' };
+    const period   = periodMap[activeTF]   || '3mo';
+    const interval = intervalMap[activeTF] || '1d';
     const d = await apiFetch(`/api/historical/${sym}.NS?period=${period}&interval=${interval}`);
     if (!d || d.error || !d.data) return;
     const candles = d.data.map(row => ({
@@ -1845,15 +1880,15 @@ async function loadLiveChart() {
       close: row.close || row.Close,
     })).filter(c => c.time && c.open);
     if (candles.length > 5) {
-      window.candleSeries.setData(candles);
-      window.chart?.timeScale().fitContent();
+      candleSeries.setData(candles);
+      chart?.timeScale().fitContent();
     }
   } catch (_) {}
 }
 
 async function refreshLivePrices() {
   if (!isLive) return;
-  const sym = STOCKS[activeStock]?.symbol;
+  const sym = STOCKS[activeStockIdx]?.symbol;
   if (!sym) return;
   const d = await loadLiveQuote(sym);
   if (!d) return;
@@ -1861,22 +1896,20 @@ async function refreshLivePrices() {
   const chg = d.change_percent || d.pChange || 0;
   const chgAmt = d.change || d.net_change || 0;
   if (!ltp) return;
-  // Update chart header
-  const ltpEl = document.getElementById('chart-ltp');
-  const chgEl = document.getElementById('chart-chg');
-  if (ltpEl) ltpEl.textContent = '₹' + Number(ltp).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const ltpEl = document.getElementById('ch-ltp');
+  const chgEl = document.getElementById('ch-change');
+  if (ltpEl) ltpEl.textContent = '₹' + Number(ltp).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
   if (chgEl) {
     const sign = chgAmt >= 0 ? '+' : '';
     const cls = chgAmt >= 0 ? 'green' : 'red';
     chgEl.textContent = `${sign}₹${Number(chgAmt).toFixed(2)} (${sign}${Number(chg).toFixed(2)}%)`;
-    chgEl.className = cls;
+    chgEl.className = 'chart-change ' + cls;
   }
-  // Update watchlist row for this stock
   const rows = document.querySelectorAll('.wl-item');
-  if (rows[activeStock]) {
-    const priceEl = rows[activeStock].querySelector('.wl-price');
-    const chgElW  = rows[activeStock].querySelector('.wl-chg');
-    if (priceEl) priceEl.textContent = '₹' + Number(ltp).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  if (rows[activeStockIdx]) {
+    const priceEl = rows[activeStockIdx].querySelector('.wl-price');
+    const chgElW  = rows[activeStockIdx].querySelector('.wl-chg');
+    if (priceEl) priceEl.textContent = '₹' + Number(ltp).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
     if (chgElW) {
       const sign = chg >= 0 ? '+' : '';
       chgElW.textContent = sign + Number(chg).toFixed(2) + '%';
@@ -1890,21 +1923,12 @@ async function connectRealData() {
     await apiFetch('/api/health');
     isLive = true;
     showLiveMode();
-    // Load all live data in parallel
-    await Promise.all([
-      loadLiveNifty(),
-      loadLiveVix(),
-      loadLiveFiiDii(),
-      loadLiveMacro(),
-    ]);
-    // Load real chart data for the default stock
+    await Promise.all([loadLiveNifty(), loadLiveVix(), loadLiveFiiDii(), loadLiveMacro()]);
     setTimeout(loadLiveChart, 500);
-    // Real price refresh every 10s (NSE has 15-min delay; Angel One is real-time)
     setInterval(refreshLivePrices, 10000);
     setInterval(loadLiveNifty, 30000);
     setInterval(loadLiveVix, 60000);
   } catch (_) {
-    // API not running — stay in demo mode with fake data, no error shown
     console.info('[finstack] Demo mode — start dashboard-api/main.py for live data');
   }
 }
@@ -1914,6 +1938,7 @@ async function connectRealData() {
 document.addEventListener('DOMContentLoaded', () => {
   renderWatchlist();
   initChart();
+  initDrawToolbar();
   initBottomTabs();
   renderOptionsChain();
   renderScreener();
@@ -1922,7 +1947,11 @@ document.addEventListener('DOMContentLoaded', () => {
   updateMarketStatus();
   setInterval(updateMarketStatus, 30000);
   setInterval(updatePrices, 3000);
-  // Try to connect to real API (non-blocking, fails silently if not running)
+
+  // Pro status on load
+  if (isPro()) applyProFeatures();
+  updateProBadge();
+
   connectRealData();
 });
 </script>
