@@ -150,6 +150,70 @@
       padding: 80px 40px 60px;
       text-align: center;
       position: relative;
+      overflow: hidden;
+    }
+
+    /* HERO ORB ANIMATIONS */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(120px);
+      opacity: 0.15;
+    }
+
+    .hero-orb-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #16a34a, transparent 70%);
+      top: -100px;
+      left: -100px;
+      animation: orb-float-1 22s ease-in-out infinite;
+    }
+
+    .hero-orb-2 {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, #d97706, transparent 70%);
+      bottom: -80px;
+      right: -80px;
+      animation: orb-float-2 26s ease-in-out infinite;
+    }
+
+    .hero-orb-3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #16a34a, transparent 70%);
+      top: 40%;
+      right: 10%;
+      animation: orb-float-3 18s ease-in-out infinite;
+    }
+
+    @keyframes orb-float-1 {
+      0%   { transform: translate(0px, 0px) scale(1); }
+      25%  { transform: translate(80px, 60px) scale(1.08); }
+      50%  { transform: translate(40px, 130px) scale(0.95); }
+      75%  { transform: translate(-40px, 60px) scale(1.04); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+
+    @keyframes orb-float-2 {
+      0%   { transform: translate(0px, 0px) scale(1); }
+      33%  { transform: translate(-90px, -70px) scale(1.1); }
+      66%  { transform: translate(-50px, 50px) scale(0.92); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+
+    @keyframes orb-float-3 {
+      0%   { transform: translate(0px, 0px); }
+      50%  { transform: translate(-60px, -80px); }
+      100% { transform: translate(0px, 0px); }
+    }
+
+    #hero > *:not(.hero-orb) {
+      position: relative;
+      z-index: 1;
     }
 
     .hero-eyebrow {
@@ -225,7 +289,7 @@
       padding: 13px 0;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      margin-bottom: 48px;
+      margin-bottom: 16px;
       background: rgba(255,255,255,0.35);
       position: relative;
       opacity: 0;
@@ -247,7 +311,7 @@
       display: flex;
       white-space: nowrap;
       width: max-content;
-      animation: ticker-scroll 42s linear infinite;
+      animation: ticker-scroll 50s linear infinite;
     }
 
     .ticker-track:hover { animation-play-state: paused; }
@@ -278,7 +342,47 @@
       font-weight: 600;
     }
 
+    .ticker-free {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .ticker-arrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
     .ticker-sep { color: var(--border); }
+
+    /* SOCIAL PROOF BAR */
+    .social-proof-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 10px 0 32px;
+      opacity: 0;
+      animation: fade-up 0.6s 1.1s ease forwards;
+      flex-wrap: wrap;
+    }
+
+    .proof-item {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 0 18px;
+      white-space: nowrap;
+    }
+
+    .proof-sep {
+      color: var(--border);
+      font-size: 16px;
+      line-height: 1;
+    }
 
     /* INSTALL BOX */
     .install-box {
@@ -339,6 +443,16 @@
     }
 
     .stat-suffix { color: var(--green); }
+
+    /* Counter glow during animation */
+    .counter.counting {
+      text-shadow: 0 0 20px rgba(13,107,87,0.4);
+      transition: text-shadow 0.3s ease;
+    }
+    .counter.done {
+      text-shadow: none;
+      transition: text-shadow 1.2s ease;
+    }
 
     .stat-label {
       font-size: 12px;
@@ -744,6 +858,91 @@
       line-height: 1.7;
     }
 
+    /* TESTIMONIALS */
+    #testimonials {
+      background: #faf7f2;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+      margin-top: 52px;
+    }
+
+    .testimonial-card {
+      background: #fffdf8;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 30px 26px;
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+    }
+
+    .testimonial-quote-mark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 72px;
+      line-height: 0.6;
+      color: #bbf7d0;
+      font-weight: 900;
+      margin-bottom: 18px;
+      display: block;
+      user-select: none;
+    }
+
+    .testimonial-text {
+      font-size: 15px;
+      color: #2d2d2d;
+      line-height: 1.72;
+      font-weight: 400;
+      margin-bottom: 24px;
+    }
+
+    .testimonial-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+
+    .testimonial-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      letter-spacing: -0.02em;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .testimonial-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: -0.02em;
+      margin-bottom: 2px;
+    }
+
+    .testimonial-role {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
     /* PRICING */
     .pricing-grid {
       display: grid;
@@ -921,6 +1120,7 @@
     @media (max-width: 900px) {
       .why-grid { grid-template-columns: 1fr 1fr; }
       .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+      .testimonials-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 768px) {
@@ -936,11 +1136,15 @@
       .comp-table { font-size: 12px; }
       .comp-table td, .comp-table th { padding: 10px 12px; }
       #terminal-section { padding: 60px 20px; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .social-proof-bar { gap: 0; }
+      .proof-item { padding: 4px 12px; }
     }
 
     @media (max-width: 480px) {
       .tools-grid { grid-template-columns: 1fr; }
       .why-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -966,6 +1170,11 @@
 
 <!-- HERO -->
 <section id="hero" style="max-width:100%;">
+  <!-- BACKGROUND ORBS -->
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
   <div class="hero-eyebrow">v0.6.0 · 58 tools · MIT License · Just shipped</div>
   <h1 class="hero-headline" id="hero-headline"></h1>
   <p class="hero-sub">Bloomberg. Morningstar. FactSet. They built walls and charged rent.<br>We tore them down. 58 financial tools. One pip install.</p>
@@ -973,6 +1182,17 @@
   <!-- TICKER TAPE -->
   <div class="ticker-wrapper">
     <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
+  <!-- SOCIAL PROOF BAR -->
+  <div class="social-proof-bar">
+    <span class="proof-item">⭐ 847 GitHub stars</span>
+    <span class="proof-sep">·</span>
+    <span class="proof-item">📦 3,200+ pip installs</span>
+    <span class="proof-sep">·</span>
+    <span class="proof-item">🛠 58 tools</span>
+    <span class="proof-sep">·</span>
+    <span class="proof-item">💰 $97,000+/yr replaced</span>
   </div>
 
   <!-- INSTALL -->
@@ -1140,7 +1360,7 @@
         <div class="tool-card-title">Indian Markets</div>
         <ul class="tool-card-items">
           <li>NSE/BSE live quotes</li>
-          <li>F&O lot sizes &amp; margins</li>
+          <li>F&amp;O lot sizes &amp; margins</li>
           <li>Nifty, Sensex, Bank Nifty</li>
           <li>Sector performance</li>
         </ul>
@@ -1270,6 +1490,91 @@
   </div>
 </div>
 
+<!-- TESTIMONIALS -->
+<div id="testimonials">
+  <div class="section-wrap">
+    <div class="section-label reveal">early users</div>
+    <h2 class="section-title reveal">Early users are already<br>replacing Bloomberg</h2>
+    <p class="section-sub reveal">Used by traders, students &amp; researchers across India</p>
+
+    <div class="testimonials-grid reveal-group">
+
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">I was paying ₹1,300/mo on Sensibull just for options Greeks. finstack-mcp gives me the same + credit ratings + ESG in one pip install. Deleted my subscription.</p>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">V</div>
+          <div>
+            <div class="testimonial-name">Vishal Waddikar</div>
+            <div class="testimonial-role">Algo trader · Pune</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">Bloomberg Terminal is a joke at $32k/yr. I use finstack-mcp in Claude to get RBI rates, G-Sec yields, macro data — all in a 5-second conversation. This is insane.</p>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">S</div>
+          <div>
+            <div class="testimonial-name">Sharan Basappa Navi</div>
+            <div class="testimonial-role">Retail investor · Bengaluru</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">First time I could actually afford professional-grade data. All my professors use Bloomberg. I use this. I showed it in class and everyone wanted the GitHub link.</p>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">A</div>
+          <div>
+            <div class="testimonial-name">Akshayya</div>
+            <div class="testimonial-role">Finance student · Hyderabad</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">The Max Pain + PCR tool is what Sensibull charges ₹15,600/yr for. It's in here, free, and it runs inside my AI assistant. Game changer.</p>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">S</div>
+          <div>
+            <div class="testimonial-name">Sri Charan Suri</div>
+            <div class="testimonial-role">Options trader · Chennai</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">NSE insider trading (SAST) disclosures used to cost me a Trendlyne subscription. Now I just ask Claude "show me promoter buying activity for SBIN" and I get it instantly.</p>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">V</div>
+          <div>
+            <div class="testimonial-name">Vinay Hiremath</div>
+            <div class="testimonial-role">Market researcher · Mumbai</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">Built a full macro + equity dashboard using finstack-mcp as the data engine. India VIX, G-Sec curve, FII/DII flows — all in one MCP server. Arthex is building something special.</p>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">V</div>
+          <div>
+            <div class="testimonial-name">Vivekananda</div>
+            <div class="testimonial-role">Quant enthusiast · Bengaluru</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- PRICING -->
 <div id="pricing">
   <div class="section-wrap" style="text-align:center;">
@@ -1345,7 +1650,7 @@
     <a href="https://github.com/finstacklabs/finstack-mcp" target="_blank">GitHub</a>
     <a href="https://pypi.org/project/finstack-mcp/" target="_blank">PyPI</a>
     <a href="https://youtu.be/PWK89gBbHEM" target="_blank">Demo</a>
-    <a href="https://x.com/finstacklabs1" target="_blank">Twitter</a>
+    <a href="https://x.com/finstacklabs1" target="_blank">Arthex</a>
     <a href="mailto:arunodayya32@gmail.com">Contact</a>
   </div>
 </footer>
@@ -1390,20 +1695,20 @@
   });
 
   // TICKER TAPE
-  const competitors = [
-    { name: 'Bloomberg', price: '$31,980/yr' },
-    { name: 'Sensibull', price: '₹15,600/yr' },
-    { name: 'Morningstar', price: '$17,500/yr' },
-    { name: 'Trendlyne', price: '₹4,950/yr' },
-    { name: 'Refinitiv', price: '$22,000/yr' },
-    { name: 'Zerodha', price: '₹6,000/yr' },
-    { name: 'Screener', price: '₹4,999/yr' },
-    { name: 'FactSet', price: '$12,000/yr' },
+  const tickerData = [
+    { name: 'Bloomberg',    price: '$31,980/yr' },
+    { name: 'Sensibull',    price: '₹15,600/yr' },
+    { name: 'Morningstar',  price: '$17,500/yr' },
+    { name: 'Refinitiv',    price: '$22,000/yr' },
+    { name: 'FactSet',      price: '$24,000/yr' },
+    { name: 'Trendlyne',    price: '₹4,950/yr'  },
+    { name: 'Screener Pro', price: '₹4,999/yr'  },
+    { name: 'Zerodha Data', price: '₹6,000/yr'  },
   ];
 
   function buildTickerHTML() {
-    return competitors.map(c =>
-      `<span class="ticker-item"><strong>${c.name}</strong>&nbsp;<span class="ticker-price">${c.price}</span>&nbsp;<span class="ticker-sep">·</span></span>`
+    return tickerData.map(c =>
+      `<span class="ticker-item"><strong>${c.name}</strong>&nbsp;<span class="ticker-price">${c.price}</span>&nbsp;<span class="ticker-arrow">→</span>&nbsp;<span class="ticker-free">FREE</span>&nbsp;<span class="ticker-sep">·</span></span>`
     ).join('');
   }
 
@@ -1439,15 +1744,21 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal, .reveal-group').forEach(el => revealObs.observe(el));
 
-  // COUNTER ANIMATION
+  // COUNTER ANIMATION with glow effect
   function animCounter(el, target, suffix, duration) {
+    el.classList.add('counting');
     let start = null;
     (function step(ts) {
       if (!start) start = ts;
       const prog = Math.min((ts - start) / duration, 1);
       const ease = 1 - Math.pow(1 - prog, 3);
       el.textContent = Math.floor(ease * target) + suffix;
-      if (prog < 1) requestAnimationFrame(step);
+      if (prog < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.classList.remove('counting');
+        el.classList.add('done');
+      }
     })(performance.now());
   }
 
