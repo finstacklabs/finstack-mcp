@@ -33,6 +33,21 @@ Built by **Arunodayya B S** ([@SpawnAgent](https://x.com/finstacklabs1)) · [Art
 
 ---
 
+## Products
+
+| Product | What it is | Price |
+|---|---|---|
+| **finstack-mcp** | 58-tool MCP server for Claude/Cursor/ChatGPT | Free forever (MIT) |
+| **Dashboard** | TradingView-style web chart + options + screener | ₹299/mo (7-day free trial) |
+| **Ideas** | Social trading community — post/like/comment analysis | Free |
+| **Creator Desk** | Managed AI workspace + research reports + multi-portfolio | ₹2,999/mo |
+
+**Dashboard** → [landing-page/dashboard.html](landing-page/dashboard.html) · Real candlestick charts, options chain with Max Pain, FII/DII flows, screener, portfolio tracker. Connects to real NSE data via Angel One.
+
+**Ideas feed** → [landing-page/ideas.html](landing-page/ideas.html) · Post your market analysis, like/comment on others, browse by symbol, direction, or trending.
+
+---
+
 ## Demo
 
 [![FinStack MCP Demo](https://img.youtube.com/vi/PWK89gBbHEM/maxresdefault.jpg)](https://youtu.be/PWK89gBbHEM?si=MqYuCRRJ0EUP10fm)
@@ -168,11 +183,30 @@ pytest -q
 
 ---
 
+## Run the Dashboard Locally (with real NSE data)
+
+```bash
+# 1. Start the data API
+cd dashboard-api
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+
+# 2. Open dashboard.html in your browser
+# The dashboard auto-detects the API and shows a green ⬤ LIVE badge
+# Without the API it runs in demo mode with realistic fake data
+```
+
+> **⚠ Data delay warning:** Without Angel One configured, chart data is 15-min delayed (yfinance). Do not use for intraday trading without real-time data. Configure Angel One SmartAPI for zero-delay quotes.
+
+---
+
 ## Current Status
 
 - GitHub: https://github.com/finstacklabs/finstack-mcp
 - PyPI: https://pypi.org/project/finstack-mcp/
 - Landing page: https://finstacklabs.github.io/
+- Dashboard: [landing-page/dashboard.html](landing-page/dashboard.html)
+- Ideas feed: [landing-page/ideas.html](landing-page/ideas.html)
 - YouTube demo: https://youtu.be/PWK89gBbHEM
 - X / Twitter: https://x.com/finstacklabs1
 
