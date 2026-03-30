@@ -833,6 +833,9 @@
 
       <div id="chart-controls">
         <div class="tf-tabs" id="tf-tabs">
+          <div class="tf-tab" data-tf="5m">5m</div>
+          <div class="tf-tab" data-tf="15m">15m</div>
+          <div class="tf-tab" data-tf="1H">1H</div>
           <div class="tf-tab" data-tf="1D">1D</div>
           <div class="tf-tab" data-tf="1W">1W</div>
           <div class="tf-tab active" data-tf="1M">1M</div>
@@ -857,6 +860,9 @@
           </div>
           <div class="chip" data-ind="MACD">MACD
             <span class="chip-tooltip">Moving Average Convergence Divergence (12,26,9)</span>
+          </div>
+          <div class="chip" data-ind="VWAP">VWAP
+            <span class="chip-tooltip">Volume Weighted Average Price (14-period rolling)</span>
           </div>
         </div>
       </div>
@@ -1383,8 +1389,44 @@ function generateOHLCV(startPrice, days) {
   return data;
 }
 
+// Generate intraday demo OHLCV data (NSE market hours 9:15–15:30 IST)
+function generateIntradayOHLCV(startPrice, tf) {
+  const intervalMinutes = { '5m': 5, '15m': 15, '1H': 60, '30m': 30, '4H': 240 }[tf] || 5;
+  const daysBack = { '5m': 1, '15m': 3, '1H': 10, '30m': 5, '4H': 20 }[tf] || 1;
+  const data = [];
+  let price = startPrice;
+  const now = new Date('2026-03-28T15:30:00+05:30');
+  for (let d = daysBack; d >= 0; d--) {
+    const day = new Date(now);
+    day.setDate(day.getDate() - d);
+    if (day.getDay() === 0 || day.getDay() === 6) continue;
+    // NSE 9:15 AM to 3:30 PM
+    const openTime = new Date(day);
+    openTime.setHours(9, 15, 0, 0);
+    const closeTime = new Date(day);
+    closeTime.setHours(15, 30, 0, 0);
+    for (let t = new Date(openTime); t <= closeTime; t = new Date(t.getTime() + intervalMinutes * 60000)) {
+      const change = (Math.random() - 0.48) * 0.004;
+      const open = price;
+      const close = price * (1 + change);
+      const high = Math.max(open, close) * (1 + Math.random() * 0.003);
+      const low  = Math.min(open, close) * (1 - Math.random() * 0.003);
+      const volume = Math.floor(Math.random() * 500000 + 100000);
+      // Unix seconds (LightweightCharts requires this for intraday)
+      const unixSec = Math.floor(t.getTime() / 1000);
+      data.push({ time: unixSec, open: +open.toFixed(2), high: +high.toFixed(2), low: +low.toFixed(2), close: +close.toFixed(2), value: volume });
+      price = close;
+    }
+  }
+  return data;
+}
+
 function tfDays(tf) {
-  return { '1D': 1, '1W': 7, '1M': 30, '3M': 90, '1Y': 365 }[tf] || 365;
+  return { '5m': 1, '15m': 2, '1H': 7, '1D': 1, '1W': 7, '1M': 30, '3M': 90, '1Y': 365 }[tf] || 365;
+}
+
+function tfIsIntraday(tf) {
+  return ['5m', '15m', '1H', '30m', '4H'].includes(tf);
 }
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
@@ -1395,6 +1437,11 @@ let chart = null;
 let candleSeries = null;
 let volumeSeries = null;
 let ma20Series = null;
+let ema50Series = null;
+let bbUpperSeries = null;
+let bbLowerSeries = null;
+let vwapSeries = null;
+let lastHoverPrice = null;   // tracked by crosshairMove — fallback for hline clicks
 let activeIndicators = new Set(['MA20']);
 let stockPrices = STOCKS.map(s => ({ ltp: s.ltp, change: s.change, changeAmt: s.changeAmt }));
 let activeDrawTool = 'cursor';
@@ -1484,7 +1531,7 @@ function initChart() {
     grid: { vertLines: { color: '#2a2e39' }, horzLines: { color: '#2a2e39' } },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
     rightPriceScale: { borderColor: '#363a45' },
-    timeScale: { borderColor: '#363a45', timeVisible: true },
+    timeScale: { borderColor: '#363a45', timeVisible: true, secondsVisible: false },
     width: container.offsetWidth,
     height: container.offsetHeight,
   });
@@ -1516,18 +1563,55 @@ function initChart() {
     lastValueVisible: false,
   });
 
+  ema50Series = chart.addLineSeries({
+    color: '#ff9800',
+    lineWidth: 1,
+    priceLineVisible: false,
+    lastValueVisible: false,
+    visible: false,
+  });
+
+  bbUpperSeries = chart.addLineSeries({
+    color: 'rgba(150,150,255,0.6)',
+    lineWidth: 1,
+    lineStyle: LightweightCharts.LineStyle.Dashed,
+    priceLineVisible: false,
+    lastValueVisible: false,
+    visible: false,
+  });
+
+  bbLowerSeries = chart.addLineSeries({
+    color: 'rgba(150,150,255,0.6)',
+    lineWidth: 1,
+    lineStyle: LightweightCharts.LineStyle.Dashed,
+    priceLineVisible: false,
+    lastValueVisible: false,
+    visible: false,
+  });
+
+  vwapSeries = chart.addLineSeries({
+    color: '#e91e63',
+    lineWidth: 1,
+    lineStyle: LightweightCharts.LineStyle.Dotted,
+    priceLineVisible: false,
+    lastValueVisible: false,
+    visible: false,
+  });
+
   loadChart();
 
   // ── Subscribe to chart clicks for drawing tools ──────────────────────────
   chart.subscribeClick(function(param) {
     if (!param.point) return;
-    const price = candleSeries.coordinateToPrice(param.point.y);
+    const priceFromClick = candleSeries.coordinateToPrice(param.point.y);
+    // Use click price, or fall back to last crosshair price if coordinateToPrice returned null
+    const price = priceFromClick != null ? priceFromClick : lastHoverPrice;
     if (price == null) return;
 
     // ── HORIZONTAL LINE ── (doesn't need time — works anywhere on chart)
     if (activeDrawTool === 'hline') {
       const line = candleSeries.createPriceLine({
-        price,
+        price: +price.toFixed(2),
         color: '#f7a600',
         lineWidth: 1,
         lineStyle: LightweightCharts.LineStyle.Dashed,
@@ -1535,6 +1619,7 @@ function initChart() {
         title: fmt(price),
       });
       drawnPriceLines.push(line);
+      showToast('Horizontal level placed at ₹' + fmt(price));
       return;
     }
 
@@ -1574,7 +1659,16 @@ function initChart() {
         tlineState.p1 = null;
 
         // Draw the final trend line extended across the visible range
-        const extendedData = buildTrendLineData(p1, p2);
+        let extendedData = buildTrendLineData(p1, p2);
+        // Safety: if filter collapsed the data to < 2 points, just draw the segment
+        if (extendedData.length < 2) {
+          const earlier = chartTimeToMs(p1.time) <= chartTimeToMs(p2.time) ? p1 : p2;
+          const later   = chartTimeToMs(p1.time) <= chartTimeToMs(p2.time) ? p2 : p1;
+          extendedData = [
+            { time: earlier.time, value: +earlier.price.toFixed(2) },
+            { time: later.time,   value: +later.price.toFixed(2) },
+          ];
+        }
         const series = chart.addLineSeries({
           color: '#2962ff',
           lineWidth: 1,
@@ -1598,10 +1692,12 @@ function initChart() {
         lastValueVisible: false,
         crosshairMarkerVisible: false,
       });
-      // Ray: start at clicked point, extend to "far future"
-      const endTime = time + 60 * 60 * 24 * 365 * 5; // ~5 years forward
-      const slope = 0; // horizontal ray by default
-      series.setData([{ time, value: price }, { time: endTime, value: price }]);
+      // Ray: start at clicked point, extend ~5 years forward
+      // Must handle both ISO string times and Unix timestamp numbers
+      const startMs  = chartTimeToMs(time);
+      const endMs    = startMs + 5 * 365 * 24 * 60 * 60 * 1000;
+      const endTime  = typeof time === 'string' ? msToDateStr(endMs) : Math.floor(endMs / 1000);
+      series.setData([{ time, value: +price.toFixed(2) }, { time: endTime, value: +price.toFixed(2) }]);
       drawnTrendLines.push({ series, p1: { time, price }, p2: { time: endTime, price } });
       return;
     }
@@ -1626,6 +1722,11 @@ function initChart() {
 
   // ── Preview trend line on mouse move ─────────────────────────────────────
   chart.subscribeCrosshairMove(function(param) {
+    // Always track hover price so hline can use it as fallback on click
+    if (param.point) {
+      const hp = candleSeries.coordinateToPrice(param.point.y);
+      if (hp != null) lastHoverPrice = hp;
+    }
     if (!tlineState.active || !tlineState.previewSeries || !param.point || !param.time) return;
     if (activeDrawTool !== 'tline' && activeDrawTool !== 'fib') return;
     const price = candleSeries.coordinateToPrice(param.point.y);
@@ -1673,12 +1774,16 @@ function buildTrendLineData(p1, p2) {
   const pricePast   = p1.price + slope * (tFarPast - t1);
   const priceFuture = p1.price + slope * (tFarFuture - t1);
 
-  return [
+  const raw = [
     { time: msToDateStr(tFarPast),   value: +pricePast.toFixed(2) },
     { time: p1.time,                 value: +p1.price.toFixed(2) },
     { time: p2.time,                 value: +p2.price.toFixed(2) },
     { time: msToDateStr(tFarFuture), value: +priceFuture.toFixed(2) },
-  ].filter((d, i, arr) => i === 0 || d.time > arr[i - 1].time);
+  ];
+  // Sort chronologically (handles right-to-left clicks where p1 > p2)
+  raw.sort((a, b) => chartTimeToMs(a.time) - chartTimeToMs(b.time));
+  // Remove exact duplicate times
+  return raw.filter((d, i, arr) => i === 0 || chartTimeToMs(d.time) > chartTimeToMs(arr[i - 1].time));
 }
 
 // ── Draw Fibonacci retracement levels ─────────────────────────────────────
@@ -1695,8 +1800,11 @@ function drawFibonacci(p1, p2) {
     { ratio: 0.786, color: '#f7a600', label: '78.6%'  },
     { ratio: 1,     color: '#ef5350', label: '100%'   },
   ];
-  const startTime = Math.min(p1.time, p2.time);
-  const endTime   = Math.max(p1.time, p2.time) + (Math.max(p1.time, p2.time) - Math.min(p1.time, p2.time)) * 2;
+  const t1ms = chartTimeToMs(p1.time), t2ms = chartTimeToMs(p2.time);
+  const startMs = Math.min(t1ms, t2ms);
+  const endMs   = Math.max(t1ms, t2ms) + (Math.max(t1ms, t2ms) - startMs) * 2;
+  const startTime = typeof p1.time === 'string' ? msToDateStr(startMs) : Math.floor(startMs / 1000);
+  const endTime   = typeof p1.time === 'string' ? msToDateStr(endMs)   : Math.floor(endMs / 1000);
 
   levels.forEach(({ ratio, color, label }) => {
     const price = lo + diff * (1 - ratio);
@@ -1727,11 +1835,46 @@ function computeMA(data, period) {
   }).filter(Boolean);
 }
 
+function computeEMA(data, period) {
+  const k = 2 / (period + 1);
+  let ema = data[0].close;
+  return data.map((d, i) => {
+    if (i === 0) { ema = d.close; return { time: d.time, value: +ema.toFixed(2) }; }
+    ema = d.close * k + ema * (1 - k);
+    return { time: d.time, value: +ema.toFixed(2) };
+  });
+}
+
+function computeBB(data, period = 20, mult = 2) {
+  const upper = [], lower = [];
+  data.forEach((d, i) => {
+    if (i < period - 1) return;
+    const slice = data.slice(i - period + 1, i + 1);
+    const avg = slice.reduce((s, x) => s + x.close, 0) / period;
+    const std = Math.sqrt(slice.reduce((s, x) => s + (x.close - avg) ** 2, 0) / period);
+    upper.push({ time: d.time, value: +(avg + mult * std).toFixed(2) });
+    lower.push({ time: d.time, value: +(avg - mult * std).toFixed(2) });
+  });
+  return { upper, lower };
+}
+
+function computeVWAP(data, period = 14) {
+  // Rolling VWAP (14-period typical price × volume / volume)
+  return data.map((d, i) => {
+    if (i < period - 1) return null;
+    const slice = data.slice(i - period + 1, i + 1);
+    const sumTV = slice.reduce((s, x) => s + (x.high + x.low + x.close) / 3 * (x.value || 1), 0);
+    const sumV  = slice.reduce((s, x) => s + (x.value || 1), 0);
+    return { time: d.time, value: +(sumTV / sumV).toFixed(2) };
+  }).filter(Boolean);
+}
+
 function loadChart(noShimmer) {
   // If API is live, use real data instead of fake OHLCV
   if (isLive) { loadLiveChart(); return; }
   const s = STOCKS[activeStockIdx];
   const days = tfDays(activeTF);
+  const intraday = tfIsIntraday(activeTF);
   const container = document.getElementById('chart-container-wrap');
 
   if (!noShimmer) {
@@ -1741,7 +1884,7 @@ function loadChart(noShimmer) {
     container.appendChild(shimmer);
   }
 
-  const data = generateOHLCV(s.startPrice, days);
+  const data = intraday ? generateIntradayOHLCV(s.startPrice, activeTF) : generateOHLCV(s.startPrice, days);
 
   const render = () => {
     const candle = data.map(d => ({ time: d.time, open: d.open, high: d.high, low: d.low, close: d.close }));
@@ -1753,11 +1896,40 @@ function loadChart(noShimmer) {
     candleSeries.setData(candle);
     volumeSeries.setData(vol);
 
+    // MA20
     if (activeIndicators.has('MA20')) {
       ma20Series.setData(computeMA(data, 20));
       ma20Series.applyOptions({ visible: true });
     } else {
       ma20Series.applyOptions({ visible: false });
+    }
+
+    // EMA50
+    if (activeIndicators.has('EMA50')) {
+      ema50Series.setData(computeEMA(data, 50));
+      ema50Series.applyOptions({ visible: true });
+    } else {
+      ema50Series.applyOptions({ visible: false });
+    }
+
+    // Bollinger Bands
+    if (activeIndicators.has('BB')) {
+      const bb = computeBB(data);
+      bbUpperSeries.setData(bb.upper);
+      bbLowerSeries.setData(bb.lower);
+      bbUpperSeries.applyOptions({ visible: true });
+      bbLowerSeries.applyOptions({ visible: true });
+    } else {
+      bbUpperSeries.applyOptions({ visible: false });
+      bbLowerSeries.applyOptions({ visible: false });
+    }
+
+    // VWAP
+    if (activeIndicators.has('VWAP')) {
+      vwapSeries.setData(computeVWAP(data));
+      vwapSeries.applyOptions({ visible: true });
+    } else {
+      vwapSeries.applyOptions({ visible: false });
     }
 
     chart.timeScale().fitContent();
@@ -2236,21 +2408,47 @@ async function loadLiveChart() {
   try {
     const sym = STOCKS[activeStockIdx]?.symbol;
     if (!sym) return;
-    const periodMap =   { '1D': '5d',  '1W': '1mo', '1M': '3mo', '3M': '6mo', '1Y': '2y' };
-    const intervalMap = { '1D': '5m',  '1W': '1d',  '1M': '1d',  '3M': '1d',  '1Y': '1wk' };
+    const periodMap =   { '5m': '1d', '15m': '5d', '1H': '1mo', '30m': '5d', '4H': '1mo', '1D': '5d', '1W': '1mo', '1M': '3mo', '3M': '6mo', '1Y': '2y' };
+    const intervalMap = { '5m': '5m', '15m': '15m', '1H': '60m', '30m': '30m', '4H': '60m', '1D': '1d', '1W': '1d', '1M': '1d', '3M': '1d', '1Y': '1wk' };
     const period   = periodMap[activeTF]   || '3mo';
     const interval = intervalMap[activeTF] || '1d';
     const d = await apiFetch(`/api/historical/${sym}.NS?period=${period}&interval=${interval}`);
     if (!d || d.error || !d.data) return;
-    const candles = d.data.map(row => ({
-      time: row.date || row.Date,
-      open:  row.open  || row.Open,
-      high:  row.high  || row.High,
-      low:   row.low   || row.Low,
-      close: row.close || row.Close,
-    })).filter(c => c.time && c.open);
+    const isIntraday = tfIsIntraday(activeTF);
+    const candles = d.data.map(row => {
+      let rawTime = row.date || row.Date;
+      let t;
+      if (typeof rawTime === 'string' && rawTime.includes(' ')) {
+        // Intraday: "2026-03-29 09:15" → Unix seconds (LightweightCharts needs UTC seconds for intraday)
+        t = Math.floor(new Date(rawTime.replace(' ', 'T') + '+05:30').getTime() / 1000);
+      } else {
+        t = rawTime; // daily: ISO date string "2026-03-29"
+      }
+      return {
+        time:  t,
+        open:  row.open  || row.Open  || 0,
+        high:  row.high  || row.High  || 0,
+        low:   row.low   || row.Low   || 0,
+        close: row.close || row.Close || 0,
+        value: row.volume || row.Volume || 0,
+      };
+    }).filter(c => c.time && c.open);
     if (candles.length > 5) {
       candleSeries.setData(candles);
+      const vol = candles.map(c => ({
+        time: c.time, value: c.value,
+        color: c.close >= c.open ? 'rgba(38,166,154,0.4)' : 'rgba(239,83,80,0.4)',
+      }));
+      volumeSeries.setData(vol);
+      // Render active indicators on live data
+      if (activeIndicators.has('MA20'))  { ma20Series.setData(computeMA(candles, 20));   ma20Series.applyOptions({ visible: true }); }
+      else ma20Series.applyOptions({ visible: false });
+      if (activeIndicators.has('EMA50')) { ema50Series.setData(computeEMA(candles, 50)); ema50Series.applyOptions({ visible: true }); }
+      else ema50Series.applyOptions({ visible: false });
+      if (activeIndicators.has('BB'))    { const bb = computeBB(candles); bbUpperSeries.setData(bb.upper); bbLowerSeries.setData(bb.lower); bbUpperSeries.applyOptions({ visible: true }); bbLowerSeries.applyOptions({ visible: true }); }
+      else { bbUpperSeries.applyOptions({ visible: false }); bbLowerSeries.applyOptions({ visible: false }); }
+      if (activeIndicators.has('VWAP'))  { vwapSeries.setData(computeVWAP(candles));     vwapSeries.applyOptions({ visible: true }); }
+      else vwapSeries.applyOptions({ visible: false });
       chart?.timeScale().fitContent();
     }
   } catch (_) {}
