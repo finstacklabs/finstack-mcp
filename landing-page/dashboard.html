@@ -1887,6 +1887,8 @@ function loadChart(noShimmer) {
   const data = intraday ? generateIntradayOHLCV(s.startPrice, activeTF) : generateOHLCV(s.startPrice, days);
 
   const render = () => {
+    // Clear existing data before setting new stock's data
+    try { candleSeries.setData([]); volumeSeries.setData([]); } catch(e) {}
     const candle = data.map(d => ({ time: d.time, open: d.open, high: d.high, low: d.low, close: d.close }));
     const vol = data.map(d => ({
       time: d.time, value: d.value,
@@ -2404,7 +2406,9 @@ async function loadLiveMacro() {
 }
 
 async function loadLiveChart() {
-  if (!isLive || !window.candleSeries) return;
+  if (!isLive || !candleSeries) return;
+  // Clear stale data immediately so switching stocks shows blank until new data loads
+  try { candleSeries.setData([]); volumeSeries.setData([]); } catch(e) {}
   try {
     const sym = STOCKS[activeStockIdx]?.symbol;
     if (!sym) return;
