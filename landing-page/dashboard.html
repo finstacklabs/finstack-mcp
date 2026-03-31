@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -647,6 +648,56 @@
 
     /* Scrollbar global */
     * { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+
+    /* ─── RSI SUB-PANE ─── */
+    #rsi-pane {
+      height: 100px; flex-shrink: 0;
+      border-top: 1px solid var(--border);
+      position: relative; display: none;
+    }
+    #rsi-pane.visible { display: block; }
+    #rsi-container { position: absolute; inset: 0; }
+    #rsi-label {
+      position: absolute; top: 4px; left: 8px; z-index: 10;
+      font-size: 10px; color: var(--muted); font-family: 'Roboto Mono', monospace;
+      pointer-events: none;
+    }
+    .chip[data-ind="RSI"].active { border-color: #9c27b0; color: #ce93d8; }
+
+    /* ─── ALERT PANEL ─── */
+    .alert-form { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .alert-form select, .alert-form input {
+      background: var(--panel2); border: 1px solid var(--border2);
+      color: var(--text); border-radius: 4px; padding: 5px 8px;
+      font-size: 11px; font-family: 'Roboto Mono', monospace;
+    }
+    .alert-form input { width: 100px; }
+    .alert-form button {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 4px; padding: 5px 12px; font-size: 11px;
+      cursor: pointer; font-weight: 600;
+    }
+    .alert-form button:hover { background: #1b4fd8; }
+    .alert-list { display: flex; flex-direction: column; gap: 4px; }
+    .alert-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px; background: var(--panel2);
+      border-radius: 4px; border: 1px solid var(--border);
+      font-size: 11px;
+    }
+    .alert-row .alert-sym { font-weight: 700; color: var(--text-strong); min-width: 80px; }
+    .alert-row .alert-cond { color: var(--muted); flex: 1; }
+    .alert-row .alert-del {
+      background: none; border: none; color: var(--muted2);
+      cursor: pointer; font-size: 14px; line-height: 1; padding: 0 4px;
+    }
+    .alert-row .alert-del:hover { color: var(--red); }
+    .alert-row.triggered { border-color: var(--gold); background: var(--gold-bg); }
+    #alert-notify-btn {
+      display: none; background: var(--gold-bg); border: 1px solid var(--gold);
+      color: var(--gold); border-radius: 4px; padding: 5px 10px;
+      font-size: 11px; cursor: pointer; margin-bottom: 10px; width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -877,6 +928,10 @@
       <div id="chart-container-wrap" class="cursor-default">
         <div id="chart-container"></div>
       </div>
+      <div id="rsi-pane">
+        <div id="rsi-label">RSI(14)</div>
+        <div id="rsi-container"></div>
+      </div>
     </div>
 
     <!-- INFO PANEL -->
@@ -981,6 +1036,7 @@
       <div class="bottom-tab" data-panel="fiidii">FII / DII Flow</div>
       <div class="bottom-tab" data-panel="macro">Macro</div>
       <div class="bottom-tab" data-panel="news">News</div>
+      <div class="bottom-tab" data-panel="alerts">Alerts</div>
       <div class="bottom-tab" data-panel="portfolio" id="tab-portfolio">
         Portfolio <span style="font-size:9px;vertical-align:super;" id="portfolio-lock-badge">🔒</span>
       </div>
@@ -1101,6 +1157,23 @@
       </div>
 
       <!-- PORTFOLIO (Pro-gated) -->
+      <!-- ALERTS PANEL -->
+      <div class="tab-panel" id="panel-alerts">
+        <button id="alert-notify-btn" onclick="requestAlertPermission()">Enable browser notifications to receive price alerts</button>
+        <div class="alert-form">
+          <select id="alert-sym-sel"></select>
+          <select id="alert-cond-sel">
+            <option value="above">crosses above</option>
+            <option value="below">crosses below</option>
+          </select>
+          <input type="number" id="alert-price-inp" placeholder="Price ₹" step="0.5" />
+          <button onclick="addAlert()">+ Add Alert</button>
+        </div>
+        <div id="alert-list" class="alert-list">
+          <div style="color:var(--muted);font-size:11px;">No alerts set. Add one above.</div>
+        </div>
+      </div>
+
       <div class="tab-panel" id="panel-portfolio">
         <div class="pro-gate" id="portfolio-gate">
           <div class="pro-blur-content">
@@ -1221,11 +1294,45 @@ function closeUpgradeModal() {
 }
 
 function simulatePayment() {
-  const payId = 'pay_demo_' + Date.now();
-  activatePro(payId);
-  closeUpgradeModal();
-  applyProFeatures();
-  showToast('Pro unlocked! Welcome to Arthex Dashboard Pro.');
+  // Real Razorpay checkout — falls back to demo if key not set
+  const RAZORPAY_KEY = 'rzp_test_XXXXXXXXXXXXXXXX'; // Replace with your key from razorpay.com → Settings → API Keys
+  if (!RAZORPAY_KEY || RAZORPAY_KEY.includes('XXXX')) {
+    // Demo fallback — remove this block once Razorpay key is set
+    const payId = 'pay_demo_' + Date.now();
+    activatePro(payId);
+    closeUpgradeModal();
+    applyProFeatures();
+    showToast('Pro unlocked! (Demo mode — wire Razorpay key to take real payments)');
+    return;
+  }
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: 29900,           // ₹299 in paise
+    currency: 'INR',
+    name: 'Arthex',
+    description: 'Dashboard Pro — Monthly',
+    image: '',               // add your logo URL here
+    prefill: { name: '', email: '', contact: '' },
+    theme: { color: '#2962ff' },
+    handler: function(response) {
+      activatePro(response.razorpay_payment_id);
+      closeUpgradeModal();
+      applyProFeatures();
+      showToast('Payment successful! Welcome to Dashboard Pro.');
+    },
+    modal: {
+      ondismiss: function() { showToast('Payment cancelled.', 'error'); }
+    }
+  };
+  try {
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(r) {
+      showToast('Payment failed: ' + r.error.description, 'error');
+    });
+    rzp.open();
+  } catch(e) {
+    showToast('Razorpay not loaded. Check internet connection.', 'error');
+  }
 }
 
 function startTrial() {
@@ -1518,6 +1625,10 @@ function selectStock(idx) {
   document.getElementById('ip-eps').textContent = s.eps;
   document.getElementById('ip-divy').textContent = s.divy;
 
+  // Sync alert panel to currently selected stock
+  const alertSel = document.getElementById('alert-sym-sel');
+  if (alertSel) alertSel.value = STOCKS[idx].symbol;
+
   loadChart();
 }
 
@@ -1610,15 +1721,18 @@ function initChart() {
 
     // ── HORIZONTAL LINE ── (doesn't need time — works anywhere on chart)
     if (activeDrawTool === 'hline') {
+      const hlinePrice = +price.toFixed(2);
       const line = candleSeries.createPriceLine({
-        price: +price.toFixed(2),
+        price: hlinePrice,
         color: '#f7a600',
         lineWidth: 1,
         lineStyle: LightweightCharts.LineStyle.Dashed,
         axisLabelVisible: true,
         title: fmt(price),
       });
+      line._price = hlinePrice;
       drawnPriceLines.push(line);
+      saveDrawings();
       showToast('Horizontal level placed at ₹' + fmt(price));
       return;
     }
@@ -1678,6 +1792,7 @@ function initChart() {
         });
         series.setData(extendedData);
         drawnTrendLines.push({ series, p1, p2 });
+        saveDrawings();
       }
       return;
     }
@@ -1936,6 +2051,12 @@ function loadChart(noShimmer) {
 
     chart.timeScale().fitContent();
 
+    // RSI sub-pane — update if visible
+    if (activeIndicators.has('RSI')) updateRsiPane(data);
+
+    // Restore drawings for this stock after new data loads
+    setTimeout(restoreDrawings, 50);
+
     const shimEl = document.getElementById('chart-shimmer');
     if (shimEl) shimEl.remove();
   };
@@ -1974,6 +2095,13 @@ function initDrawToolbar() {
         // Cancel any in-progress tline draw
         if (tlineState.previewSeries) { try { chart.removeSeries(tlineState.previewSeries); } catch(e){} }
         tlineState.active = false; tlineState.p1 = null; tlineState.previewSeries = null;
+        // Clear saved drawings for this stock
+        const sym = STOCKS[activeStockIdx]?.symbol;
+        if (sym) {
+          const all = JSON.parse(localStorage.getItem(DRAWINGS_KEY) || '{}');
+          delete all[sym];
+          localStorage.setItem(DRAWINGS_KEY, JSON.stringify(all));
+        }
         showToast('All drawings cleared');
         return;
       }
@@ -2040,6 +2168,11 @@ document.querySelectorAll('.chip').forEach(chip => {
     } else {
       activeIndicators.add(ind);
       chip.classList.add('active');
+    }
+    // RSI uses its own pane — toggle it separately
+    if (ind === 'RSI') {
+      toggleRsiPane(activeIndicators.has('RSI'));
+      return; // RSI pane updates on next loadChart call
     }
     loadChart(true);
   });
@@ -2459,7 +2592,9 @@ async function loadLiveChart() {
       else { bbUpperSeries.applyOptions({ visible: false }); bbLowerSeries.applyOptions({ visible: false }); }
       if (activeIndicators.has('VWAP'))  { vwapSeries.setData(computeVWAP(candles));     vwapSeries.applyOptions({ visible: true }); }
       else vwapSeries.applyOptions({ visible: false });
+      if (activeIndicators.has('RSI')) updateRsiPane(candles);
       chart?.timeScale().fitContent();
+      setTimeout(restoreDrawings, 50);
     }
   } catch (_) {}
 }
@@ -2474,6 +2609,8 @@ async function refreshLivePrices() {
   const chg = d.change_percent || d.pChange || 0;
   const chgAmt = d.change || d.net_change || 0;
   if (!ltp) return;
+  // Check price alerts for this symbol
+  checkAlerts(STOCKS[activeStockIdx]?.symbol, +ltp);
   const ltpEl = document.getElementById('ch-ltp');
   const chgEl = document.getElementById('ch-change');
   if (ltpEl) ltpEl.textContent = '₹' + Number(ltp).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -2606,6 +2743,238 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ─── RSI SUB-PANE ────────────────────────────────────────────────────────────
+
+let rsiChart = null;
+let rsiSeries = null;
+
+function computeRSI(data, period = 14) {
+  if (data.length < period + 1) return [];
+  const result = [];
+  let avgGain = 0, avgLoss = 0;
+  for (let i = 1; i <= period; i++) {
+    const diff = data[i].close - data[i - 1].close;
+    if (diff > 0) avgGain += diff; else avgLoss += Math.abs(diff);
+  }
+  avgGain /= period; avgLoss /= period;
+  const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+  result.push({ time: data[period].time, value: +(100 - 100 / (1 + rs)).toFixed(2) });
+  for (let i = period + 1; i < data.length; i++) {
+    const diff = data[i].close - data[i - 1].close;
+    const gain = diff > 0 ? diff : 0;
+    const loss = diff < 0 ? Math.abs(diff) : 0;
+    avgGain = (avgGain * (period - 1) + gain) / period;
+    avgLoss = (avgLoss * (period - 1) + loss) / period;
+    const rs2 = avgLoss === 0 ? 100 : avgGain / avgLoss;
+    result.push({ time: data[i].time, value: +(100 - 100 / (1 + rs2)).toFixed(2) });
+  }
+  return result;
+}
+
+function initRsiPane() {
+  const container = document.getElementById('rsi-container');
+  const isDark = !document.body.classList.contains('light-theme');
+  rsiChart = LightweightCharts.createChart(container, {
+    layout: { background: { color: isDark ? '#131722' : '#ffffff' }, textColor: isDark ? '#d1d4dc' : '#434651' },
+    grid: { vertLines: { color: 'transparent' }, horzLines: { color: isDark ? '#2a2e39' : '#e0e3eb' } },
+    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    rightPriceScale: { borderColor: isDark ? '#363a45' : '#d1d4dc', scaleMargins: { top: 0.1, bottom: 0.1 } },
+    timeScale: { visible: false },
+    width: container.offsetWidth,
+    height: container.offsetHeight,
+  });
+  rsiSeries = rsiChart.addLineSeries({
+    color: '#9c27b0', lineWidth: 1,
+    priceLineVisible: false, lastValueVisible: true,
+  });
+  // Overbought/oversold reference lines
+  const ob = rsiChart.addLineSeries({ color: 'rgba(239,83,80,0.4)', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, priceLineVisible: false, lastValueVisible: false });
+  const os = rsiChart.addLineSeries({ color: 'rgba(38,166,154,0.4)', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, priceLineVisible: false, lastValueVisible: false });
+  // These will be set with actual time range when data loads — store refs
+  rsiChart._obSeries = ob;
+  rsiChart._osSeries = os;
+  // Sync time scale with main chart
+  chart.timeScale().subscribeVisibleLogicalRangeChange(range => {
+    if (range && rsiChart) rsiChart.timeScale().setVisibleLogicalRange(range);
+  });
+  window.addEventListener('resize', () => {
+    if (rsiChart) rsiChart.applyOptions({ width: container.offsetWidth, height: container.offsetHeight });
+  });
+}
+
+function updateRsiPane(data) {
+  if (!rsiChart || !rsiSeries) return;
+  const rsiData = computeRSI(data, 14);
+  if (!rsiData.length) return;
+  rsiSeries.setData(rsiData);
+  // Draw flat 70/30 reference lines using actual time range
+  const t0 = rsiData[0].time, t1 = rsiData[rsiData.length - 1].time;
+  rsiChart._obSeries.setData([{ time: t0, value: 70 }, { time: t1, value: 70 }]);
+  rsiChart._osSeries.setData([{ time: t0, value: 30 }, { time: t1, value: 30 }]);
+  rsiChart.timeScale().fitContent();
+}
+
+function toggleRsiPane(show) {
+  const pane = document.getElementById('rsi-pane');
+  if (show) {
+    pane.classList.add('visible');
+    if (!rsiChart) initRsiPane();
+  } else {
+    pane.classList.remove('visible');
+  }
+}
+
+// ─── DRAWING PERSISTENCE (localStorage) ──────────────────────────────────────
+
+const DRAWINGS_KEY = 'arthex_drawings';
+
+function saveDrawings() {
+  const hlines = drawnPriceLines.map(line => {
+    try { return { type: 'hline', price: line._price }; } catch(e) { return null; }
+  }).filter(Boolean);
+  const tlines = drawnTrendLines.map(({ p1, p2 }) => ({ type: 'tline', p1, p2 }));
+  const sym = STOCKS[activeStockIdx]?.symbol || 'ALL';
+  const all = JSON.parse(localStorage.getItem(DRAWINGS_KEY) || '{}');
+  all[sym] = { hlines, tlines, saved: Date.now() };
+  localStorage.setItem(DRAWINGS_KEY, JSON.stringify(all));
+}
+
+function restoreDrawings() {
+  const sym = STOCKS[activeStockIdx]?.symbol || 'ALL';
+  const all = JSON.parse(localStorage.getItem(DRAWINGS_KEY) || '{}');
+  const saved = all[sym];
+  if (!saved) return;
+  // Restore horizontal lines
+  (saved.hlines || []).forEach(({ price }) => {
+    if (!price) return;
+    const line = candleSeries.createPriceLine({
+      price, color: '#f7a600', lineWidth: 1,
+      lineStyle: LightweightCharts.LineStyle.Dashed,
+      axisLabelVisible: true, title: fmt(price),
+    });
+    line._price = price;
+    drawnPriceLines.push(line);
+  });
+  // Restore trend lines
+  (saved.tlines || []).forEach(({ p1, p2 }) => {
+    if (!p1 || !p2) return;
+    let extendedData = buildTrendLineData(p1, p2);
+    if (extendedData.length < 2) {
+      const earlier = chartTimeToMs(p1.time) <= chartTimeToMs(p2.time) ? p1 : p2;
+      const later   = chartTimeToMs(p1.time) <= chartTimeToMs(p2.time) ? p2 : p1;
+      extendedData = [{ time: earlier.time, value: +earlier.price.toFixed(2) }, { time: later.time, value: +later.price.toFixed(2) }];
+    }
+    const series = chart.addLineSeries({ color: '#2962ff', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    series.setData(extendedData);
+    drawnTrendLines.push({ series, p1, p2 });
+  });
+}
+
+// Patch hline creation to store price on the object
+const _origCreatePriceLine = function(opts) {
+  const line = candleSeries.createPriceLine(opts);
+  line._price = opts.price;
+  return line;
+};
+
+// ─── PRICE ALERTS ────────────────────────────────────────────────────────────
+
+const ALERTS_KEY = 'arthex_alerts';
+let priceAlerts = JSON.parse(localStorage.getItem(ALERTS_KEY) || '[]');
+// {id, symbol, condition:'above'|'below', price, triggered:false}
+
+function saveAlerts() {
+  localStorage.setItem(ALERTS_KEY, JSON.stringify(priceAlerts));
+}
+
+function requestAlertPermission() {
+  if (!('Notification' in window)) { showToast('Browser notifications not supported', 'error'); return; }
+  Notification.requestPermission().then(p => {
+    if (p === 'granted') {
+      document.getElementById('alert-notify-btn').style.display = 'none';
+      showToast('Notifications enabled — you will be alerted when price crosses your target');
+    } else {
+      showToast('Notification permission denied. Allow it in browser settings.', 'error');
+    }
+  });
+}
+
+function initAlertPanel() {
+  // Populate symbol dropdown
+  const sel = document.getElementById('alert-sym-sel');
+  sel.innerHTML = '';
+  STOCKS.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.symbol; o.textContent = s.symbol;
+    sel.appendChild(o);
+  });
+  // Set dropdown to current active stock
+  sel.value = STOCKS[activeStockIdx]?.symbol || STOCKS[0].symbol;
+  // Show notification button if permission not yet granted
+  if ('Notification' in window && Notification.permission !== 'granted') {
+    document.getElementById('alert-notify-btn').style.display = 'block';
+  }
+  renderAlertList();
+}
+
+function addAlert() {
+  const sym    = document.getElementById('alert-sym-sel').value;
+  const cond   = document.getElementById('alert-cond-sel').value;
+  const price  = parseFloat(document.getElementById('alert-price-inp').value);
+  if (!sym || !cond || isNaN(price) || price <= 0) {
+    showToast('Enter a valid price', 'error'); return;
+  }
+  priceAlerts.push({ id: Date.now(), symbol: sym, condition: cond, price, triggered: false });
+  saveAlerts();
+  renderAlertList();
+  document.getElementById('alert-price-inp').value = '';
+  showToast(`Alert set: ${sym} ${cond} ₹${fmt(price)}`);
+}
+
+function deleteAlert(id) {
+  priceAlerts = priceAlerts.filter(a => a.id !== id);
+  saveAlerts();
+  renderAlertList();
+}
+
+function renderAlertList() {
+  const container = document.getElementById('alert-list');
+  if (!container) return;
+  if (!priceAlerts.length) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:11px;">No alerts set. Add one above.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  priceAlerts.forEach(a => {
+    const row = document.createElement('div');
+    row.className = 'alert-row' + (a.triggered ? ' triggered' : '');
+    row.innerHTML = `
+      <span class="alert-sym">${a.symbol}</span>
+      <span class="alert-cond">${a.condition} ₹${fmt(a.price)}${a.triggered ? ' ✓ Triggered' : ''}</span>
+      <button class="alert-del" onclick="deleteAlert(${a.id})" title="Delete">×</button>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function checkAlerts(symbol, ltp) {
+  if (!priceAlerts.length) return;
+  priceAlerts.forEach(a => {
+    if (a.triggered || a.symbol !== symbol) return;
+    const hit = (a.condition === 'above' && ltp >= a.price) ||
+                (a.condition === 'below' && ltp <= a.price);
+    if (!hit) return;
+    a.triggered = true;
+    saveAlerts();
+    renderAlertList();
+    const msg = `${symbol} ${a.condition === 'above' ? 'crossed above' : 'crossed below'} ₹${fmt(a.price)} — now ₹${fmt(ltp)}`;
+    showToast('Alert: ' + msg);
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('Arthex Price Alert', { body: msg, icon: '' });
+    }
+  });
+}
+
 // ─── INIT ────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -2620,6 +2989,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateMarketStatus();
   setInterval(updateMarketStatus, 30000);
   setInterval(updatePrices, 3000);
+  initAlertPanel();
 
   // Pro status on load
   if (isPro()) applyProFeatures();
