@@ -9,6 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Phase 1 tech stack -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -662,7 +666,22 @@
       font-size: 10px; color: var(--muted); font-family: 'Roboto Mono', monospace;
       pointer-events: none;
     }
-    .chip[data-ind="RSI"].active { border-color: #9c27b0; color: #ce93d8; }
+    .chip[data-ind="RSI"].active  { border-color: #9c27b0; color: #ce93d8; }
+    .chip[data-ind="MACD"].active { border-color: #ff9800; color: #ffcc80; }
+
+    /* ─── MACD PANE ─── */
+    #macd-pane {
+      height: 100px; flex-shrink: 0;
+      border-top: 1px solid var(--border);
+      position: relative; display: none;
+    }
+    #macd-pane.visible { display: block; }
+    #macd-container { position: absolute; inset: 0; }
+    #macd-label {
+      position: absolute; top: 4px; left: 8px; z-index: 10;
+      font-size: 10px; color: var(--muted); font-family: 'Roboto Mono', monospace;
+      pointer-events: none;
+    }
 
     /* ─── ALERT PANEL ─── */
     .alert-form { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
@@ -932,6 +951,10 @@
         <div id="rsi-label">RSI(14)</div>
         <div id="rsi-container"></div>
       </div>
+      <div id="macd-pane">
+        <div id="macd-label">MACD(12,26,9)</div>
+        <div id="macd-container"></div>
+      </div>
     </div>
 
     <!-- INFO PANEL -->
@@ -1108,10 +1131,15 @@
               </div>
             </div>
           </div>
-          <div class="flow-bars-section" style="flex:1;">
-            <div class="flow-bars-title">Net Flow — Last 5 Sessions (Cr)</div>
-            <div id="flow-bars"></div>
+          <div class="flow-bars-section" style="flex:1;min-height:0;">
+            <div class="flow-bars-title">Net FII / DII Flow — Last 5 Sessions (₹ Cr)</div>
+            <canvas id="fii-chart" style="max-height:130px;"></canvas>
           </div>
+        </div>
+        <div style="margin-top:14px;">
+          <div class="flow-bars-title">Put-Call Ratio (PCR) — Nifty 30-day trend</div>
+          <canvas id="pcr-chart" style="max-height:90px;"></canvas>
+        </div>
         </div>
       </div>
 
@@ -1145,9 +1173,13 @@
           </div>
           <div class="macro-card">
             <div class="macro-card-label">10Y G-Sec Yield</div>
-            <div class="macro-card-val" style="color:var(--text);">6.89%</div>
+            <div class="macro-card-val" style="color:var(--text);" id="macro-gsec">6.89%</div>
             <div class="macro-card-sub">−3 bps Today</div>
           </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="flow-bars-title">10Y G-Sec Yield Trend</div>
+          <canvas id="gsec-chart" style="max-height:90px;"></canvas>
         </div>
       </div>
 
@@ -2051,8 +2083,9 @@ function loadChart(noShimmer) {
 
     chart.timeScale().fitContent();
 
-    // RSI sub-pane — update if visible
-    if (activeIndicators.has('RSI')) updateRsiPane(data);
+    // Sub-panes — update if visible
+    if (activeIndicators.has('RSI'))  updateRsiPane(data);
+    if (activeIndicators.has('MACD')) updateMacdPane(data);
 
     // Restore drawings for this stock after new data loads
     setTimeout(restoreDrawings, 50);
@@ -2169,11 +2202,9 @@ document.querySelectorAll('.chip').forEach(chip => {
       activeIndicators.add(ind);
       chip.classList.add('active');
     }
-    // RSI uses its own pane — toggle it separately
-    if (ind === 'RSI') {
-      toggleRsiPane(activeIndicators.has('RSI'));
-      return; // RSI pane updates on next loadChart call
-    }
+    // RSI and MACD use their own panes
+    if (ind === 'RSI') { toggleRsiPane(activeIndicators.has('RSI')); return; }
+    if (ind === 'MACD') { toggleMacdPane(activeIndicators.has('MACD')); return; }
     loadChart(true);
   });
 });
@@ -2257,29 +2288,167 @@ function renderScreener() {
 
 // ─── FII/DII FLOW BARS ───────────────────────────────────────────────────────
 
-function renderFlowBars() {
-  const container = document.getElementById('flow-bars');
-  const maxVal = Math.max(...FII_FLOW_DATA.map(d => Math.max(Math.abs(d.fii), Math.abs(d.dii))));
-  FII_FLOW_DATA.forEach(d => {
-    const fiiPct = Math.abs(d.fii) / maxVal * 45;
-    const diiPct = Math.abs(d.dii) / maxVal * 45;
-    const fiiIsNeg = d.fii < 0;
-    const diiIsNeg = d.dii < 0;
-    const div = document.createElement('div');
-    div.className = 'flow-bar-row';
-    div.innerHTML = `
-      <span class="flow-bar-label">${d.day}</span>
-      <div class="flow-bar-track">
-        <div class="flow-bar-neg" style="width:${fiiIsNeg ? fiiPct : 0}%"></div>
-        <div class="flow-bar-pos" style="width:${!fiiIsNeg ? fiiPct : 0}%;background:rgba(38,166,154,0.6);"></div>
-        <div style="width:8px;"></div>
-        <div class="flow-bar-neg" style="width:${diiIsNeg ? diiPct : 0}%"></div>
-        <div class="flow-bar-pos" style="width:${!diiIsNeg ? diiPct : 0}%;background:rgba(41,98,255,0.6);"></div>
-      </div>
-      <span class="flow-bar-val ${fiiIsNeg ? 'red' : 'green'}">${fiiIsNeg ? '−' : '+'}₹${Math.abs(d.fii)} Cr</span>
-    `;
-    container.appendChild(div);
+// ─── PHASE 1: CHART.JS CHARTS ────────────────────────────────────────────────
+
+let fiiChartJs = null;
+let pcrChartJs = null;
+let gsecChartJs = null;
+
+function chartJsDefaults() {
+  // Shared Chart.js theme defaults matching TV dark/light theme
+  const isDark = !document.body.classList.contains('light-theme');
+  return {
+    color: isDark ? '#b2b5be' : '#434651',
+    gridColor: isDark ? 'rgba(42,46,57,0.8)' : 'rgba(224,227,235,0.8)',
+    textColor: isDark ? '#787b86' : '#787b86',
+  };
+}
+
+function destroyChartJs(instance) {
+  if (instance) { try { instance.destroy(); } catch(e) {} }
+  return null;
+}
+
+function renderFiiChart(fiiData, diiData, labels) {
+  fiiChartJs = destroyChartJs(fiiChartJs);
+  const ctx = document.getElementById('fii-chart');
+  if (!ctx) return;
+  const th = chartJsDefaults();
+  fiiChartJs = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'FII Net (₹ Cr)',
+          data: fiiData,
+          backgroundColor: fiiData.map(v => v >= 0 ? 'rgba(38,166,154,0.7)' : 'rgba(239,83,80,0.7)'),
+          borderRadius: 2,
+        },
+        {
+          label: 'DII Net (₹ Cr)',
+          data: diiData,
+          backgroundColor: diiData.map(v => v >= 0 ? 'rgba(41,98,255,0.7)' : 'rgba(239,83,80,0.5)'),
+          borderRadius: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { labels: { color: th.textColor, font: { size: 10 }, boxWidth: 10 } } },
+      scales: {
+        x: { ticks: { color: th.textColor, font: { size: 10 } }, grid: { color: th.gridColor } },
+        y: { ticks: { color: th.textColor, font: { size: 10 } }, grid: { color: th.gridColor } },
+      },
+    },
   });
+}
+
+function renderPcrChart(pcrValues, labels) {
+  pcrChartJs = destroyChartJs(pcrChartJs);
+  const ctx = document.getElementById('pcr-chart');
+  if (!ctx) return;
+  const th = chartJsDefaults();
+  pcrChartJs = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'PCR',
+        data: pcrValues,
+        borderColor: '#2962ff',
+        backgroundColor: 'rgba(41,98,255,0.08)',
+        fill: true, tension: 0.3, pointRadius: 2, borderWidth: 1.5,
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { display: false },
+        annotation: { annotations: {
+          bullish: { type: 'line', yMin: 1, yMax: 1, borderColor: 'rgba(38,166,154,0.4)', borderDash: [4,2], borderWidth: 1, label: { content: 'Bullish 1.0', display: true, color: '#26a69a', font: { size: 9 } } },
+        }}
+      },
+      scales: {
+        x: { ticks: { color: th.textColor, font: { size: 10 }, maxTicksLimit: 8 }, grid: { display: false } },
+        y: { ticks: { color: th.textColor, font: { size: 10 } }, grid: { color: th.gridColor }, min: 0.4, max: 1.8 },
+      },
+    },
+  });
+}
+
+function renderGsecChart(yields, labels) {
+  gsecChartJs = destroyChartJs(gsecChartJs);
+  const ctx = document.getElementById('gsec-chart');
+  if (!ctx) return;
+  const th = chartJsDefaults();
+  gsecChartJs = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: '10Y G-Sec Yield %',
+        data: yields,
+        borderColor: '#f7a600',
+        backgroundColor: 'rgba(247,166,0,0.07)',
+        fill: true, tension: 0.3, pointRadius: 2, borderWidth: 1.5,
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: th.textColor, font: { size: 10 }, maxTicksLimit: 8 }, grid: { display: false } },
+        y: { ticks: { color: th.textColor, font: { size: 10 }, callback: v => v + '%' }, grid: { color: th.gridColor } },
+      },
+    },
+  });
+}
+
+function initPhase1Charts() {
+  // Demo data — replaced by live API data when connected
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  renderFiiChart(
+    FII_FLOW_DATA.map(d => d.fii),
+    FII_FLOW_DATA.map(d => d.dii),
+    FII_FLOW_DATA.map(d => d.day)
+  );
+  // PCR demo — 30 days
+  const pcrLabels = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date('2026-03-01'); d.setDate(d.getDate() + i);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+  });
+  const pcrDemo = pcrLabels.map((_, i) => +(0.75 + Math.sin(i * 0.3) * 0.3 + Math.random() * 0.1).toFixed(2));
+  renderPcrChart(pcrDemo, pcrLabels);
+  // G-Sec demo — 30 days
+  const gsecDemo = pcrLabels.map((_, i) => +(6.5 + Math.sin(i * 0.2) * 0.3 + i * 0.01).toFixed(2));
+  renderGsecChart(gsecDemo, pcrLabels);
+}
+
+// Live FII/DII Chart.js update
+function updateFiiChartLive(fiiNet, diiNet) {
+  // Shift in today's live data into the bar chart
+  if (!fiiChartJs) return;
+  const ds = fiiChartJs.data.datasets;
+  const last = fiiChartJs.data.labels.length - 1;
+  ds[0].data[last] = fiiNet;
+  ds[0].backgroundColor[last] = fiiNet >= 0 ? 'rgba(38,166,154,0.7)' : 'rgba(239,83,80,0.7)';
+  ds[1].data[last] = diiNet;
+  ds[1].backgroundColor[last] = diiNet >= 0 ? 'rgba(41,98,255,0.7)' : 'rgba(239,83,80,0.5)';
+  fiiChartJs.update('none');
+}
+
+// Rebuild all Chart.js charts on theme change (colors need to update)
+function rebuildPhase1Charts() {
+  initPhase1Charts();
+  if (rsiChart) {
+    const isDark = !document.body.classList.contains('light-theme');
+    rsiChart.applyOptions({ layout: { background: { color: isDark ? '#131722' : '#ffffff' }, textColor: isDark ? '#d1d4dc' : '#434651' } });
+    macdChart && macdChart.applyOptions({ layout: { background: { color: isDark ? '#131722' : '#ffffff' }, textColor: isDark ? '#d1d4dc' : '#434651' } });
+  }
+}
+
+function renderFlowBars() {
+  // Legacy - now replaced by Chart.js. No-op, kept to avoid breaking DOMContentLoaded.
 }
 
 // ─── NEWS ────────────────────────────────────────────────────────────────────
@@ -2513,6 +2682,10 @@ async function loadLiveFiiDii() {
       diiEl.textContent = (v >= 0 ? '+' : '') + v.toLocaleString('en-IN') + ' Cr';
       diiEl.className = v >= 0 ? 'green' : 'red';
     }
+    // Update Chart.js FII/DII bar with live data
+    if (fiiNet !== undefined && diiNet !== undefined) {
+      updateFiiChartLive(Number(fiiNet), Number(diiNet));
+    }
   } catch (_) {}
 }
 
@@ -2534,6 +2707,11 @@ async function loadLiveMacro() {
       const gdp = mac.gdp_growth || mac.gdp;
       patch('macro-cpi', cpi ? Number(cpi).toFixed(2) + '%' : null);
       patch('macro-gdp', gdp ? Number(gdp).toFixed(1) + '%' : null);
+    }
+    const gsec = d.gsec;
+    if (gsec && !gsec.error) {
+      const y10 = gsec['10y'] || gsec.yield_10y;
+      patch('macro-gsec', y10 ? Number(y10).toFixed(2) + '%' : null);
     }
   } catch (_) {}
 }
@@ -2592,7 +2770,8 @@ async function loadLiveChart() {
       else { bbUpperSeries.applyOptions({ visible: false }); bbLowerSeries.applyOptions({ visible: false }); }
       if (activeIndicators.has('VWAP'))  { vwapSeries.setData(computeVWAP(candles));     vwapSeries.applyOptions({ visible: true }); }
       else vwapSeries.applyOptions({ visible: false });
-      if (activeIndicators.has('RSI')) updateRsiPane(candles);
+      if (activeIndicators.has('RSI'))  updateRsiPane(candles);
+      if (activeIndicators.has('MACD')) updateMacdPane(candles);
       chart?.timeScale().fitContent();
       setTimeout(restoreDrawings, 50);
     }
@@ -2681,7 +2860,9 @@ function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
   localStorage.setItem('arthex_theme', isLight ? 'light' : 'dark');
   document.getElementById('theme-label').textContent = isLight ? 'Dark' : 'Light';
-  // Update chart colors
+  // Rebuild Chart.js charts with new theme colors
+  rebuildPhase1Charts();
+  // Update LightweightCharts colors
   if (chart) {
     chart.applyOptions({
       layout: { background: { color: isLight ? '#ffffff' : '#131722' }, textColor: isLight ? '#434651' : '#d1d4dc' },
@@ -2821,6 +3002,243 @@ function toggleRsiPane(show) {
     if (!rsiChart) initRsiPane();
   } else {
     pane.classList.remove('visible');
+  }
+}
+
+// ─── MACD SUB-PANE ───────────────────────────────────────────────────────────
+
+let macdChart = null;
+let macdLineSeries = null;    // MACD line (fast EMA - slow EMA)
+let macdSignalSeries = null;  // Signal line (9 EMA of MACD)
+let macdHistSeries = null;    // Histogram (MACD - Signal)
+
+function computeMACD(data, fast = 12, slow = 26, signal = 9) {
+  if (data.length < slow + signal) return { macd: [], signal: [], hist: [] };
+  const emaFast = computeEMA(data, fast);
+  const emaSlow = computeEMA(data, slow);
+  // MACD line starts where slow EMA starts
+  const startIdx = slow - 1;
+  const macdLine = emaSlow.map((d, i) => ({
+    time: d.time,
+    value: +(emaFast[startIdx + i]?.value - d.value || 0).toFixed(2),
+  }));
+  // Signal = 9 EMA of MACD line
+  const macdAsData = macdLine.map(d => ({ time: d.time, close: d.value }));
+  const signalLine = computeEMA(macdAsData, signal);
+  // Histogram = MACD - Signal (aligned by signal start)
+  const sigStart = signal - 1;
+  const hist = signalLine.map((s, i) => {
+    const m = macdLine[sigStart + i];
+    if (!m) return null;
+    return { time: s.time, value: +(m.value - s.value).toFixed(2), color: m.value >= s.value ? 'rgba(38,166,154,0.6)' : 'rgba(239,83,80,0.6)' };
+  }).filter(Boolean);
+  return { macd: macdLine.slice(sigStart), signal: signalLine, hist };
+}
+
+function initMacdPane() {
+  const container = document.getElementById('macd-container');
+  const isDark = !document.body.classList.contains('light-theme');
+  macdChart = LightweightCharts.createChart(container, {
+    layout: { background: { color: isDark ? '#131722' : '#ffffff' }, textColor: isDark ? '#d1d4dc' : '#434651' },
+    grid: { vertLines: { color: 'transparent' }, horzLines: { color: isDark ? '#2a2e39' : '#e0e3eb' } },
+    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    rightPriceScale: { borderColor: isDark ? '#363a45' : '#d1d4dc', scaleMargins: { top: 0.1, bottom: 0.1 } },
+    timeScale: { visible: false },
+    width: container.offsetWidth,
+    height: container.offsetHeight,
+  });
+  macdHistSeries = macdChart.addHistogramSeries({
+    priceLineVisible: false, lastValueVisible: false,
+    priceScaleId: 'macd',
+  });
+  macdLineSeries = macdChart.addLineSeries({
+    color: '#2962ff', lineWidth: 1,
+    priceLineVisible: false, lastValueVisible: false,
+    priceScaleId: 'macd',
+  });
+  macdSignalSeries = macdChart.addLineSeries({
+    color: '#ff9800', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed,
+    priceLineVisible: false, lastValueVisible: false,
+    priceScaleId: 'macd',
+  });
+  chart.timeScale().subscribeVisibleLogicalRangeChange(range => {
+    if (range && macdChart) macdChart.timeScale().setVisibleLogicalRange(range);
+  });
+  window.addEventListener('resize', () => {
+    if (macdChart) macdChart.applyOptions({ width: container.offsetWidth, height: container.offsetHeight });
+  });
+}
+
+function updateMacdPane(data) {
+  if (!macdChart) return;
+  const { macd, signal, hist } = computeMACD(data);
+  if (!macd.length) return;
+  macdLineSeries.setData(macd);
+  macdSignalSeries.setData(signal);
+  macdHistSeries.setData(hist);
+  macdChart.timeScale().fitContent();
+}
+
+function toggleMacdPane(show) {
+  const pane = document.getElementById('macd-pane');
+  if (show) {
+    pane.classList.add('visible');
+    if (!macdChart) initMacdPane();
+  } else {
+    pane.classList.remove('visible');
+  }
+}
+
+// ─── PHASE 1: SUPABASE CLOUD PERSISTENCE ─────────────────────────────────────
+// Replace SUPABASE_URL and SUPABASE_ANON_KEY with your project values from:
+// supabase.com → New project → Settings → API
+
+const SUPABASE_URL      = '';   // e.g. 'https://xyzxyz.supabase.co'
+const SUPABASE_ANON_KEY = '';   // your anon/public key
+
+let supabase = null;
+
+function initSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;  // not configured yet
+  try {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.info('[arthex] Supabase connected — cloud sync enabled');
+  } catch(e) {
+    console.warn('[arthex] Supabase init failed:', e.message);
+  }
+}
+
+async function cloudSaveDrawings(symbol, hlines, tlines) {
+  if (!supabase) return;  // fall back to localStorage (always works)
+  try {
+    await supabase.from('drawings').upsert({
+      symbol,
+      hlines: JSON.stringify(hlines),
+      tlines: JSON.stringify(tlines),
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'symbol' });
+  } catch(e) {}
+}
+
+async function cloudLoadDrawings(symbol) {
+  if (!supabase) return null;
+  try {
+    const { data } = await supabase.from('drawings').select('*').eq('symbol', symbol).single();
+    if (!data) return null;
+    return {
+      hlines: JSON.parse(data.hlines || '[]'),
+      tlines: JSON.parse(data.tlines || '[]'),
+    };
+  } catch(e) { return null; }
+}
+
+async function cloudSaveAlert(alert) {
+  if (!supabase) return;
+  try {
+    await supabase.from('alerts').insert({ ...alert, created_at: new Date().toISOString() });
+  } catch(e) {}
+}
+
+// ─── PHASE 1: INDIA SCREENER UPGRADE ─────────────────────────────────────────
+
+const SCREENER_FILTERS = {
+  sector: '', minPe: 0, maxPe: 999, minRoe: 0, marketCap: 'all'
+};
+
+function renderScreenerFilters() {
+  const panel = document.getElementById('panel-screener');
+  if (!panel || panel.querySelector('.screener-filters')) return;
+  const bar = document.createElement('div');
+  bar.className = 'screener-filters';
+  bar.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;padding:8px 0 10px;border-bottom:1px solid var(--border);margin-bottom:8px;';
+  bar.innerHTML = `
+    <select id="sf-sector" style="background:var(--panel2);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;font-size:11px;">
+      <option value="">All Sectors</option>
+      <option value="IT Services">IT Services</option>
+      <option value="Banking">Banking</option>
+      <option value="NBFC">NBFC</option>
+      <option value="Oil & Gas">Oil & Gas</option>
+      <option value="Pharma">Pharma</option>
+      <option value="Auto">Auto</option>
+      <option value="FMCG">FMCG</option>
+      <option value="Power">Power</option>
+      <option value="Infrastructure">Infrastructure</option>
+      <option value="Telecom">Telecom</option>
+      <option value="Cement">Cement</option>
+    </select>
+    <select id="sf-mcap" style="background:var(--panel2);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;font-size:11px;">
+      <option value="all">All Cap</option>
+      <option value="large">Large Cap (>₹20,000 Cr)</option>
+      <option value="mid">Mid Cap (₹5,000–20,000 Cr)</option>
+      <option value="small">Small Cap (<₹5,000 Cr)</option>
+    </select>
+    <input id="sf-minpe" type="number" placeholder="Min P/E" style="width:70px;background:var(--panel2);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;font-size:11px;" />
+    <input id="sf-maxpe" type="number" placeholder="Max P/E" style="width:70px;background:var(--panel2);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;font-size:11px;" />
+    <input id="sf-minroe" type="number" placeholder="Min ROE%" style="width:80px;background:var(--panel2);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;font-size:11px;" />
+    <button onclick="applyScreenerFilters()" style="background:var(--accent);color:#fff;border:none;border-radius:4px;padding:4px 14px;font-size:11px;font-weight:600;cursor:pointer;">Filter</button>
+    <button onclick="resetScreenerFilters()" style="background:none;border:1px solid var(--border2);color:var(--muted);border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;">Reset</button>
+    <button onclick="loadLiveScreener()" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;">Live Data</button>
+  `;
+  panel.insertBefore(bar, panel.firstChild);
+}
+
+function applyScreenerFilters() {
+  const sector  = document.getElementById('sf-sector')?.value || '';
+  const mcap    = document.getElementById('sf-mcap')?.value   || 'all';
+  const minPe   = parseFloat(document.getElementById('sf-minpe')?.value)  || 0;
+  const maxPe   = parseFloat(document.getElementById('sf-maxpe')?.value)  || 999;
+  const minRoe  = parseFloat(document.getElementById('sf-minroe')?.value) || 0;
+  const rows    = document.querySelectorAll('#screener-tbody tr');
+  let visible = 0;
+  rows.forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    if (tds.length < 7) return;
+    const sym    = tds[0].textContent.trim();
+    const sec    = tds[1].textContent.trim();
+    const pe     = parseFloat(tds[3].textContent) || 0;
+    const roe    = parseFloat(tds[4].textContent) || 0;
+    const show   = (!sector || sec === sector)
+                && pe >= minPe && pe <= maxPe
+                && roe >= minRoe;
+    tr.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  showToast(`${visible} stocks match filter`);
+}
+
+function resetScreenerFilters() {
+  ['sf-sector','sf-mcap','sf-minpe','sf-maxpe','sf-minroe'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.tagName === 'SELECT' ? el.options[0]?.value : '';
+  });
+  document.querySelectorAll('#screener-tbody tr').forEach(tr => tr.style.display = '');
+}
+
+async function loadLiveScreener() {
+  if (!isLive) { showToast('Connect API first (run dashboard-api)', 'error'); return; }
+  showToast('Loading live screener data...');
+  try {
+    const d = await apiFetch('/api/screener');
+    if (!d || d.error || !d.stocks) { showToast('Screener data unavailable', 'error'); return; }
+    const tbody = document.getElementById('screener-tbody');
+    tbody.innerHTML = '';
+    d.stocks.forEach(row => {
+      const isUp = row.chg_52w >= 0;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-weight:600;cursor:pointer;" onclick="addSymbolFromSearch('${row.symbol}')">${row.symbol}</td>
+        <td>${row.sector || '—'}</td>
+        <td>₹${row.market_cap_cr ? Number(row.market_cap_cr).toLocaleString('en-IN') + ' Cr' : '—'}</td>
+        <td>${row.pe ? row.pe.toFixed(1) + '×' : '—'}</td>
+        <td class="${row.roe > 20 ? 'green' : ''}">${row.roe ? row.roe.toFixed(1) + '%' : '—'}</td>
+        <td class="${isUp ? 'green' : 'red'}">${row.chg_52w != null ? (isUp ? '+' : '') + row.chg_52w.toFixed(1) + '%' : '—'}</td>
+        <td>${row.volume || '—'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    showToast(`${d.stocks.length} stocks loaded from live data`);
+  } catch(e) {
+    showToast('Screener fetch failed: ' + e.message, 'error');
   }
 }
 
@@ -2990,6 +3408,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateMarketStatus, 30000);
   setInterval(updatePrices, 3000);
   initAlertPanel();
+  initPhase1Charts();        // Chart.js: FII/DII, PCR, G-Sec
+  renderScreenerFilters();   // India screener filter bar
+  initSupabase();            // Supabase cloud sync (no-op until keys are set)
 
   // Pro status on load
   if (isPro()) applyProFeatures();
