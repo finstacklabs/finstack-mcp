@@ -90,10 +90,42 @@ def historical(symbol: str, period: str = "1mo", interval: str = "1d"):
     OHLCV data for charting.
     period: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y
     interval: 1m, 5m, 15m, 1h, 1d, 1wk, 1mo
+
+    When Angel One is configured, intraday data comes from Angel One (zero delay).
+    Daily/weekly data always uses yfinance (more history depth).
     """
+    from finstack.data.broker import get_candle_data_angel, _is_configured
+
+    sym = symbol.upper()
+
+    # Map frontend interval → Angel One interval string
+    ANGEL_INTERVAL_MAP = {
+        "1m":  "ONE_MINUTE",
+        "3m":  "THREE_MINUTE",
+        "5m":  "FIVE_MINUTE",
+        "10m": "TEN_MINUTE",
+        "15m": "FIFTEEN_MINUTE",
+        "30m": "THIRTY_MINUTE",
+        "60m": "ONE_HOUR",
+        "1h":  "ONE_HOUR",
+        "1d":  "ONE_DAY",
+        "1wk": "ONE_WEEK",
+        "1mo": "ONE_MONTH",
+    }
+
+    angel_interval = ANGEL_INTERVAL_MAP.get(interval.lower())
+    is_intraday = interval.lower() in ("1m", "3m", "5m", "10m", "15m", "30m", "60m", "1h")
+
+    # Use Angel One for intraday when configured (zero delay vs yfinance 15-min delay)
+    if is_intraday and angel_interval and _is_configured():
+        result = _safe(get_candle_data_angel, sym, interval=angel_interval)
+        if result and "error" not in result and result.get("data"):
+            return result
+        # Fall through to yfinance on Angel One failure
+
+    # Daily/weekly/monthly or Angel One fallback → yfinance
     from finstack.data.nse import get_historical_data
-    result = _safe(get_historical_data, symbol.upper(), period=period, interval=interval)
-    return result
+    return _safe(get_historical_data, sym, period=period, interval=interval)
 
 
 @app.get("/api/fundamentals/{symbol}")

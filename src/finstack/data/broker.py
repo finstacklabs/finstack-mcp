@@ -297,6 +297,114 @@ def get_market_depth_angel(symbol: str) -> dict:
         return {"error": f"Market depth fetch failed: {e}"}
 
 
+def get_candle_data_angel(symbol: str, interval: str = "ONE_DAY", from_date: str = None, to_date: str = None) -> dict:
+    """
+    Historical OHLCV candle data via Angel One SmartAPI getCandleData.
+    Zero delay for recent data including intraday candles.
+
+    interval options:
+        ONE_MINUTE, THREE_MINUTE, FIVE_MINUTE, TEN_MINUTE, FIFTEEN_MINUTE,
+        THIRTY_MINUTE, ONE_HOUR, ONE_DAY, ONE_WEEK, ONE_MONTH
+
+    from_date / to_date format: "YYYY-MM-DD HH:MM"  (e.g. "2026-03-28 09:15")
+    """
+    if not _is_configured():
+        return {"configured": False, "message": "Angel One not configured"}
+
+    session = _get_session()
+    if not session:
+        return {"error": "Angel One authentication failed"}
+
+    sym_upper = symbol.upper().replace(".NS", "").replace(".BO", "")
+    token = NSE_TOKEN_MAP.get(sym_upper)
+    if not token:
+        return {"error": f"Token not found for {sym_upper}. Add it to NSE_TOKEN_MAP in broker.py"}
+
+    # Default date range based on interval
+    now = datetime.now()
+    if to_date is None:
+        to_date = now.strftime("%Y-%m-%d %H:%M")
+    if from_date is None:
+        # Sensible defaults per interval
+        intraday_map = {
+            "ONE_MINUTE":    3,    # 3 days
+            "THREE_MINUTE":  5,
+            "FIVE_MINUTE":   5,
+            "TEN_MINUTE":    10,
+            "FIFTEEN_MINUTE":10,
+            "THIRTY_MINUTE": 15,
+            "ONE_HOUR":      30,
+            "ONE_DAY":       365,
+            "ONE_WEEK":      730,
+            "ONE_MONTH":     1825,
+        }
+        days_back = intraday_map.get(interval, 30)
+        from_dt = now - __import__("datetime").timedelta(days=days_back)
+        from_date = from_dt.strftime("%Y-%m-%d %H:%M")
+
+    try:
+        with httpx.Client(timeout=15) as client:
+            resp = client.post(
+                f"{SMARTAPI_BASE}/rest/secure/angelbroking/historical/v1/getCandleData",
+                json={
+                    "exchange": "NSE",
+                    "symboltoken": token,
+                    "interval": interval,
+                    "fromdate": from_date,
+                    "todate": to_date,
+                },
+                headers=_get_headers(session),
+            )
+            resp.raise_for_status()
+            data = resp.json()
+
+            if data.get("status") and data.get("data"):
+                candles = data["data"]
+                records = []
+                for c in candles:
+                    # Angel One returns: [timestamp, open, high, low, close, volume]
+                    if len(c) < 6:
+                        continue
+                    ts, o, h, l, cl, vol = c[0], c[1], c[2], c[3], c[4], c[5]
+                    # Parse ISO timestamp from Angel One e.g. "2026-03-28T09:15:00+05:30"
+                    try:
+                        dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+                        # Format for LightweightCharts:
+                        # intraday → unix seconds; daily → "YYYY-MM-DD"
+                        if interval in ("ONE_DAY", "ONE_WEEK", "ONE_MONTH"):
+                            time_val = dt.strftime("%Y-%m-%d")
+                        else:
+                            time_val = int(dt.timestamp())
+                    except Exception:
+                        time_val = str(ts)
+                    records.append({
+                        "date": time_val,
+                        "open":   round(float(o),  2),
+                        "high":   round(float(h),  2),
+                        "low":    round(float(l),  2),
+                        "close":  round(float(cl), 2),
+                        "volume": int(vol),
+                    })
+
+                return clean_nan({
+                    "symbol": sym_upper,
+                    "exchange": "NSE",
+                    "interval": interval,
+                    "data_points": len(records),
+                    "data": records,
+                    "data_source": "Angel One SmartAPI (zero delay)",
+                })
+
+            return {
+                "error": "No candle data returned from Angel One",
+                "raw": data.get("message", ""),
+                "errorcode": data.get("errorcode", ""),
+            }
+
+    except Exception as e:
+        return {"error": f"Angel One candle fetch failed: {e}"}
+
+
 def broker_status() -> dict:
     """Return Angel One broker integration status."""
     configured = _is_configured()

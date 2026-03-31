@@ -2422,8 +2422,14 @@ async function loadLiveChart() {
     const candles = d.data.map(row => {
       let rawTime = row.date || row.Date;
       let t;
-      if (typeof rawTime === 'string' && rawTime.includes(' ')) {
-        // Intraday: "2026-03-29 09:15" → Unix seconds (LightweightCharts needs UTC seconds for intraday)
+      if (typeof rawTime === 'number') {
+        // Angel One already returns unix seconds for intraday
+        t = rawTime;
+      } else if (typeof rawTime === 'string' && rawTime.includes('T')) {
+        // ISO 8601 with timezone e.g. "2026-03-28T09:15:00+05:30"
+        t = Math.floor(new Date(rawTime).getTime() / 1000);
+      } else if (typeof rawTime === 'string' && rawTime.includes(' ')) {
+        // yfinance intraday "2026-03-29 09:15" — assume IST
         t = Math.floor(new Date(rawTime.replace(' ', 'T') + '+05:30').getTime() / 1000);
       } else {
         t = rawTime; // daily: ISO date string "2026-03-29"
