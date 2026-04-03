@@ -71,6 +71,19 @@ TOOL_CATALOG = [
     {"name": "broker_setup_status", "description": "Check Angel One SmartAPI integration status + setup guide", "tier": "free"},
     {"name": "credit_ratings", "description": "NSE/BSE credit ratings from SEBI filings [Bloomberg $24k/yr → FREE]", "tier": "free"},
     {"name": "brsr_esg", "description": "BRSR sustainability data from SEBI filings [Bloomberg ESG $24k/yr → FREE]", "tier": "free"},
+    # ── Broker: Fyers API v3 ──
+    {"name": "fyers_live_quote", "description": "Real-time NSE quote via Fyers API v3 (zero delay)", "tier": "free"},
+    {"name": "fyers_candles", "description": "Historical OHLCV candles from Fyers API v3", "tier": "free"},
+    {"name": "fyers_status", "description": "Fyers API configuration status + setup guide", "tier": "free"},
+    # ── Broker: ICICI Breeze ──
+    {"name": "icici_live_quote", "description": "Real-time NSE quote via ICICI Breeze (zero delay)", "tier": "free"},
+    {"name": "icici_candles", "description": "Historical OHLCV candles from ICICI Breeze", "tier": "free"},
+    {"name": "icici_status", "description": "ICICI Breeze configuration status + daily session guide", "tier": "free"},
+    # ── Phase 3: Multi-agent + Intelligence ──
+    {"name": "get_social_sentiment", "description": "Social sentiment for any NSE stock from Reddit + Twitter (BUY/HOLD/SELL)", "tier": "free"},
+    {"name": "get_stock_brief", "description": "Multi-agent AI debate: 4 personas analyse a stock → consensus signal", "tier": "free"},
+    {"name": "detect_unusual_activity", "description": "Smart money detector: OI buildup, block deals, promoter buying, volume spike", "tier": "free"},
+    {"name": "get_nifty_outlook", "description": "Nifty direction probability % (RSI + FII + PCR + VIX + G-Sec + GIFT Nifty)", "tier": "free"},
 ]
 
 TOTAL_TOOLS = len(TOOL_CATALOG) + 1
@@ -85,6 +98,11 @@ from finstack.tools.global_ import register_global_tools
 from finstack.tools.tax import register_tax_tools
 from finstack.tools.market_intelligence import register_market_intelligence_tools
 from finstack.tools.broker_credit_esg import register_broker_credit_esg_tools
+from finstack.tools.brokers import register_broker_tools
+from finstack.tools.sentiment import register_sentiment_tools
+from finstack.tools.agents import register_agent_tools
+from finstack.tools.smart_money import register_smart_money_tools
+from finstack.tools.probability import register_probability_tools
 
 register_global_tools(mcp)
 register_fundamental_tools(mcp)
@@ -92,6 +110,11 @@ register_analytics_tools(mcp)
 register_tax_tools(mcp)
 register_market_intelligence_tools(mcp)
 register_broker_credit_esg_tools(mcp)
+register_broker_tools(mcp)
+register_sentiment_tools(mcp)
+register_agent_tools(mcp)
+register_smart_money_tools(mcp)
+register_probability_tools(mcp)
 
 
 @mcp.tool()
