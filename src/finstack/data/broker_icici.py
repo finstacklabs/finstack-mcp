@@ -12,7 +12,6 @@ Get credentials: https://api.icicidirect.com/
 Session token: Login to ICICIdirect app → My Account → Generate API Session
 """
 import os
-import json
 import logging
 from datetime import datetime, timedelta
 

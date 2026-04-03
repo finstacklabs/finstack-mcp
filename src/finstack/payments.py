@@ -20,7 +20,6 @@ import secrets
 import sqlite3
 import logging
 from datetime import datetime, timedelta
-from pathlib import Path
 
 from finstack.config import UserTier
 
@@ -253,7 +252,6 @@ def handle_razorpay_webhook(payload: bytes, signature: str, secret: str) -> dict
         return result
 
     elif event in ("subscription.activated", "subscription.charged"):
-        sub = data.get("payload", {}).get("subscription", {}).get("entity", {})
         # Handle subscription renewal
         logger.info(f"Subscription event: {event}")
         return {"status": "processed", "event": event}

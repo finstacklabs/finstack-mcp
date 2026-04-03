@@ -30,7 +30,6 @@ from typing import Optional
 
 import httpx
 
-from finstack.utils.cache import cached, quotes_cache, general_cache
 from finstack.utils.helpers import clean_nan
 
 logger = logging.getLogger("finstack.data.broker")
@@ -365,7 +364,7 @@ def get_candle_data_angel(symbol: str, interval: str = "ONE_DAY", from_date: str
                     # Angel One returns: [timestamp, open, high, low, close, volume]
                     if len(c) < 6:
                         continue
-                    ts, o, h, l, cl, vol = c[0], c[1], c[2], c[3], c[4], c[5]
+                    ts, o, h, low, cl, vol = c[0], c[1], c[2], c[3], c[4], c[5]
                     # Parse ISO timestamp from Angel One e.g. "2026-03-28T09:15:00+05:30"
                     try:
                         dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
@@ -381,7 +380,7 @@ def get_candle_data_angel(symbol: str, interval: str = "ONE_DAY", from_date: str
                         "date": time_val,
                         "open":   round(float(o),  2),
                         "high":   round(float(h),  2),
-                        "low":    round(float(l),  2),
+                        "low":    round(float(low),  2),
                         "close":  round(float(cl), 2),
                         "volume": int(vol),
                     })

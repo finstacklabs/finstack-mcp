@@ -228,7 +228,6 @@ def get_social_sentiment(symbol: str, limit: int = 100) -> dict:
     total = len(all_posts)
     bullish = sum(1 for p in all_posts if p["sentiment"] == "bullish")
     bearish = sum(1 for p in all_posts if p["sentiment"] == "bearish")
-    neutral = total - bullish - bearish
 
     bullish_pct = round(bullish / total * 100)
     bearish_pct = round(bearish / total * 100)

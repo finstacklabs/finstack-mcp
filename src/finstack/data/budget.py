@@ -13,7 +13,6 @@ Data: public speech transcript + hardcoded sector-keyword-to-stock mapping.
 """
 
 import logging
-import re
 from datetime import datetime, timezone
 
 logger = logging.getLogger("finstack.budget")

@@ -42,3 +42,8 @@ pytest-cache-files-*/
 *.key
 .mcpregistry_*
 mcp-publisher.exe
+
+# Private roadmap
+../FINSTACK_IMPLEMENTATION.md
+../VIRAL_GROWTH_PLAYBOOK.md
+../CLAUDE.md

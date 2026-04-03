@@ -7,7 +7,6 @@ All via yfinance — works for both Indian and US stocks.
 
 import logging
 from datetime import datetime
-from typing import Any
 
 import yfinance as yf
 import pandas as pd

@@ -37,7 +37,7 @@ def _get_holdings_by_scheme(scheme_code: str) -> list[str]:
         url = AMFI_PORTFOLIO_URL.format(scheme_code=scheme_code)
         req = urllib.request.Request(url, headers={"User-Agent": "finstack-mcp/1.0"})
         with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read().decode())
+            resp.read()
         # mfapi returns NAV data not portfolio — use fallback scraper
         return []
     except Exception as e:
@@ -61,7 +61,6 @@ def _get_holdings_yf(fund_name: str) -> list[str]:
         for sym in candidates:
             try:
                 t = yf.Ticker(sym)
-                info = t.info or {}
                 # For ETFs yfinance returns holdings
                 top_holdings = t.get_holdings()
                 if top_holdings is not None and not top_holdings.empty:
@@ -187,6 +186,3 @@ def get_mf_overlap(fund1: str, fund2: str) -> dict:
         "note": "Based on top 10 disclosed holdings from public AMFI filings. Actual overlap may vary.",
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
     }
-
-
-import urllib.parse

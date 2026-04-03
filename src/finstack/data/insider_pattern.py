@@ -95,7 +95,7 @@ def get_insider_signal(symbol: str) -> dict:
         return {
             "symbol": symbol,
             "error": "Insider data unavailable. NSE may require browser session.",
-            "fallback": f"Check at https://www.nseindia.com/companies-listing/corporate-filings-insider-trading",
+            "fallback": "Check at https://www.nseindia.com/companies-listing/corporate-filings-insider-trading",
         }
 
     buy_transactions  = []

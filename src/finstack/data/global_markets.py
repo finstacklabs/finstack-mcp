@@ -11,16 +11,14 @@ All methods return clean dicts ready for MCP tool responses.
 
 import logging
 from datetime import datetime
-from typing import Any
 
 import httpx
 import yfinance as yf
-import pandas as pd
 
 from finstack.utils.cache import cached, quotes_cache, fundamentals_cache, historical_cache
 from finstack.utils.helpers import (
     validate_symbol, validate_period, validate_interval,
-    clean_nan, safe_get, format_market_cap, format_percentage,
+    clean_nan, safe_get, format_market_cap,
 )
 from finstack.config import config
 

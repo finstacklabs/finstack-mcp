@@ -26,7 +26,6 @@ Without these env vars, falls back to yfinance (15-min delay).
 import os
 import logging
 from datetime import datetime, timedelta
-from typing import Optional
 
 import httpx
 
@@ -130,7 +129,6 @@ def get_live_quote_upstox(symbol: str) -> dict:
             if data.get("status") == "success" and data.get("data"):
                 q = list(data["data"].values())[0]
                 ohlc = q.get("ohlc", {})
-                depth = q.get("depth", {})
                 ltp = q.get("last_price", 0)
                 prev_close = ohlc.get("close", 0)
                 change = round(ltp - prev_close, 2) if prev_close else 0
@@ -254,7 +252,7 @@ def get_candle_data_upstox(symbol: str, interval: str = "1d", from_date: str = N
                     # Upstox: [timestamp, open, high, low, close, volume, oi]
                     if len(c) < 6:
                         continue
-                    ts, o, h, l, cl, vol = c[0], c[1], c[2], c[3], c[4], c[5]
+                    ts, o, h, low, cl, vol = c[0], c[1], c[2], c[3], c[4], c[5]
                     try:
                         dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
                         if not is_intraday:
@@ -267,7 +265,7 @@ def get_candle_data_upstox(symbol: str, interval: str = "1d", from_date: str = N
                         "date":   time_val,
                         "open":   round(float(o),  2),
                         "high":   round(float(h),  2),
-                        "low":    round(float(l),  2),
+                        "low":    round(float(low),  2),
                         "close":  round(float(cl), 2),
                         "volume": int(vol),
                     })

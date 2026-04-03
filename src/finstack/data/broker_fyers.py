@@ -11,7 +11,6 @@ Setup:
 Get credentials: https://myapi.fyers.in/
 """
 import os
-import json
 import logging
 from datetime import datetime, timedelta
 
@@ -124,9 +123,9 @@ def get_candle_data_fyers(symbol: str, interval: str = "D", days: int = 30) -> d
 
         candles = []
         for c in response.get("candles", []):
-            ts, o, h, l, close, vol = c
+            ts, o, h, low, close, vol = c
             dt = datetime.fromtimestamp(ts).strftime("%Y-%m-%d")
-            candles.append({"date": dt, "open": o, "high": h, "low": l, "close": close, "volume": vol})
+            candles.append({"date": dt, "open": o, "high": h, "low": low, "close": close, "volume": vol})
 
         return {"symbol": symbol.upper(), "interval": interval, "data": candles, "source": "fyers"}
     except Exception as e:

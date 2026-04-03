@@ -19,7 +19,7 @@ Week 3 tools (15):
 """
 
 import json
-from finstack.config import config, UserTier
+from finstack.config import config
 from finstack.utils.helpers import tier_locked_error
 
 from finstack.data.analytics import (

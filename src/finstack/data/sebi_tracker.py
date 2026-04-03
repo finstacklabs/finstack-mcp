@@ -14,7 +14,6 @@ Data: SEBI public enforcement orders (free, no auth needed)
 import logging
 import urllib.request
 import xml.etree.ElementTree as ET
-import re
 from datetime import datetime, timezone
 
 logger = logging.getLogger("finstack.sebi_tracker")

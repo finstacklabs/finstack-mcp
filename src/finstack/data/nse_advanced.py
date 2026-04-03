@@ -6,7 +6,7 @@ quarterly results, IPO calendar, earnings calendar.
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 
 import httpx
@@ -15,7 +15,7 @@ import pandas as pd
 
 from finstack.utils.cache import cached, quotes_cache, general_cache, fundamentals_cache
 from finstack.utils.helpers import (
-    validate_symbol, to_nse_symbol, clean_nan, safe_get,
+    validate_symbol, to_nse_symbol, clean_nan,
 )
 
 logger = logging.getLogger("finstack.data.nse_advanced")
@@ -310,12 +310,6 @@ def get_quarterly_results(symbol: str) -> dict:
         quarters = []
         for col in q_income.columns[:4]:
             q_data = {"quarter": col.strftime("%Y-%m-%d")}
-
-            key_items = [
-                "Total Revenue", "Cost Of Revenue", "Gross Profit",
-                "Operating Income", "Net Income", "EBITDA",
-                "Basic EPS", "Diluted EPS",
-            ]
 
             for item in q_income.index:
                 if any(k.lower() in str(item).lower() for k in ["revenue", "cost", "profit", "income", "ebitda", "eps"]):

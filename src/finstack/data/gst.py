@@ -11,9 +11,6 @@ Data: Finance Ministry press releases (public, free, monthly)
 """
 
 import logging
-import urllib.request
-import json
-import re
 from datetime import datetime, timezone
 
 logger = logging.getLogger("finstack.gst")

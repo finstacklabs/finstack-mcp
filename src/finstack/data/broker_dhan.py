@@ -21,7 +21,6 @@ Without these env vars, falls back to yfinance (15-min delay).
 import os
 import logging
 from datetime import datetime, timedelta
-from typing import Optional
 
 import httpx
 

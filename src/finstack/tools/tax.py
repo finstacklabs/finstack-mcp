@@ -5,7 +5,6 @@ Tool 40:
   40. calculate_tax_liability - LTCG/STCG tax calculator for Indian equity trades
 """
 
-import json
 from datetime import datetime
 
 

@@ -30,7 +30,6 @@ def _get_nifty_rsi() -> float | None:
     """Nifty 50 RSI(14) from yfinance."""
     try:
         import yfinance as yf
-        import pandas as pd
         hist = yf.Ticker("^NSEI").history(period="30d")
         if hist.empty or len(hist) < 15:
             return None
@@ -115,17 +114,25 @@ def _score_input(name: str, value, thresholds: dict) -> tuple[float, str]:
 
     # RSI-style: low = bullish (oversold), high = bearish
     if thresholds.get("inverted"):
-        if bs and value <= bs: return  1.0, f"{name} {value} — strongly bullish"
-        if bm and value <= bm: return  0.5, f"{name} {value} — mildly bullish"
-        if br and value >= br: return -0.5, f"{name} {value} — mildly bearish"
-        if be and value >= be: return -1.0, f"{name} {value} — strongly bearish"
+        if bs and value <= bs:
+            return 1.0, f"{name} {value} — strongly bullish"
+        if bm and value <= bm:
+            return 0.5, f"{name} {value} — mildly bullish"
+        if br and value >= br:
+            return -0.5, f"{name} {value} — mildly bearish"
+        if be and value >= be:
+            return -1.0, f"{name} {value} — strongly bearish"
         return 0.0, f"{name} {value} — neutral"
 
     # Normal: high = bullish
-    if bs and value >= bs: return  1.0, f"{name} {value} — strongly bullish"
-    if bm and value >= bm: return  0.5, f"{name} {value} — mildly bullish"
-    if br and value <= br: return -0.5, f"{name} {value} — mildly bearish"
-    if be and value <= be: return -1.0, f"{name} {value} — strongly bearish"
+    if bs and value >= bs:
+        return 1.0, f"{name} {value} — strongly bullish"
+    if bm and value >= bm:
+        return 0.5, f"{name} {value} — mildly bullish"
+    if br and value <= br:
+        return -0.5, f"{name} {value} — mildly bearish"
+    if be and value <= be:
+        return -1.0, f"{name} {value} — strongly bearish"
     return 0.0, f"{name} {value} — neutral"
 
 
@@ -185,7 +192,8 @@ def get_nifty_outlook() -> dict:
             s, f = -1.0, f"RSI {rsi} — strongly overbought"
         else:
             s, f = 0.0, f"RSI {rsi} — neutral momentum"
-    scores.append(s); factors.append((s, f))
+    scores.append(s)
+    factors.append((s, f))
 
     # FII: net buying > 1000Cr = bullish, net selling < -1000Cr = bearish
     if fii_net_5d is not None:
@@ -199,7 +207,8 @@ def get_nifty_outlook() -> dict:
             s, f = -0.5, f"FII 5d net -₹{abs(fii_net_5d):,.0f}Cr — mild selling"
         else:
             s, f = 0.0, f"FII 5d net ₹{fii_net_5d:,.0f}Cr — neutral flows"
-        scores.append(s); factors.append((s, f))
+        scores.append(s)
+        factors.append((s, f))
 
     # PCR: > 1.2 = put heavy = bullish (market has hedges on), < 0.8 = call heavy = bearish
     if pcr is not None:
@@ -213,7 +222,8 @@ def get_nifty_outlook() -> dict:
             s, f = -0.5, f"PCR {pcr:.2f} — mild call bias, slight bearish"
         else:
             s, f = 0.0, f"PCR {pcr:.2f} — balanced"
-        scores.append(s); factors.append((s, f))
+        scores.append(s)
+        factors.append((s, f))
 
     # VIX: low VIX = risk-on (mild bull), high VIX = fear (potential bear OR oversold bounce)
     if vix is not None:
@@ -227,7 +237,8 @@ def get_nifty_outlook() -> dict:
             s, f = -0.4, f"VIX {vix:.1f} — elevated fear"
         else:
             s, f = 0.0, f"VIX {vix:.1f} — normal range"
-        scores.append(s); factors.append((s, f))
+        scores.append(s)
+        factors.append((s, f))
 
     # G-Sec: rising yields = bearish for equities
     if gsec_10y is not None:
@@ -237,7 +248,8 @@ def get_nifty_outlook() -> dict:
             s, f =  0.5, f"10Y G-Sec {gsec_10y:.2f}% — low yields, equity tailwind"
         else:
             s, f =  0.0, f"10Y G-Sec {gsec_10y:.2f}% — neutral"
-        scores.append(s); factors.append((s, f))
+        scores.append(s)
+        factors.append((s, f))
 
     # GIFT Nifty premium
     if gift_premium is not None:
@@ -251,7 +263,8 @@ def get_nifty_outlook() -> dict:
             s, f = -0.5, f"GIFT Nifty {gift_premium:.0f}pts — mild gap-down"
         else:
             s, f =  0.0, f"GIFT Nifty ±{abs(gift_premium):.0f}pts — flat"
-        scores.append(s); factors.append((s, f))
+        scores.append(s)
+        factors.append((s, f))
 
     # ── Aggregate ──────────────────────────────────────────────────────────
     if not scores:

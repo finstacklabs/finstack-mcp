@@ -32,7 +32,6 @@ def _get_eps_trend(symbol: str) -> dict:
             return {}
         rows = earnings.tail(4)
         eps_list = rows.get("Earnings", rows.iloc[:, 0]).tolist()
-        rev_list = rows.get("Revenue", rows.iloc[:, -1] if len(rows.columns) > 1 else []).tolist()
 
         # QoQ EPS growth
         qoq_growth = None

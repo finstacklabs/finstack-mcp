@@ -7,12 +7,11 @@ All computed locally using pandas + numpy — zero API cost.
 
 import logging
 from datetime import datetime
-from typing import Any
 
 import yfinance as yf
 import pandas as pd
 
-from finstack.utils.cache import cached, quotes_cache, historical_cache, general_cache
+from finstack.utils.cache import cached, historical_cache, general_cache
 from finstack.utils.helpers import (
     validate_symbol, to_nse_symbol, clean_nan, safe_get, format_market_cap,
 )
@@ -346,8 +345,8 @@ def compute_support_resistance(symbol: str, period: str = "6mo") -> dict:
         clusters.append(round(sum(current_cluster) / len(current_cluster), 2))
         return clusters
 
-    resistance_levels = [l for l in cluster_levels(local_highs) if l > current_price][:3]
-    support_levels = [l for l in cluster_levels(local_lows) if l < current_price][-3:]
+    resistance_levels = [lv for lv in cluster_levels(local_highs) if lv > current_price][:3]
+    support_levels = [lv for lv in cluster_levels(local_lows) if lv < current_price][-3:]
 
     return clean_nan({
         "symbol": symbol.replace(".NS", "").replace(".BO", ""),
