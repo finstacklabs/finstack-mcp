@@ -1,81 +1,61 @@
-# finstack-mcp · by Arthex
+# FinStack MCP
 
-<!-- mcp-name: io.github.finstacklabs/finstack-mcp -->
+**83 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
 
-[![PyPI version](https://badge.fury.io/py/finstack-mcp.svg)](https://pypi.org/project/finstack-mcp/)
+[![PyPI](https://badge.fury.io/py/finstack-mcp.svg)](https://pypi.org/project/finstack-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io)
-
-**They charge $97,000+/year. We made it free.**
-
-finstack-mcp is an open-source MCP server that gives Claude, Cursor, ChatGPT, and any MCP client structured access to Indian and global financial data — 58 tools, zero subscriptions, zero API keys.
-
-Built by **Arunodayya B S** ([@SpawnAgent](https://x.com/finstacklabs1)) · [Arthex](https://finstacklabs.github.io/) · MIT licensed.
-
----
-
-## What they charge. What you pay.
-
-| Feature | They charge | finstack-mcp |
-|---|---|---|
-| Real-time NSE data | Zerodha ₹6,000/yr | **FREE** (Angel One) |
-| Options Greeks (Black-Scholes) | Sensibull ₹15,600/yr | **FREE** |
-| Options Max Pain + PCR | Sensibull ₹15,600/yr | **FREE** |
-| MF flows + AMFI AUM | Morningstar $17,500/yr | **FREE** |
-| NSE Insider trading (SAST) | Trendlyne ₹4,950/yr | **FREE** |
-| Promoter/FII/DII shareholding | Screener ₹4,999/yr | **FREE** |
-| RBI rates + India macro | Bloomberg $31,980/yr | **FREE** |
-| Credit ratings (CRISIL/ICRA/CARE) | Bloomberg $24,000/yr | **FREE** |
-| BRSR/ESG data (SEBI-mandated) | Bloomberg ESG $24,000/yr | **FREE** |
-| Fundamentals (P&L, balance sheet) | FactSet $12,000/yr | **FREE** |
-| LTCG/STCG tax calculator | Nobody has this | **ONLY US** |
-
----
-
-## Products
-
-| Product | What it is | Price |
-|---|---|---|
-| **finstack-mcp** | 58-tool MCP server for Claude/Cursor/ChatGPT | Free forever (MIT) |
-| **Dashboard** | TradingView-style web chart + options + screener | ₹299/mo (7-day free trial) |
-| **Ideas** | Social trading community — post/like/comment analysis | Free |
-| **Creator Desk** | Managed AI workspace + research reports + multi-portfolio | ₹2,999/mo |
-
-**Dashboard** → [landing-page/dashboard.html](landing-page/dashboard.html) · Real candlestick charts, options chain with Max Pain, FII/DII flows, screener, portfolio tracker. Connects to real NSE data via Angel One.
-
-**Ideas feed** → [landing-page/ideas.html](landing-page/ideas.html) · Post your market analysis, like/comment on others, browse by symbol, direction, or trending.
-
----
-
-## Demo
-
-[![FinStack MCP Demo](https://img.youtube.com/vi/PWK89gBbHEM/maxresdefault.jpg)](https://youtu.be/PWK89gBbHEM?si=MqYuCRRJ0EUP10fm)
-
----
-
-## Quick Start
 
 ```bash
 pip install finstack-mcp
 ```
 
-For real-time NSE data via Angel One SmartAPI (optional):
+Ask Claude things like:
+
+```
+"Give me a full stock brief on Reliance"
+→ 4 AI agents debate: FII Desk + Algo Trader + Value Investor + Retail Pulse
+→ Consensus: BUY/HOLD/SELL with reasoning
+
+"Is someone accumulating HDFC Bank quietly?"
+→ Checks OI buildup, block deals, promoter buying, volume spike simultaneously
+
+"What's the social buzz on TCS before results?"
+→ StockTwits + Reddit + Economic Times → 67% bullish · Signal: HOLD
+
+"Will Nifty go up tomorrow?"
+→ RSI + FII flow + PCR + VIX + G-Sec + GIFT Nifty → 63% probability up
+
+"Scan my portfolio for risk"
+→ Sector concentration, pledged promoters, FII exposure, XIRR, diversification score
+
+"Is this Telegram stock tip channel a scam?"
+→ Accuracy %, avg return %, pump-and-dump probability scored
+```
+
+---
+
+## What this replaces
+
+| Tool | What you pay | finstack-mcp |
+|---|---|---|
+| Bloomberg Terminal | $31,980 / yr | **FREE** |
+| Bloomberg ESG + Credit | $24,000 / yr | **FREE** |
+| Sensibull (Options Greeks) | ₹15,600 / yr | **FREE** |
+| Morningstar (MF flows) | $17,500 / yr | **FREE** |
+| Zerodha real-time data | ₹6,000 / yr | **FREE** via Angel One |
+| Screener.in Pro | ₹4,999 / yr | **FREE** |
+| Trendlyne Pro | ₹4,950 / yr | **FREE** |
+
+---
+
+## Install + connect (2 minutes)
 
 ```bash
-pip install finstack-mcp[broker]
+pip install finstack-mcp
 ```
 
-Add to your `.env` (stays local, never on GitHub):
-
-```
-ANGEL_API_KEY=your_api_key
-ANGEL_CLIENT_ID=your_client_id
-ANGEL_PASSWORD=your_pin
-ANGEL_TOTP_SECRET=your_totp_secret
-```
-
-## Claude Desktop Setup
+Add to `claude_desktop_config.json`:
 
 ```json
 {
@@ -88,87 +68,162 @@ ANGEL_TOTP_SECRET=your_totp_secret
 }
 ```
 
-Restart Claude Desktop and try:
+Restart Claude Desktop. Done.
 
-- *"What's the credit rating for Reliance? Show CRISIL/ICRA ratings."*
-- *"Get real-time live price for TCS via Angel One."*
-- *"Show BRSR ESG data for HDFC Bank."*
-- *"What are the Options Greeks for NIFTY 24000 CE expiring next week?"*
-- *"Compare TCS, Infosys, and Wipro on margins and valuation."*
-- *"Show insider trading activity for ADANIENT."*
-- *"What's the India VIX and what does it signal?"*
-- *"Calculate my LTCG tax on 500 shares of Reliance bought at ₹2,200, sold at ₹2,900."*
+Works with: **Claude Desktop · Cursor · Windsurf · Cline · Continue.dev · Zed · Jan.ai · LibreChat · any MCP client**
 
 ---
 
-## Tool Coverage — 58 Tools
+## 83 tools across 9 categories
 
-### Indian Markets (16 tools)
-- NSE/BSE live quotes · market status · Nifty/Sensex/Bank Nifty indices
-- Historical OHLCV · top movers · mutual fund NAV
-- Circuit breaker scanner · 52-week scanner · Sensex components
-- FII/DII institutional activity · bulk & block deals
-- Corporate actions · quarterly results · earnings calendar · IPO calendar
+### Indian Markets (live data)
+- NSE/BSE real-time quotes, OHLCV history, market status
+- Nifty 50, Bank Nifty, Sensex indices
+- FII/DII institutional flows (daily + historical)
+- Bulk & block deals, circuit breaker scanner, 52W high/low scanner
+- Mutual fund NAV, corporate actions, earnings calendar, IPO calendar
 
-### Global Markets (8 tools)
-- Global stock quotes + historical data
-- Crypto prices + history (BTC, ETH, SOL, 100+)
-- Forex rates (USD/INR, EUR/INR, 50+ pairs)
-- Market news by ticker · SEC filings (10-K, 10-Q, 8-K) · SEC search
+### AI Intelligence (unique to finstack-mcp)
+- **`get_stock_brief`** — 4 AI agents debate any stock → BUY/HOLD/SELL consensus
+- **`get_social_sentiment`** — StockTwits + Reddit + ET RSS → sentiment signal
+- **`detect_unusual_activity`** — OI buildup + block deals + promoter change + volume spike
+- **`get_nifty_outlook`** — 6-signal probability model for next session direction
+- **`predict_earnings`** — beat/miss probability before quarterly results
+- **`get_fii_retail_divergence`** — highest-conviction Indian market signal
 
-### Fundamentals (7 tools)
-- Income statement · balance sheet · cash flow
-- Key ratios (P/E, ROE, margins, debt/equity, growth)
-- Company profile · dividend history · stock comparison
+### Portfolio & Risk
+- **`analyze_portfolio`** — P&L, XIRR, sector concentration, risk flags, diversification score
+- **`get_mf_overlap`** — fund overlap % from AMFI public disclosures
+- **`get_pledge_alert`** — promoter pledge early warning with QoQ velocity
+- **`scan_pledge_risks`** — batch pledge scan across your watchlist
+- **`predict_circuit`** — lower circuit risk prediction
+- **`detect_pump`** — pump-and-dump pattern detector for small/micro caps
 
-### Analytics (5 tools)
-- Technical indicators (RSI, MACD, SMA, Bollinger, ATR, Stochastic, ADX)
-- Sector performance · stock screener · support/resistance · backtesting
+### Broker Integrations (zero-delay live data)
+- Angel One SmartAPI — live quotes, Level 2 depth, intraday candles
+- Fyers API v3 — live quotes + candles
+- ICICI Breeze — live quotes + candles
+- Dhan SmartAPI — live quotes + candles
+- Upstox API v2 — live quotes + candles
 
-### Options & Greeks (3 tools)
-- Options chain with PCR analysis
+### Options & Greeks
+- Full NSE options chain with PCR, Open Interest, Max Pain
 - Black-Scholes Greeks: Delta, Gamma, Theta, Vega, Rho
-- Options OI analytics: Max Pain, IV summary, top OI strikes
+- OI analytics, IV summary, top OI strikes
 
-### Market Intelligence (10 tools)
-- India VIX fear index + signal · GIFT Nifty pre-market
-- NSE insider trading (SAST) · promoter shareholding · promoter pledge
-- RBI policy rates (repo, CRR, SLR, MSF) · India macro (CPI, GDP, CAD)
-- AMFI fund flows + SIP data · India G-Sec yield curve · Nifty PCR trend
-- Dividend history deep (10yr) · portfolio analysis
+### Market Intelligence
+- India VIX + signal, GIFT Nifty pre-market
+- NSE insider trading (SAST filings), promoter shareholding + pledge %
+- RBI policy rates, India macro (CPI, GDP, CAD)
+- AMFI mutual fund flows, India G-Sec yield curve
+- **`get_sebi_alerts`** — SEBI enforcement order tracker (early crash warning)
+- **`get_morning_brief`** — 8:15 AM pre-market brief
 
-### Real-time Broker Data — NEW (3 tools)
-- `live_quote` — real-time NSE LTP via Angel One SmartAPI (zero delay)
-- `market_depth` — Level 2 order book top 5 bid/ask (Zerodha charges ₹500/mo → FREE)
-- `broker_setup_status` — check Angel One connection + setup guide
+### Never-built-before (India-specific)
+- **`correlate_gst_to_stocks`** — GST monthly data as 1-3mo sector leading indicator
+- **`get_agm_brief`** — AGM/EGM unusual resolution detector (debt raise, salary hike, pledge approval)
+- **`get_insider_signal`** — SEBI SAST insider buy/sell pattern vs forward returns
+- **`get_telegram_tracker`** — Dalal Street tip channel accuracy + pump-and-dump scoring
+- **`analyze_budget_live`** — paste FM speech → instant sector/stock signals (Feb 1st)
+- **`get_budget_impact`** — historical Union Budget winners + losers by year
 
-### Credit & ESG — NEW (2 tools)
-- `credit_ratings` — CRISIL/ICRA/CARE/India Ratings from SEBI-mandated NSE/BSE filings (Bloomberg $24k/yr → FREE)
-- `brsr_esg` — BRSR sustainability report data from SEBI-mandated filings (Bloomberg ESG $24k/yr → FREE)
+### Fundamentals
+- Income statement, balance sheet, cash flow (Indian + US)
+- Key ratios: P/E, ROE, margins, debt/equity, growth
+- Company profile, dividend history (10-year), stock comparison
 
-### Tax (1 tool)
-- LTCG/STCG tax calculator (Indian equity + mutual fund trades, post-July 2024 Budget rules)
+### Global + Crypto + Tax
+- US, EU, global equities — quotes + history
+- Crypto: BTC, ETH, SOL, 100+ coins (CoinGecko)
+- Forex: USD/INR, EUR/INR, 50+ pairs
+- SEC filings (10-K, 10-Q, 8-K)
+- **LTCG/STCG tax calculator** (post-July 2024 Budget rules — nobody else has this)
 
 ---
 
-## Data Sources
+## Comparison vs Indian market tools
 
-| Source | Coverage | API key required |
+| Feature | finstack-mcp | Screener.in | Tickertape | Sensibull | Trendlyne | TradingView |
+|---|---|---|---|---|---|---|
+| AI agents debate a stock | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Social sentiment (Reddit + StockTwits) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Nifty direction probability | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Telegram tip channel tracker | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Budget speech live analyzer | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| GST → sector stock predictor | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Pump-and-dump detector | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Promoter pledge early warning | ✅ | ❌ | ✅ paid | ❌ | ✅ paid | ❌ |
+| Options Greeks | ✅ free | ❌ | ❌ | ✅ ₹1,300/mo | ❌ | ✅ paid |
+| FII/DII flows | ✅ free | ❌ | ✅ | ✅ | ✅ paid | ❌ |
+| Fundamentals (P/E, ROE, etc.) | ✅ free | ✅ free | ✅ | ❌ | ✅ | ✅ paid |
+| Works inside Claude / Cursor | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Price | **Free** | ₹4,999/yr | ₹2,800/yr | ₹15,600/yr | ₹4,950/yr | $168/yr |
+
+---
+
+## Real-time data (optional)
+
+Without setup: 15-minute delayed data (yfinance — free, no API key).
+With Angel One: zero delay, Level 2 order book, intraday candles.
+
+```bash
+pip install finstack-mcp[broker]
+```
+
+```env
+ANGEL_API_KEY=your_key
+ANGEL_CLIENT_ID=your_client_id
+ANGEL_PASSWORD=your_pin
+ANGEL_TOTP_SECRET=your_totp_secret
+```
+
+Free account at [smartapi.angelbroking.com](https://smartapi.angelbroking.com/). Your key stays local in `.env` — never leaves your machine.
+
+Other brokers: Fyers, ICICI Breeze, Dhan, Upstox also supported.
+
+---
+
+## Demo
+
+[![FinStack MCP Demo](https://img.youtube.com/vi/PWK89gBbHEM/maxresdefault.jpg)](https://youtu.be/PWK89gBbHEM)
+
+---
+
+## Data sources
+
+| Source | Covers | Key needed |
 |---|---|---|
-| yfinance | NSE, BSE, US equities, crypto, forex | No |
-| NSE direct endpoints | FII/DII, bulk deals, options chain, insider trading, credit ratings, BRSR | No |
-| BSE India API | Supplemental quotes, credit ratings | No |
-| SEC EDGAR | US filings (10-K, 10-Q, 8-K) | No |
-| CoinGecko | Crypto market data | No |
-| World Bank API | India macro: CPI, GDP, current account | No |
-| AMFI / mfapi.in | Mutual fund NAV, industry AUM, SIP flows | No |
-| Angel One SmartAPI | Real-time NSE quotes, Level 2 depth | Your own broker key (free for account holders) |
+| yfinance | NSE/BSE/US equities, crypto, forex, history | None |
+| NSE direct API | FII/DII, options chain, insider trading, corporate actions | None |
+| BSE India API | Credit ratings, ESG/BRSR | None |
+| SEC EDGAR | US filings (10-K, 10-Q, 8-K) | None |
+| CoinGecko | Crypto market data | None |
+| World Bank | India macro: CPI, GDP, CAD | None |
+| AMFI / mfapi.in | Mutual fund NAV, AUM, SIP flows | None |
+| StockTwits | Trader sentiment (pre-tagged bullish/bearish) | None |
+| Reddit (praw) | r/IndiaInvestments + r/DalalStreetTalks | Optional free |
+| Finance Ministry | Monthly GST collection data | None |
+| SEBI public filings | Enforcement orders, insider SAST disclosures | None |
+| Angel One SmartAPI | Real-time NSE, Level 2 depth, intraday | Free account |
 
 ---
 
-## Security — Your API Key is Safe
+## Troubleshooting
 
-When you configure Angel One SmartAPI, your credentials live in your local `.env` file which is in `.gitignore`. The open-source code only reads `os.environ` — it never stores, logs, or transmits your key. Every user sets their own credentials.
+**Claude says "finstack not found" after install**
+- Restart Claude Desktop fully (quit from system tray, not just close)
+- Config path on Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Verify Python is in PATH: `python --version`
+
+**pip install fails**
+```bash
+python -m pip install --upgrade pip
+pip install finstack-mcp
+```
+
+**Angel One TOTP fails**
+- TOTP secret ≠ password. Find it in Angel One app → Profile → Enable TOTP → secret key
+- Install: `pip install finstack-mcp[broker]`
 
 ---
 
@@ -181,41 +236,17 @@ pip install -e .[dev]
 pytest -q
 ```
 
----
-
-## Run the Dashboard Locally (with real NSE data)
-
-```bash
-# 1. Start the data API
-cd dashboard-api
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-
-# 2. Open dashboard.html in your browser
-# The dashboard auto-detects the API and shows a green ⬤ LIVE badge
-# Without the API it runs in demo mode with realistic fake data
-```
-
-> **⚠ Data delay warning:** Without Angel One configured, chart data is 15-min delayed (yfinance). Do not use for intraday trading without real-time data. Configure Angel One SmartAPI for zero-delay quotes.
+PRs welcome. Adding a new broker: create `src/finstack/data/broker_X.py` and register in `tools/`.
 
 ---
 
-## Current Status
+## Links
 
-- GitHub: https://github.com/finstacklabs/finstack-mcp
 - PyPI: https://pypi.org/project/finstack-mcp/
 - Landing page: https://finstacklabs.github.io/
-- Dashboard: [landing-page/dashboard.html](landing-page/dashboard.html)
-- Ideas feed: [landing-page/ideas.html](landing-page/ideas.html)
-- YouTube demo: https://youtu.be/PWK89gBbHEM
-- X / Twitter: https://x.com/finstacklabs1
+- YouTube: https://youtu.be/PWK89gBbHEM
+- X: https://x.com/finstacklabs1
 
 ---
 
-## Contributing
-
-PRs welcome. Keep changes focused, test what you touch, document new tools clearly.
-
-## License
-
-MIT · Arthex · finstack-mcp v0.6.1
+MIT License · [finstacklabs.github.io](https://finstacklabs.github.io/)
