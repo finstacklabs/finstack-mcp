@@ -93,6 +93,15 @@ TOOL_CATALOG = [
     {"name": "get_pledge_alert", "description": "Promoter pledge early warning: pledge % + QoQ change + risk level", "tier": "free"},
     {"name": "scan_pledge_risks", "description": "Scan multiple stocks for promoter pledge risk simultaneously", "tier": "free"},
     {"name": "detect_pump", "description": "Pump-and-dump detector: volume spike + circuit days + price surge", "tier": "free"},
+    # ── Phase 4: Never-before-built Indian market tools ──
+    {"name": "predict_circuit", "description": "Lower circuit risk predictor: pledge + FII selling + 52W low proximity", "tier": "free"},
+    {"name": "get_sebi_alerts", "description": "SEBI enforcement order tracker — early warning before regulatory crash", "tier": "free"},
+    {"name": "correlate_gst_to_stocks", "description": "GST collection trend → sector stock predictor (1-3mo leading indicator)", "tier": "free"},
+    {"name": "get_agm_brief", "description": "AGM/EGM unusual resolution detector: debt raise, salary hike, pledge approval", "tier": "free"},
+    {"name": "get_insider_signal", "description": "SEBI SAST insider trading pattern: who is buying/selling their own stock", "tier": "free"},
+    {"name": "get_telegram_tracker", "description": "Dalal Street Telegram tip channel accuracy + pump-and-dump scoring", "tier": "free"},
+    {"name": "analyze_budget_live", "description": "Real-time budget speech analyzer: paste FM text → instant sector/stock signals", "tier": "free"},
+    {"name": "get_budget_impact", "description": "Historical Union Budget impact by year: winners, losers, key announcements", "tier": "free"},
 ]
 
 TOTAL_TOOLS = len(TOOL_CATALOG) + 1
@@ -113,6 +122,7 @@ from finstack.tools.agents import register_agent_tools
 from finstack.tools.smart_money import register_smart_money_tools
 from finstack.tools.probability import register_probability_tools
 from finstack.tools.intelligence import register_intelligence_tools
+from finstack.tools.phase4 import register_phase4_tools
 
 register_global_tools(mcp)
 register_fundamental_tools(mcp)
@@ -126,6 +136,7 @@ register_agent_tools(mcp)
 register_smart_money_tools(mcp)
 register_probability_tools(mcp)
 register_intelligence_tools(mcp)
+register_phase4_tools(mcp)
 
 
 @mcp.tool()
