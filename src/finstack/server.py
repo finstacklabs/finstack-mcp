@@ -84,6 +84,15 @@ TOOL_CATALOG = [
     {"name": "get_stock_brief", "description": "Multi-agent AI debate: 4 personas analyse a stock → consensus signal", "tier": "free"},
     {"name": "detect_unusual_activity", "description": "Smart money detector: OI buildup, block deals, promoter buying, volume spike", "tier": "free"},
     {"name": "get_nifty_outlook", "description": "Nifty direction probability % (RSI + FII + PCR + VIX + G-Sec + GIFT Nifty)", "tier": "free"},
+    # ── Phase 3: Intelligence tools ──
+    {"name": "predict_earnings", "description": "AI earnings preview: beat/miss probability before quarterly results", "tier": "free"},
+    {"name": "analyze_portfolio", "description": "Portfolio X-ray: P&L, XIRR, sector concentration, risk flags, diversification score", "tier": "free"},
+    {"name": "get_mf_overlap", "description": "Mutual fund overlap: % common holdings between two funds (AMFI data)", "tier": "free"},
+    {"name": "get_fii_retail_divergence", "description": "FII vs retail divergence signal — highest-conviction Indian market signal", "tier": "free"},
+    {"name": "get_morning_brief", "description": "8:15 AM pre-market brief: GIFT Nifty + FII + top setups + direction probability", "tier": "free"},
+    {"name": "get_pledge_alert", "description": "Promoter pledge early warning: pledge % + QoQ change + risk level", "tier": "free"},
+    {"name": "scan_pledge_risks", "description": "Scan multiple stocks for promoter pledge risk simultaneously", "tier": "free"},
+    {"name": "detect_pump", "description": "Pump-and-dump detector: volume spike + circuit days + price surge", "tier": "free"},
 ]
 
 TOTAL_TOOLS = len(TOOL_CATALOG) + 1
@@ -103,6 +112,7 @@ from finstack.tools.sentiment import register_sentiment_tools
 from finstack.tools.agents import register_agent_tools
 from finstack.tools.smart_money import register_smart_money_tools
 from finstack.tools.probability import register_probability_tools
+from finstack.tools.intelligence import register_intelligence_tools
 
 register_global_tools(mcp)
 register_fundamental_tools(mcp)
@@ -115,6 +125,7 @@ register_sentiment_tools(mcp)
 register_agent_tools(mcp)
 register_smart_money_tools(mcp)
 register_probability_tools(mcp)
+register_intelligence_tools(mcp)
 
 
 @mcp.tool()

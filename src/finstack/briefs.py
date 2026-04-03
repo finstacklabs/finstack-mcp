@@ -303,6 +303,72 @@ def generate_daily_brief(
     return payload
 
 
+def get_morning_brief() -> dict:
+    """
+    8:15 AM pre-market brief for Indian traders.
+
+    Auto-compiles:
+      - GIFT Nifty pre-market signal + global overnight
+      - FII net flow from yesterday
+      - Top 3 stock setups (gainers + unusual movers)
+      - Nifty direction probability signal
+      - Macro alert (VIX, G-Sec)
+      - Earnings due today
+
+    Returns structured JSON + ready-to-send plain text / Telegram format.
+    """
+    from finstack.data.market_intelligence import get_gift_nifty, get_india_vix
+    from finstack.data.probability import get_nifty_outlook
+
+    brief = generate_daily_brief(
+        watchlist=["RELIANCE", "TCS", "HDFCBANK", "INFY", "ICICIBANK"],
+        style="morning",
+    )
+
+    # Augment with GIFT Nifty + VIX + direction probability
+    gift  = {}
+    vix   = {}
+    nifty_outlook = {}
+
+    try:
+        gift = get_gift_nifty() or {}
+    except Exception:
+        pass
+    try:
+        vix = get_india_vix() or {}
+    except Exception:
+        pass
+    try:
+        nifty_outlook = get_nifty_outlook() or {}
+    except Exception:
+        pass
+
+    brief["pre_market"] = {
+        "gift_nifty":      gift,
+        "india_vix":       vix,
+        "nifty_direction": {
+            "probability_up": nifty_outlook.get("probability_up"),
+            "signal":         nifty_outlook.get("signal"),
+            "bull_factors":   nifty_outlook.get("bull_factors", [])[:2],
+            "bear_factors":   nifty_outlook.get("bear_factors", [])[:2],
+        },
+    }
+
+    # Plain text morning format
+    prob = nifty_outlook.get("probability_up")
+    gift_val = gift.get("gift_nifty") or gift.get("value", "")
+    vix_val  = vix.get("vix") or vix.get("current", "")
+
+    brief["morning_text"] = (
+        f"Good morning. FinStack 8:15 AM Brief — {brief.get('brief_date', '')}\n\n"
+        f"GIFT Nifty: {gift_val} | India VIX: {vix_val}\n"
+        f"Direction: {nifty_outlook.get('signal', 'N/A')} ({prob}% up probability)\n\n"
+        + brief.get("delivery_formats", {}).get("plain_text", "")
+    )
+
+    return brief
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate an Indian market daily brief.")
     parser.add_argument(

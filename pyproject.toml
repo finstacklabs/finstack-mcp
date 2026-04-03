@@ -1,6 +1,6 @@
 [project]
 name = "finstack-mcp"
-version = "0.6.1"
+version = "0.7.0"
 description = "Open-source MCP server for Indian (NSE/BSE) + Global financial data with built-in AI analytics"
 readme = "README.md"
 license = {text = "MIT"}
