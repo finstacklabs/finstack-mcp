@@ -207,3 +207,102 @@ def register_intelligence_tools(mcp: FastMCP) -> None:
         """
         from finstack.data.pump_detector import detect_pump as _get
         return json.dumps(_get(symbol), indent=2, default=str)
+
+    @mcp.tool()
+    def scan_watchlist(symbols: list[str]) -> str:
+        """
+        Batch-rank a watchlist using FinStack's multi-factor stock signal score.
+
+        Best use:
+          - daily watchlist triage
+          - n8n / WhatsApp automation
+          - finding top buys and top risks in one shot
+
+        Args:
+            symbols: list of NSE symbols (e.g. ["RELIANCE", "TCS", "HDFCBANK", "INFY"])
+
+        Returns:
+          - ranked_watchlist: sorted by signal_score
+          - top_buys
+          - top_risks
+        """
+        from finstack.data.research import scan_watchlist as _get
+        return json.dumps(_get(symbols), indent=2, default=str)
+
+    @mcp.tool()
+    def get_stock_timeline(symbol: str, max_events: int = 12) -> str:
+        """
+        Unified stock timeline: news, results, insider, bulk deals, sentiment, pledge, smart money.
+
+        This is the "what changed recently?" tool for a stock.
+
+        Args:
+            symbol: NSE symbol (e.g. RELIANCE, HDFCBANK, TCS)
+            max_events: max timeline events to return
+        """
+        from finstack.data.research import get_stock_timeline as _get
+        return json.dumps(_get(symbol, max_events=max_events), indent=2, default=str)
+
+    @mcp.tool()
+    def get_stock_signal_score(symbol: str) -> str:
+        """
+        Automation-friendly stock ranking score built from FinStack signals.
+
+        Combines:
+          - multi-agent consensus
+          - smart money activity
+          - social sentiment
+          - promoter pledge risk
+          - insider signal
+          - technical momentum
+          - peer / sector context
+          - earnings setup
+
+        Returns:
+          - signal_score: 0-100
+          - signal: BUY / HOLD / SELL
+          - automation_rank
+          - top_supports / top_risks
+          - full component breakdown
+        """
+        from finstack.data.research import get_stock_signal_score as _get
+        return json.dumps(_get(symbol), indent=2, default=str)
+
+    @mcp.tool()
+    def get_sector_peer_context(symbol: str) -> str:
+        """
+        Sector and peer context for a stock.
+
+        Shows:
+          - likely peer basket
+          - peer rank
+          - valuation vs peers
+          - sector performance context
+
+        Args:
+            symbol: NSE symbol (e.g. RELIANCE, HDFCBANK, INFY)
+        """
+        from finstack.data.research import get_sector_peer_context as _get
+        return json.dumps(_get(symbol), indent=2, default=str)
+
+    @mcp.tool()
+    def evaluate_signal_quality(symbol: str, lookback_months: int = 6, holding_days: int = 20) -> str:
+        """
+        Lightweight evaluation / proof layer for the signal engine's price-action core.
+
+        Important:
+          - this is an honesty tool, not a marketing gimmick
+          - it does not claim the full live system has exactly this accuracy
+          - it gives a defensible evaluation layer before making accuracy claims
+
+        Args:
+            symbol: NSE symbol
+            lookback_months: historical window for checkpoints
+            holding_days: forward return horizon for hit evaluation
+        """
+        from finstack.data.research import evaluate_signal_quality as _get
+        return json.dumps(
+            _get(symbol, lookback_months=lookback_months, holding_days=holding_days),
+            indent=2,
+            default=str,
+        )

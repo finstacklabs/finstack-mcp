@@ -1,6 +1,9 @@
 # FinStack MCP
 
-**83 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
+**88 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
+
+Open-source market intelligence for Indian equities, global markets, and MCP-native AI workflows.
+Ask one question like `Should I buy Reliance?` and get debate, sentiment, smart-money, risk, peer context, and ranking in one stack.
 
 [![PyPI](https://badge.fury.io/py/finstack-mcp.svg)](https://pypi.org/project/finstack-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -12,26 +15,33 @@ pip install finstack-mcp
 
 Ask Claude things like:
 
-```
+```text
 "Give me a full stock brief on Reliance"
-→ 4 AI agents debate: FII Desk + Algo Trader + Value Investor + Retail Pulse
-→ Consensus: BUY/HOLD/SELL with reasoning
+-> 6 AI agents debate: FII Desk + Algo Trader + Value Investor + Retail Pulse + Macro Analyst + Options Flow
+-> Consensus: BUY/HOLD/SELL with reasoning
 
 "Is someone accumulating HDFC Bank quietly?"
-→ Checks OI buildup, block deals, promoter buying, volume spike simultaneously
+-> Checks OI buildup, block deals, promoter buying, volume spike simultaneously
 
 "What's the social buzz on TCS before results?"
-→ StockTwits + Reddit + Economic Times → 67% bullish · Signal: HOLD
+-> StockTwits + Reddit + Economic Times -> 67% bullish | Signal: HOLD
 
 "Will Nifty go up tomorrow?"
-→ RSI + FII flow + PCR + VIX + G-Sec + GIFT Nifty → 63% probability up
+-> RSI + FII flow + PCR + VIX + G-Sec + GIFT Nifty -> 63% probability up
 
 "Scan my portfolio for risk"
-→ Sector concentration, pledged promoters, FII exposure, XIRR, diversification score
+-> Sector concentration, pledged promoters, FII exposure, XIRR, diversification score
 
 "Is this Telegram stock tip channel a scam?"
-→ Accuracy %, avg return %, pump-and-dump probability scored
+-> Accuracy %, avg return %, pump-and-dump probability scored
 ```
+
+## Why this is different
+
+- Built for Indian markets first, not as a US-market wrapper with a few NSE tickers added later
+- MCP-native, so it works inside Claude, Cursor, and other agent workflows instead of being just another dashboard
+- Combines data, scoring, debate, and research workflows instead of forcing users to stitch 5 paid tools together
+- Includes tools competitors usually do not offer at all: stock debate, watchlist ranking, stock timeline, Telegram tracker, GST-to-stock context, and budget analyzer
 
 ---
 
@@ -74,7 +84,55 @@ Works with: **Claude Desktop · Cursor · Windsurf · Cline · Continue.dev · Z
 
 ---
 
-## 83 tools across 9 categories
+## Remote MCP publishing roadmap
+
+If you want `finstack-mcp` to move beyond local desktop config and become available through connector ecosystems, keep the local `python -m finstack.server` setup for developers and add a hosted remote MCP version for public distribution.
+
+### What to build for remote HTTP
+
+- Expose FinStack through a public MCP endpoint over HTTPS, preferably Streamable HTTP or SSE.
+- Add OAuth before opening it to outside users.
+- Keep tool descriptions narrow, clear, and safe.
+- Add rate limiting, monitoring, and a visible support contact.
+- Publish a privacy policy and terms before any official submission.
+
+### ChatGPT / OpenAI path
+
+- Host a remote MCP server that is reachable over HTTPS.
+- Test it first as a custom connector or custom app in ChatGPT.
+- Add connector-friendly read tools such as `search` and `fetch` if you want broader compatibility with OpenAI connector flows.
+- Keep FinStack-specific tools like `get_stock_brief`, `get_stock_debate`, `get_social_sentiment`, and `analyze_portfolio` as domain tools on top.
+
+### Claude / Anthropic path
+
+- First make sure the server works as a custom connector.
+- Then prepare for directory review instead of assuming instant listing.
+- Anthropic reviews third-party MCP servers for safety, security, privacy, and compatibility before directory inclusion.
+- Directory listing is not guaranteed even if the server is technically valid.
+
+### Practical submission checklist
+
+- Public HTTPS MCP endpoint
+- OAuth login flow
+- Stable server uptime
+- Safe tool scope and descriptions
+- Privacy policy
+- Terms of service
+- Support email or issue tracker
+- Clear docs and example prompts
+- No tool behavior that encourages bypassing model safety policies
+
+### Recommended product split
+
+- Local stdio MCP: best for developers and power users
+- Hosted remote MCP: best for connectors and wider distribution
+- Separate hosted FinStack web UI: best place for premium visuals like Agent Battle
+
+This keeps MCP as the execution layer and your own frontend as the premium experience.
+
+---
+
+## 88 tools across 10 categories
 
 ### Indian Markets (live data)
 - NSE/BSE real-time quotes, OHLCV history, market status
@@ -84,12 +142,20 @@ Works with: **Claude Desktop · Cursor · Windsurf · Cline · Continue.dev · Z
 - Mutual fund NAV, corporate actions, earnings calendar, IPO calendar
 
 ### AI Intelligence (unique to finstack-mcp)
-- **`get_stock_brief`** — 4 AI agents debate any stock → BUY/HOLD/SELL consensus
+- **`get_stock_brief`** — 6 AI agents debate any stock → BUY/HOLD/SELL consensus
+- **`get_stock_debate`** — 3-round sequential agent debate with rebuttals and emergent consensus
 - **`get_social_sentiment`** — StockTwits + Reddit + ET RSS → sentiment signal
 - **`detect_unusual_activity`** — OI buildup + block deals + promoter change + volume spike
 - **`get_nifty_outlook`** — 6-signal probability model for next session direction
 - **`predict_earnings`** — beat/miss probability before quarterly results
 - **`get_fii_retail_divergence`** — highest-conviction Indian market signal
+
+### Research & Ranking
+- **`scan_watchlist`** — batch-rank a watchlist so automation can surface top buys and top risks
+- **`get_stock_signal_score`** — automation-friendly score with factor impacts, supports, and risks
+- **`get_stock_timeline`** — one feed for news, results, insider, bulk deals, sentiment, pledge, and smart money
+- **`get_sector_peer_context`** — sector strength plus peer rank / valuation context
+- **`evaluate_signal_quality`** — honest proof layer for the price-action core before making accuracy claims
 
 ### Portfolio & Risk
 - **`analyze_portfolio`** — P&L, XIRR, sector concentration, risk flags, diversification score
@@ -138,6 +204,17 @@ Works with: **Claude Desktop · Cursor · Windsurf · Cline · Continue.dev · Z
 - Forex: USD/INR, EUR/INR, 50+ pairs
 - SEC filings (10-K, 10-Q, 8-K)
 - **LTCG/STCG tax calculator** (post-July 2024 Budget rules — nobody else has this)
+
+---
+
+## Accuracy and evaluation
+
+FinStack should be presented as a decision-support engine, not as a guaranteed prediction machine.
+
+- `get_stock_signal_score` is a ranking layer for triage, screening, and automation
+- `evaluate_signal_quality` is an honest proof layer for the price-action core
+- the full live system also uses sentiment, insider activity, pledge risk, macro, and peer context, so one backtest number should not be marketed as "the accuracy of FinStack"
+- safest language for users: `signal engine`, `research assistant`, `multi-factor ranking`, and `decision-support`
 
 ---
 

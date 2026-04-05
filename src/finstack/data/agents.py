@@ -7,11 +7,13 @@ Multi-agent stock brief for FinStack MCP.
   • Value Investor  — P/E, ROE, debt ratios, credit rating
   • Retail Pulse    — news tone, 52W position, VIX level, social buzz
 
-Output: structured 4-agent debate → consensus signal (BUY/HOLD/SELL) + reasoning.
+Two modes:
+  get_stock_brief(symbol)          — classic 1-round parallel analysis
+  get_stock_debate(symbol)         — 3-round sequential debate where agents
+                                     react to each other, rebut, and converge
 
-No external AI API needed — each "agent" is a deterministic rule engine that
-reads real finstack data and produces structured analysis. Claude (the host LLM)
-can then roleplay the debate using the structured inputs if desired.
+Output: structured debate → consensus signal (BUY/HOLD/SELL) + reasoning chain.
+The debate JSON is also consumable by the AgentBattle canvas visualisation.
 """
 
 import logging
@@ -39,7 +41,8 @@ def _signal_score(signal: str) -> int:
 
 def _fii_desk_analysis(symbol: str) -> dict:
     """Institutional flow + shareholding analysis."""
-    from finstack.data.market_intelligence import get_fii_dii_data, get_promoter_shareholding
+    from finstack.data.market_intelligence import get_promoter_shareholding
+    from finstack.data.nse_advanced import get_fii_dii_data
 
     fii_dii = _safe(get_fii_dii_data)
     promoter = _safe(get_promoter_shareholding, symbol)
@@ -337,23 +340,200 @@ def _retail_pulse_analysis(symbol: str) -> dict:
     }
 
 
+# ── Agent 5: Macro Analyst ────────────────────────────────────────────────────
+
+def _macro_analyst_analysis(symbol: str) -> dict:  # noqa: ARG001
+    """Macro environment: RBI rates, CPI inflation, G-Sec yield curve."""
+    from finstack.data.market_intelligence import (
+        get_rbi_policy_rates,
+        get_india_macro_indicators,
+        get_india_gsec_yields,
+    )
+
+    rbi_data   = _safe(get_rbi_policy_rates)
+    macro_data = _safe(get_india_macro_indicators)
+    gsec_data  = _safe(get_india_gsec_yields)
+
+    repo_rate = None
+    inflation = None
+    gsec_10y  = None
+
+    if rbi_data and isinstance(rbi_data, dict):
+        repo_rate = rbi_data.get("repo_rate") or rbi_data.get("policy_repo_rate")
+
+    if macro_data and isinstance(macro_data, dict):
+        indicators = macro_data.get("indicators", {})
+        if isinstance(indicators, dict):
+            cpi = indicators.get("cpi_inflation") or indicators.get("inflation_rate")
+            if cpi is not None:
+                try:
+                    inflation = float(str(cpi).replace("%", "").strip())
+                except ValueError:
+                    pass
+
+    if gsec_data and isinstance(gsec_data, dict):
+        yields = gsec_data.get("yields", {})
+        if isinstance(yields, dict):
+            gsec_10y = yields.get("10y") or yields.get("10_year")
+
+    reasoning = []
+    score = 0
+
+    if repo_rate is not None:
+        if repo_rate <= 5.5:
+            reasoning.append(f"RBI repo {repo_rate}% — accommodative, cheap money environment")
+            score += 1
+        elif repo_rate >= 6.5:
+            reasoning.append(f"RBI repo {repo_rate}% — tight monetary policy, credit costs elevated")
+            score -= 0.5
+        else:
+            reasoning.append(f"RBI repo {repo_rate}% — neutral stance, rate pause likely")
+
+    if inflation is not None:
+        if inflation < 4.5:
+            reasoning.append(f"CPI {inflation:.1f}% — within RBI 4% target band, supportive for equities")
+            score += 0.5
+        elif inflation > 6.0:
+            reasoning.append(f"CPI {inflation:.1f}% — above tolerance band, rate hike risk")
+            score -= 0.5
+        else:
+            reasoning.append(f"CPI {inflation:.1f}% — manageable, near RBI comfort zone")
+
+    if gsec_10y is not None:
+        if gsec_10y < 6.5:
+            reasoning.append(f"10Y G-Sec {gsec_10y:.2f}% — low risk-free rate, equities attractive by spread")
+            score += 0.5
+        elif gsec_10y > 7.5:
+            reasoning.append(f"10Y G-Sec {gsec_10y:.2f}% — high bond yield competing with equity earnings yield")
+            score -= 0.5
+        else:
+            reasoning.append(f"10Y G-Sec {gsec_10y:.2f}% — neutral, watch for yield direction shift")
+
+    if not reasoning:
+        reasoning.append("Macro data unavailable — neutral macro environment assumed")
+
+    signal = "BUY" if score >= 1 else ("SELL" if score <= -1 else "HOLD")
+    rate_str = f"Repo {repo_rate}%" if repo_rate else ""
+    cpi_str  = f"CPI {inflation:.1f}%" if inflation else ""
+    parts    = [p for p in [rate_str, cpi_str] if p]
+
+    return {
+        "agent": "Macro Analyst",
+        "signal": signal,
+        "score": score,
+        "data": {
+            "repo_rate": repo_rate,
+            "cpi_inflation": inflation,
+            "gsec_10y_yield": gsec_10y,
+        },
+        "reasoning": reasoning,
+        "one_liner": (
+            f"Macro {'supportive' if signal == 'BUY' else ('restrictive' if signal == 'SELL' else 'neutral')}"
+            f" — {' · '.join(parts)}" if parts else "Macro environment neutral"
+        ),
+    }
+
+
+# ── Agent 6: Options Flow ─────────────────────────────────────────────────────
+
+def _options_flow_analysis(symbol: str) -> dict:
+    """Options market: PCR, max pain, OI skew — smart-money positioning."""
+    from finstack.data.nse_advanced import get_options_chain
+
+    options_data = _safe(get_options_chain, symbol)
+
+    pcr      = None
+    max_pain = None
+    oi_signal = "neutral"
+
+    if options_data and isinstance(options_data, dict):
+        pcr      = options_data.get("pcr") or options_data.get("put_call_ratio")
+        max_pain = options_data.get("max_pain")
+        oi_data  = options_data.get("oi_analysis", {})
+        if isinstance(oi_data, dict):
+            ce_oi = float(oi_data.get("total_call_oi") or 0)
+            pe_oi = float(oi_data.get("total_put_oi") or 0)
+            if pe_oi > ce_oi * 1.3:
+                oi_signal = "bullish"   # heavy put buying = institutional hedging = long bias
+            elif ce_oi > pe_oi * 1.3:
+                oi_signal = "bearish"   # heavy call buying = retail speculation = caution
+
+    reasoning = []
+    score = 0
+
+    if pcr is not None:
+        if pcr > 1.3:
+            reasoning.append(f"PCR {pcr:.2f} — elevated put buying, contrarian bullish signal")
+            score += 1
+        elif pcr < 0.7:
+            reasoning.append(f"PCR {pcr:.2f} — low put coverage, complacency — watch for reversal")
+            score -= 0.5
+        else:
+            reasoning.append(f"PCR {pcr:.2f} — balanced options positioning, no directional edge")
+
+    if oi_signal == "bullish":
+        reasoning.append("Put OI > Call OI — institutional hedging implies underlying long positions")
+        score += 0.5
+    elif oi_signal == "bearish":
+        reasoning.append("Call OI > Put OI — speculative call buying, distribution risk elevated")
+        score -= 0.5
+
+    if max_pain is not None:
+        reasoning.append(f"Max pain ₹{max_pain:,.0f} — options writers favour price convergence here")
+
+    if not reasoning:
+        reasoning.append("Options data unavailable for this symbol — signal neutral")
+
+    signal = "BUY" if score >= 1 else ("SELL" if score <= -1 else "HOLD")
+
+    return {
+        "agent": "Options Flow",
+        "signal": signal,
+        "score": score,
+        "data": {
+            "pcr": pcr,
+            "max_pain": max_pain,
+            "oi_signal": oi_signal,
+        },
+        "reasoning": reasoning,
+        "one_liner": (
+            f"Options {'bullish' if signal == 'BUY' else ('bearish' if signal == 'SELL' else 'neutral')}"
+            f" — PCR {pcr:.2f}" if pcr else "Options flow neutral"
+        ),
+    }
+
+
+AGENT_ANALYZERS = [
+    _fii_desk_analysis,
+    _algo_trader_analysis,
+    _value_investor_analysis,
+    _retail_pulse_analysis,
+    _macro_analyst_analysis,
+    _options_flow_analysis,
+]
+
+
 # ── Consensus engine ──────────────────────────────────────────────────────────
 
 def _build_consensus(agents: list[dict]) -> dict:
     signals = [a["signal"] for a in agents]
     scores  = [a["score"]  for a in agents]
+    n       = len(agents)
 
-    avg_score = sum(scores) / len(scores)
+    avg_score = sum(scores) / n
     buys  = signals.count("BUY")
     sells = signals.count("SELL")
     holds = signals.count("HOLD")
 
-    if buys >= 3 or (buys >= 2 and avg_score >= 0.8):
+    # Majority = more than half (works for 4 or 6 agents)
+    majority = n // 2 + 1
+
+    if buys >= majority or (buys >= majority - 1 and avg_score >= 0.8):
         consensus = "BUY"
-        strength  = "strong" if buys == 4 else "moderate"
-    elif sells >= 3 or (sells >= 2 and avg_score <= -0.8):
+        strength  = "strong" if buys == n else "moderate"
+    elif sells >= majority or (sells >= majority - 1 and avg_score <= -0.8):
         consensus = "SELL"
-        strength  = "strong" if sells == 4 else "moderate"
+        strength  = "strong" if sells == n else "moderate"
     else:
         consensus = "HOLD"
         strength  = "neutral"
@@ -370,11 +550,118 @@ def _build_consensus(agents: list[dict]) -> dict:
     }
 
 
+# ── Sequential debate logic ───────────────────────────────────────────────────
+
+def _round2_rebuttal(agent: dict, others: list[dict]) -> dict:
+    """
+    Round 2: agent reads all other Round 1 verdicts and either:
+    - Holds position (strengthens argument)
+    - Upgrades (if majority disagrees but data partially supports)
+    - Downgrades (if strong counter-evidence from peers)
+    """
+    my_signal   = agent["signal"]
+    my_score    = agent["score"]
+    other_sigs  = [o["signal"] for o in others]
+    other_scores = [o["score"] for o in others]
+    avg_others  = sum(other_scores) / len(other_scores) if other_scores else 0
+
+    rebuttal_text = []
+    new_score = my_score
+    new_signal = my_signal
+
+    buys_others  = other_sigs.count("BUY")
+    sells_others = other_sigs.count("SELL")
+
+    # If 3 others all agree on opposite — soften stance
+    if my_signal == "BUY" and sells_others >= 2:
+        new_score = my_score * 0.6
+        rebuttal_text.append(
+            f"Noting {sells_others} peers are bearish. My data still shows "
+            f"{agent['one_liner']} — but acknowledging macro headwinds. "
+            f"Moderating conviction."
+        )
+    elif my_signal == "SELL" and buys_others >= 2:
+        new_score = my_score * 0.6
+        rebuttal_text.append(
+            f"Majority bullish signals noted. My concern remains: "
+            f"{agent['one_liner']}. Reducing conviction but maintaining SELL."
+        )
+    elif my_signal == "HOLD" and (buys_others >= 2 or sells_others >= 2):
+        # HOLD agent gets influenced by strong consensus
+        if buys_others >= 2 and avg_others > 0.5:
+            new_score = min(my_score + 0.5, 1.0)
+            rebuttal_text.append(
+                f"Strong BUY consensus from peers. My analysis was neutral, "
+                f"but {agent['one_liner']}. Upgrading to BUY on peer convergence."
+            )
+        elif sells_others >= 2 and avg_others < -0.5:
+            new_score = max(my_score - 0.5, -1.0)
+            rebuttal_text.append(
+                f"Majority SELL signals. {agent['one_liner']}. "
+                f"Downgrading to SELL — risks outweigh upside."
+            )
+        else:
+            rebuttal_text.append(
+                f"Mixed signals from peers. Maintaining HOLD. "
+                f"{agent['one_liner']} supports a wait-and-watch stance."
+            )
+    else:
+        # Holding ground — peer majority agrees or data is clear
+        rebuttal_text.append(
+            f"Peers noted. Standing firm: {agent['one_liner']}. "
+            f"{'Bullish' if my_signal == 'BUY' else 'Bearish'} thesis intact."
+        )
+
+    new_signal = "BUY" if new_score >= 1 else ("SELL" if new_score <= -1 else "HOLD")
+
+    return {
+        "agent":     agent["agent"],
+        "signal":    new_signal,
+        "score":     round(new_score, 2),
+        "rebuttal":  " ".join(rebuttal_text),
+        "changed":   new_signal != my_signal,
+        "one_liner": agent["one_liner"],
+    }
+
+
+def _round3_final(r1: dict, r2: dict, all_r2: list[dict]) -> dict:
+    """
+    Round 3: lock in final verdict. Brief closing statement.
+    """
+    changed_count = sum(1 for a in all_r2 if a["changed"])
+    peers_final   = [a["signal"] for a in all_r2 if a["agent"] != r2["agent"]]
+    consensus_dir = "BUY" if peers_final.count("BUY") > peers_final.count("SELL") else (
+                    "SELL" if peers_final.count("SELL") > peers_final.count("BUY") else "HOLD")
+
+    if r2["changed"]:
+        closing = (
+            f"After hearing the debate, I revised from {r1['signal']} to {r2['signal']}. "
+            f"The peer arguments moved me. Final call: {r2['signal']}."
+        )
+    elif r2["signal"] == consensus_dir:
+        closing = (
+            f"Debate confirmed my view. {changed_count} agent(s) changed position. "
+            f"Consensus converging on {r2['signal']}. Conviction: HIGH."
+        )
+    else:
+        closing = (
+            f"I remain the dissenter. Peers moved to {consensus_dir} but my data "
+            f"says {r2['signal']}. Watch this divergence — it's a signal in itself."
+        )
+
+    return {
+        "agent":   r2["agent"],
+        "signal":  r2["signal"],
+        "score":   r2["score"],
+        "closing": closing,
+    }
+
+
 # ── Public entry point ────────────────────────────────────────────────────────
 
 def get_stock_brief(symbol: str) -> dict:
     """
-    Multi-agent stock brief: 4 AI personas debate a stock using real data.
+    Multi-agent stock brief: 6 AI personas debate a stock using real data.
 
     Each agent independently analyses the stock from their perspective,
     produces a BUY/HOLD/SELL signal, and the consensus engine aggregates.
@@ -388,13 +675,8 @@ def get_stock_brief(symbol: str) -> dict:
     symbol = symbol.upper().replace(".NS", "").replace(".BO", "")
     logger.info("Running multi-agent brief for %s", symbol)
 
-    # Run all 4 agents (data errors are caught inside each)
-    fii_agent   = _fii_desk_analysis(symbol)
-    algo_agent  = _algo_trader_analysis(symbol)
-    value_agent = _value_investor_analysis(symbol)
-    retail_agent = _retail_pulse_analysis(symbol)
-
-    agents = [fii_agent, algo_agent, value_agent, retail_agent]
+    # Run all agents (data errors are caught inside each)
+    agents = [analyzer(symbol) for analyzer in AGENT_ANALYZERS]
     consensus = _build_consensus(agents)
 
     # Build debate summary
@@ -414,4 +696,103 @@ def get_stock_brief(symbol: str) -> dict:
         "agents_detail": agents,
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
         "disclaimer": "This is AI-generated analysis using public data. Not SEBI-registered advice.",
+    }
+
+
+def get_stock_debate(symbol: str) -> dict:
+    """
+    3-round sequential debate: agents read each other's arguments and rebut.
+
+    Round 1 — Independent analysis (same as get_stock_brief)
+    Round 2 — Each agent reads all other Round 1 verdicts → rebuts or upgrades
+    Round 3 — Final lock-in with closing statement
+
+    Returns full debate transcript consumable by the AgentBattle visualisation.
+
+    Args:
+        symbol: NSE stock symbol (e.g. RELIANCE, HDFC, INFY)
+    """
+    symbol = symbol.upper().replace(".NS", "").replace(".BO", "")
+    logger.info("Running 3-round sequential debate for %s", symbol)
+
+    # ── ROUND 1: Independent analysis ────────────────────────────────────────
+    r1_agents = [analyzer(symbol) for analyzer in AGENT_ANALYZERS]
+
+    round1 = []
+    for a in r1_agents:
+        round1.append({
+            "agent":    a["agent"],
+            "signal":   a["signal"],
+            "score":    a["score"],
+            "argument": " ".join(a["reasoning"]),
+            "one_liner": a["one_liner"],
+        })
+
+    # ── ROUND 2: Rebuttals ────────────────────────────────────────────────────
+    round2 = []
+    for i, agent in enumerate(r1_agents):
+        others = [r1_agents[j] for j in range(len(r1_agents)) if j != i]
+        r2 = _round2_rebuttal(agent, others)
+        round2.append(r2)
+
+    # ── ROUND 3: Final verdicts ───────────────────────────────────────────────
+    round3 = []
+    for i, r2 in enumerate(round2):
+        r3 = _round3_final(round1[i], r2, round2)
+        round3.append(r3)
+
+    # ── Final consensus from Round 3 ──────────────────────────────────────────
+    final_consensus = _build_consensus(round3)
+
+    # Count how many agents changed their mind across debate
+    changed = sum(1 for i in range(len(round1)) if round1[i]["signal"] != round3[i]["signal"])
+
+    # Build edges for visualisation (who influenced whom in Round 2)
+    debate_edges = []
+    for i, r2 in enumerate(round2):
+        if r2["changed"]:
+            # Find who caused the change (strongest opposing voice)
+            for j, other in enumerate(round1):
+                if j != i and other["signal"] != round1[i]["signal"]:
+                    debate_edges.append({
+                        "from":   other["agent"],
+                        "to":     round1[i]["agent"],
+                        "type":   "influenced",
+                        "round":  2,
+                        "text":   f"{other['agent']} moved {round1[i]['agent']} from {round1[i]['signal']} → {r2['signal']}",
+                    })
+                    break
+        else:
+            # Held ground — show as "challenged"
+            for j, other in enumerate(round1):
+                if j != i and other["signal"] != round1[i]["signal"]:
+                    debate_edges.append({
+                        "from":  other["agent"],
+                        "to":    round1[i]["agent"],
+                        "type":  "challenged",
+                        "round": 2,
+                        "text":  f"{other['agent']} challenged {round1[i]['agent']} but failed to move them",
+                    })
+                    break
+
+    return {
+        "symbol": symbol,
+        "mode":   "sequential_debate",
+        "rounds": {
+            "round1": round1,
+            "round2": round2,
+            "round3": round3,
+        },
+        "debate_edges":    debate_edges,
+        "minds_changed":   changed,
+        "final_consensus": {
+            "signal":   final_consensus["signal"],
+            "strength": final_consensus["strength"],
+            "votes":    final_consensus["votes"],
+            "avg_score": final_consensus["avg_score"],
+            "note": f"{changed} agent(s) changed position during debate. "
+                    f"{'Strong conviction.' if final_consensus['strength'] == 'strong' else 'Watch for volatility.'}"
+        },
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "disclaimer": "AI-generated analysis using public data. Not SEBI-registered investment advice.",
     }

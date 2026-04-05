@@ -47,7 +47,7 @@ def _get_nifty_rsi() -> float | None:
 
 def _get_fii_net_5d() -> float | None:
     """FII net flow over last 5 trading days in Cr."""
-    from finstack.data.market_intelligence import get_fii_dii_data
+    from finstack.data.nse_advanced import get_fii_dii_data
     data = _safe(get_fii_dii_data)
     if not data or not isinstance(data, list):
         return None

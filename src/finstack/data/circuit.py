@@ -108,7 +108,7 @@ def predict_circuit(symbol: str) -> dict:
     pledge = _safe(get_pledge_alert, symbol) or {}
 
     # FII flow
-    from finstack.data.market_intelligence import get_fii_dii_data
+    from finstack.data.nse_advanced import get_fii_dii_data
     fii_raw = _safe(get_fii_dii_data) or []
     fii_net_5d = 0.0
     if isinstance(fii_raw, list):

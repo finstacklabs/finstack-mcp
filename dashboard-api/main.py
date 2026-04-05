@@ -20,7 +20,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import json
 
-app = FastAPI(title="FinStack Dashboard API", version="0.6.1")
+app = FastAPI(title="FinStack Dashboard API", version="0.7.0")
 
 # Allow dashboard.html (file:// or localhost) to call this API
 app.add_middleware(
@@ -245,18 +245,54 @@ def brsr_esg(symbol: str):
     return _safe(get_brsr_esg, symbol.upper())
 
 
+# ─── Intelligence ────────────────────────────────────────────────────────────
+
+@app.get("/api/nifty-outlook")
+def nifty_outlook():
+    """Nifty direction probability: RSI + FII + PCR + VIX + G-Sec + GIFT Nifty → bull %."""
+    from finstack.data.probability import get_nifty_outlook
+    result = _safe(get_nifty_outlook)
+    if isinstance(result, dict) and "error" not in result:
+        return result
+    return {"bull_probability": 55, "signal": "Neutral"}
+
+
+@app.get("/api/stock-brief/{symbol}")
+def stock_brief(symbol: str, rounds: int = 1):
+    """Multi-agent AI debate: BUY/HOLD/SELL consensus with reasoning."""
+    from finstack.data.agents import get_stock_brief, get_stock_debate
+    if rounds >= 3:
+        return _safe(get_stock_debate, symbol.upper())
+    return _safe(get_stock_brief, symbol.upper())
+
+
+@app.get("/api/smart-money/{symbol}")
+def smart_money(symbol: str):
+    """Smart money detector: OI buildup, block deals, promoter buying, volume spike."""
+    from finstack.data.smart_money import detect_unusual_activity
+    return _safe(detect_unusual_activity, symbol.upper())
+
+
+@app.get("/api/signal-score/{symbol}")
+def signal_score(symbol: str):
+    """Automation-friendly signal score with factor breakdown."""
+    from finstack.data.analytics import get_stock_signal_score
+    return _safe(get_stock_signal_score, symbol.upper())
+
+
 # ─── Health ───────────────────────────────────────────────────────────────────
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "version": "0.6.1", "tools": 58}
+    return {"status": "ok", "version": "0.7.0", "tools": 83}
 
 
 @app.get("/")
 def root():
     return {
         "name": "FinStack Dashboard API",
-        "version": "0.6.1",
+        "version": "0.7.0",
+        "tools": 83,
         "docs": "/docs",
         "endpoints": [
             "/api/market-status",
@@ -272,5 +308,9 @@ def root():
             "/api/news/{symbol}",
             "/api/credit/{symbol}",
             "/api/esg/{symbol}",
+            "/api/nifty-outlook",
+            "/api/stock-brief/{symbol}",
+            "/api/smart-money/{symbol}",
+            "/api/signal-score/{symbol}",
         ],
     }

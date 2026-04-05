@@ -94,7 +94,8 @@ TOOL_CATALOG = [
     {"name": "icici_status", "description": "ICICI Breeze configuration status + daily session guide", "tier": "free"},
     # ── Phase 3: Multi-agent + Intelligence ──
     {"name": "get_social_sentiment", "description": "Social sentiment for any NSE stock from Reddit + Twitter (BUY/HOLD/SELL)", "tier": "free"},
-    {"name": "get_stock_brief", "description": "Multi-agent AI debate: 4 personas analyse a stock → consensus signal", "tier": "free"},
+    {"name": "get_stock_brief", "description": "Multi-agent AI debate: 6 personas analyse a stock → consensus signal", "tier": "free"},
+    {"name": "get_stock_debate", "description": "3-round sequential debate: agents read each other and rebut → emergent consensus with reasoning chain", "tier": "free"},
     {"name": "detect_unusual_activity", "description": "Smart money detector: OI buildup, block deals, promoter buying, volume spike", "tier": "free"},
     {"name": "get_nifty_outlook", "description": "Nifty direction probability % (RSI + FII + PCR + VIX + G-Sec + GIFT Nifty)", "tier": "free"},
     # ── Phase 3: Intelligence tools ──
@@ -107,6 +108,11 @@ TOOL_CATALOG = [
     {"name": "scan_pledge_risks", "description": "Scan multiple stocks for promoter pledge risk simultaneously", "tier": "free"},
     {"name": "detect_pump", "description": "Pump-and-dump detector: volume spike + circuit days + price surge", "tier": "free"},
     # ── Phase 4: Never-before-built Indian market tools ──
+    {"name": "scan_watchlist", "description": "Batch-rank a watchlist by signal score for daily triage and automation", "tier": "free"},
+    {"name": "get_stock_timeline", "description": "Unified stock timeline: news, results, insider, bulk deals, sentiment, pledge", "tier": "free"},
+    {"name": "get_stock_signal_score", "description": "Automation-friendly stock ranking score with supports, risks, and factor breakdown", "tier": "free"},
+    {"name": "get_sector_peer_context", "description": "Sector strength and peer comparison context for a stock", "tier": "free"},
+    {"name": "evaluate_signal_quality", "description": "Evaluation/proof layer for the signal engine's price-action core", "tier": "free"},
     {"name": "predict_circuit", "description": "Lower circuit risk predictor: pledge + FII selling + 52W low proximity", "tier": "free"},
     {"name": "get_sebi_alerts", "description": "SEBI enforcement order tracker — early warning before regulatory crash", "tier": "free"},
     {"name": "correlate_gst_to_stocks", "description": "GST collection trend → sector stock predictor (1-3mo leading indicator)", "tier": "free"},
