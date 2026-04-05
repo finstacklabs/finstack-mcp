@@ -1,6 +1,6 @@
 # FinStack MCP
 
-**88 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
+**90 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
 
 Open-source market intelligence for Indian equities, global markets, and MCP-native AI workflows.
 Ask one question like `Should I buy Reliance?` and get debate, sentiment, smart-money, risk, peer context, and ranking in one stack.
@@ -132,7 +132,7 @@ This keeps MCP as the execution layer and your own frontend as the premium exper
 
 ---
 
-## 88 tools across 10 categories
+## 90 tools across 10 categories
 
 ### Indian Markets (live data)
 - NSE/BSE real-time quotes, OHLCV history, market status
