@@ -29,14 +29,48 @@ _tg_poll_task = None
 
 @app.on_event("startup")
 async def start_telegram_polling():
-    """Start Telegram long-polling in background when API starts."""
+    """
+    Use webhook mode when SELF_API_BASE is set (production on Railway).
+    Fall back to long-polling for local development.
+    """
     global _tg_poll_task
-    if os.getenv("TELEGRAM_BOT_TOKEN"):
-        from telegram_bot import poll_forever
-        _tg_poll_task = asyncio.create_task(poll_forever())
-        print("[startup] Telegram polling started")
-    else:
+    token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+    if not token:
         print("[startup] TELEGRAM_BOT_TOKEN not set — Telegram disabled")
+        return
+
+    self_url = os.getenv("SELF_API_BASE", "").strip()
+    if self_url:
+        # Production: register webhook so Telegram pushes to us
+        webhook_url = f"{self_url}/api/telegram/webhook"
+        import httpx
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                r = await client.post(
+                    f"https://api.telegram.org/bot{token}/setWebhook",
+                    json={"url": webhook_url, "allowed_updates": ["message"]},
+                )
+                result = r.json()
+                if result.get("ok"):
+                    print(f"[startup] Telegram webhook registered: {webhook_url}")
+                else:
+                    print(f"[startup] Webhook registration failed: {result} — falling back to polling")
+                    _tg_poll_task = asyncio.create_task(_poll_forever_safe())
+        except Exception as e:
+            print(f"[startup] Webhook setup error: {e} — falling back to polling")
+            _tg_poll_task = asyncio.create_task(_poll_forever_safe())
+    else:
+        # Local dev: use long-polling
+        _tg_poll_task = asyncio.create_task(_poll_forever_safe())
+        print("[startup] Telegram polling started (local dev)")
+
+
+async def _poll_forever_safe():
+    try:
+        from telegram_bot import poll_forever
+        await poll_forever()
+    except Exception as e:
+        print(f"[telegram] Poll task crashed: {e}")
 
 
 @app.on_event("startup")
@@ -375,6 +409,17 @@ def signal_score(symbol: str):
 
 
 # ─── Telegram ────────────────────────────────────────────────────────────────
+
+@app.post("/api/telegram/webhook")
+async def telegram_webhook(update: dict):
+    """
+    Telegram pushes updates here in webhook mode.
+    Telegram servers call this endpoint — no outbound polling needed.
+    """
+    from telegram_bot import handle_update
+    await handle_update(update)
+    return {"ok": True}
+
 
 @app.get("/api/telegram/status")
 async def telegram_status():
