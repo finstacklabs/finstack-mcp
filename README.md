@@ -301,7 +301,13 @@ Other brokers: Fyers, ICICI Breeze, Dhan, Upstox also supported.
 
 ## Demo
 
-[![FinStack MCP Demo](https://img.youtube.com/vi/PWK89gBbHEM/maxresdefault.jpg)](https://youtu.be/PWK89gBbHEM)
+### Agent Battle — 6 AI agents debate a stock in real-time
+
+![Agent Battle Demo](docs/assets/agent-battle-demo.gif)
+
+### Claude UI integration
+
+*Claude UI demo coming soon*
 
 ---
 

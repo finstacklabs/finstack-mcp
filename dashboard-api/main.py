@@ -358,15 +358,16 @@ def fno_signals():
     """
     Nifty/BankNifty F&O signal engine.
 
-    Runs 8 indicators + VIX regime + PCR + OI analysis using finstack-mcp data.
+    Runs 8 indicators + VIX regime + PCR using finstack-mcp data.
     Returns BUY CE / BUY PE signals with score, regime, reasons, and suggested strike.
 
     VIX regimes:
-      Sweet spot (11-20) → score ≥ 5/10
-      Elevated  (20-28) → score ≥ 7/10
-      Fear      (28-40) → score ≥ 8/10
+      Sweet spot (11-20) → score ≥ 5/8
+      Elevated  (20-28) → score ≥ 6/8
+      Fear      (28-40) → score ≥ 7/8
     """
     from datetime import datetime, timezone
+    import pandas as pd
     import yfinance as yf
 
     results = []
@@ -380,57 +381,106 @@ def fno_signals():
             pass
         return 0.0
 
-    def _pcr(symbol: str) -> float:
+    def _pcr(yf_sym: str) -> float:
+        """Calculate PCR from yfinance options OI for index tickers (^NSEI, ^NSEBANK)."""
         try:
-            from finstack.data.nse_advanced import get_options_chain
-            chain = get_options_chain(symbol)
-            if chain and isinstance(chain, dict):
-                return float(chain.get("pcr") or chain.get("put_call_ratio") or 0)
+            ticker = yf.Ticker(yf_sym)
+            expiries = ticker.options
+            if not expiries:
+                return 0.0
+            chain = ticker.option_chain(expiries[0])
+            call_oi = chain.calls["openInterest"].fillna(0).sum()
+            put_oi  = chain.puts["openInterest"].fillna(0).sum()
+            return round(float(put_oi / call_oi), 2) if call_oi > 0 else 0.0
         except Exception:
-            pass
-        return 0.0
+            return 0.0
 
-    def _technicals(yf_symbol: str) -> dict:
+    def _indicators(yf_sym: str) -> dict:
+        """
+        Fetch 6mo daily OHLCV + 1d 5min intraday and return flat indicator dict.
+        Keys: rsi, macd, macd_signal, vwap, bb_upper, bb_lower, sma20, price
+        """
         try:
-            from finstack.data.analytics import compute_technical_indicators
-            return compute_technical_indicators(yf_symbol) or {}
+            ticker = yf.Ticker(yf_sym)
+            hist = ticker.history(period="6mo", interval="1d")
+            if hist.empty or len(hist) < 20:
+                return {}
+            close = hist["Close"]
+
+            # RSI 14
+            delta = close.diff()
+            gain  = delta.where(delta > 0, 0).rolling(14).mean()
+            loss  = (-delta.where(delta < 0, 0)).rolling(14).mean()
+            rs    = gain / loss.replace(0, float("nan"))
+            rsi   = float((100 - 100 / (1 + rs)).iloc[-1])
+
+            # MACD (12,26,9)
+            ema12       = close.ewm(span=12, adjust=False).mean()
+            ema26       = close.ewm(span=26, adjust=False).mean()
+            macd_line   = float((ema12 - ema26).iloc[-1])
+            macd_signal = float((ema12 - ema26).ewm(span=9, adjust=False).mean().iloc[-1])
+
+            # Bollinger Bands (20,2)
+            sma20    = close.rolling(20).mean()
+            std20    = close.rolling(20).std()
+            bb_upper = float((sma20 + std20 * 2).iloc[-1])
+            bb_lower = float((sma20 - std20 * 2).iloc[-1])
+            sma20_v  = float(sma20.iloc[-1])
+
+            price = float(close.iloc[-1])
+
+            # Intraday VWAP — use today's 5m candles
+            vwap = None
+            try:
+                intra = ticker.history(period="1d", interval="5m")
+                if not intra.empty:
+                    tp  = (intra["High"] + intra["Low"] + intra["Close"]) / 3
+                    cum_vol = intra["Volume"].cumsum()
+                    if cum_vol.iloc[-1] > 0:
+                        vwap = float((tp * intra["Volume"]).cumsum().iloc[-1] / cum_vol.iloc[-1])
+            except Exception:
+                pass
+
+            return {
+                "rsi": round(rsi, 2),
+                "macd": round(macd_line, 2),
+                "macd_signal": round(macd_signal, 2),
+                "bb_upper": round(bb_upper, 2),
+                "bb_lower": round(bb_lower, 2),
+                "sma20": round(sma20_v, 2),
+                "price": round(price, 2),
+                "vwap": round(vwap, 2) if vwap else None,
+            }
         except Exception:
             return {}
 
-    def _spot(yf_symbol: str) -> float:
+    def _spot(yf_sym: str) -> float:
         try:
-            info = yf.Ticker(yf_symbol).fast_info
+            info = yf.Ticker(yf_sym).fast_info
             return round(float(getattr(info, "last_price", 0) or 0), 2)
         except Exception:
             return 0.0
 
     def _vix_regime(vix: float) -> tuple[str, int, float]:
-        """Returns (regime_name, min_score, min_rr)"""
-        if vix <= 0:
-            return "unknown", 7, 2.5
-        if vix < 11:
-            return "dead", 99, 0       # will be blocked
-        if vix <= 20:
-            return "sweet", 5, 1.8
-        if vix <= 28:
-            return "elevated", 7, 2.5
-        if vix <= 40:
-            return "fear", 8, 3.0
-        return "panic", 99, 0          # will be blocked
+        if vix <= 0:   return "unknown",  6, 2.5
+        if vix < 11:   return "dead",    99, 0
+        if vix <= 20:  return "sweet",    5, 1.8
+        if vix <= 28:  return "elevated", 6, 2.5
+        if vix <= 40:  return "fear",     7, 3.0
+        return "panic", 99, 0
 
-    def _atm_strike(spot: float, step: int) -> int:
-        return round(spot / step) * step
+    def _atm(spot: float, step: int) -> int:
+        return int(round(spot / step) * step)
 
     vix = _vix()
     regime, min_score, min_rr = _vix_regime(vix)
 
-    # Block dead/panic regimes
     if regime in ("dead", "panic"):
         return {
             "signals": [],
             "vix": vix,
             "regime": regime,
-            "message": f"VIX {vix} — {regime} zone. No trades recommended.",
+            "market_status": f"VIX {vix} — {regime} zone. No trades.",
             "generated_at": datetime.now(tz=timezone.utc).isoformat(),
         }
 
@@ -438,102 +488,98 @@ def fno_signals():
         ("NIFTY",     "^NSEI",    50),
         ("BANKNIFTY", "^NSEBANK", 100),
     ]:
-        tech  = _technicals(yf_sym)
-        spot  = _spot(yf_sym) or tech.get("current_price", 0)
-        pcr   = _pcr(symbol)
+        ind   = _indicators(yf_sym)
+        spot  = _spot(yf_sym) or ind.get("price", 0)
+        pcr   = _pcr(yf_sym)
 
-        reasons, blocks = [], []
-        score = 0
-        direction = None
+        price     = ind.get("price") or spot
+        rsi       = ind.get("rsi")
+        macd      = ind.get("macd")
+        macd_sig  = ind.get("macd_signal")
+        vwap      = ind.get("vwap")
+        bb_upper  = ind.get("bb_upper")
+        bb_lower  = ind.get("bb_lower")
+        sma20     = ind.get("sma20")
 
-        rsi = tech.get("rsi_14") or tech.get("rsi")
-
-        # ── Bull scoring ──────────────────────────────────────────────────────
+        # ── Bull scoring (max 8) ──────────────────────────────────────────────
+        bull_r: list[str] = []
         bull = 0
         if rsi and rsi < 45:
-            bull += 1; reasons.append(f"RSI {rsi:.1f} — oversold/recovering")
-        macd_line = tech.get("macd_line")
-        macd_sig  = tech.get("macd_signal")
-        if macd_line and macd_sig and macd_line > macd_sig:
-            bull += 1; reasons.append("MACD bullish crossover")
-        vwap = tech.get("vwap")
-        price = tech.get("current_price") or spot
+            bull += 1; bull_r.append(f"RSI {rsi:.1f} — recovering from oversold")
+        if macd is not None and macd_sig is not None and macd > macd_sig:
+            bull += 1; bull_r.append(f"MACD bullish ({macd:.1f} > signal {macd_sig:.1f})")
         if vwap and price and price > vwap:
-            bull += 1; reasons.append(f"Price above VWAP {vwap:.0f}")
+            bull += 1; bull_r.append(f"Price {price:.0f} above VWAP {vwap:.0f}")
         if 0 < pcr <= 0.8:
-            bull += 1; reasons.append(f"PCR {pcr:.2f} — bullish sentiment")
-        bb_upper = tech.get("bb_upper")
-        bb_lower = tech.get("bb_lower")
-        if bb_lower and price and price < bb_lower * 1.01:
-            bull += 1; reasons.append("Near Bollinger lower band — bounce zone")
-        sma20 = tech.get("sma_20")
+            bull += 1; bull_r.append(f"PCR {pcr:.2f} — bullish sentiment")
+        if bb_lower and price and price < bb_lower * 1.005:
+            bull += 1; bull_r.append(f"Near Bollinger lower band {bb_lower:.0f} — bounce zone")
         if sma20 and price and price > sma20:
-            bull += 1; reasons.append(f"Price above SMA20 {sma20:.0f}")
+            bull += 1; bull_r.append(f"Price above SMA20 {sma20:.0f}")
         if vix > 20:
-            bull += 1; reasons.append(f"High VIX {vix:.1f} = contrarian buy on dip")
+            bull += 1; bull_r.append(f"VIX {vix:.1f} elevated — contrarian CE opportunity")
+        if rsi and macd is not None and macd_sig is not None and rsi < 50 and macd > macd_sig:
+            bull += 1; bull_r.append("RSI + MACD both confirming bullish bias")
 
-        # ── Bear scoring ──────────────────────────────────────────────────────
+        # ── Bear scoring (max 8) ──────────────────────────────────────────────
+        bear_r: list[str] = []
         bear = 0
-        bear_reasons: list = []
         if rsi and rsi > 60:
-            bear += 1; bear_reasons.append(f"RSI {rsi:.1f} — overbought")
-        if macd_line and macd_sig and macd_line < macd_sig:
-            bear += 1; bear_reasons.append("MACD bearish crossover")
+            bear += 1; bear_r.append(f"RSI {rsi:.1f} — overbought")
+        if macd is not None and macd_sig is not None and macd < macd_sig:
+            bear += 1; bear_r.append(f"MACD bearish ({macd:.1f} < signal {macd_sig:.1f})")
         if vwap and price and price < vwap:
-            bear += 1; bear_reasons.append(f"Price below VWAP {vwap:.0f}")
+            bear += 1; bear_r.append(f"Price {price:.0f} below VWAP {vwap:.0f}")
         if pcr >= 1.25:
-            bear += 1; bear_reasons.append(f"PCR {pcr:.2f} — bearish sentiment")
-        if bb_upper and price and price > bb_upper * 0.99:
-            bear += 1; bear_reasons.append("Near Bollinger upper band — reversal zone")
+            bear += 1; bear_r.append(f"PCR {pcr:.2f} — high put buying, bearish")
+        if bb_upper and price and price > bb_upper * 0.995:
+            bear += 1; bear_r.append(f"Near Bollinger upper band {bb_upper:.0f} — reversal risk")
         if sma20 and price and price < sma20:
-            bear += 1; bear_reasons.append(f"Price below SMA20 {sma20:.0f}")
+            bear += 1; bear_r.append(f"Price below SMA20 {sma20:.0f} — downtrend")
+        if vix > 25:
+            bear += 1; bear_r.append(f"VIX {vix:.1f} — elevated fear, PE premium inflated")
+        if rsi and macd is not None and macd_sig is not None and rsi > 55 and macd < macd_sig:
+            bear += 1; bear_r.append("RSI + MACD both confirming bearish bias")
 
-        # ── Determine direction ───────────────────────────────────────────────
+        # ── Direction ─────────────────────────────────────────────────────────
         if bull >= min_score and bull > bear:
             direction = "BUY_CE"
             score = bull
+            reasons = bull_r
         elif bear >= min_score and bear > bull:
             direction = "BUY_PE"
             score = bear
-            reasons = bear_reasons
-
-        if not direction:
+            reasons = bear_r
+        else:
             results.append({
-                "symbol": symbol,
-                "direction": None,
-                "score": max(bull, bear),
-                "min_score": min_score,
-                "regime": regime,
-                "vix": vix,
-                "spot": spot,
-                "pcr": pcr,
+                "symbol": symbol, "direction": "NO_SIGNAL",
+                "score": max(bull, bear), "min_score": min_score,
+                "regime": regime, "vix": vix, "spot": spot, "pcr": pcr,
+                "reasons": [],
                 "message": f"No signal — bull={bull} bear={bear} need={min_score}",
             })
             continue
 
-        atm = _atm_strike(spot, step)
-        option_type = "CE" if direction == "BUY_CE" else "PE"
-        suggested_strike = atm  # ATM for best balance
-        tradingsymbol = f"{symbol}{suggested_strike}{option_type}"
+        atm_strike = _atm(spot, step)
+        opt_type   = "CE" if direction == "BUY_CE" else "PE"
+        trading_sym = f"{symbol}{atm_strike}{opt_type}"
 
         results.append({
             "symbol": symbol,
             "direction": direction,
-            "option_type": option_type,
+            "option_type": opt_type,
             "score": score,
-            "max_score": 7,
+            "max_score": 8,
             "min_score": min_score,
-            "confidence_pct": round(score / 7 * 100),
+            "confidence_pct": round(score / 8 * 100),
             "regime": regime,
             "vix": vix,
             "min_rr": min_rr,
             "spot": spot,
             "pcr": pcr,
-            "atm_strike": atm,
-            "suggested_strike": suggested_strike,
-            "suggested_symbol": tradingsymbol,
+            "atm_strike": atm_strike,
+            "trading_symbol": trading_sym,
             "reasons": reasons,
-            "blocks": blocks,
             "generated_at": datetime.now(tz=timezone.utc).isoformat(),
         })
 
@@ -541,6 +587,7 @@ def fno_signals():
         "signals": results,
         "vix": vix,
         "regime": regime,
+        "market_status": f"Live · regime={regime} · need {min_score}/8",
         "min_score_needed": min_score,
         "min_rr_needed": min_rr,
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
@@ -687,6 +734,136 @@ async def trigger_brief():
     from telegram_bot import broadcast_morning_brief
     await broadcast_morning_brief()
     return {"ok": True}
+
+
+# ─── Payments (Razorpay) ─────────────────────────────────────────────────────
+#
+# Flow:
+#   1. Frontend calls POST /api/payment/create-order  → gets order_id
+#   2. Razorpay checkout opens with order_id
+#   3. User pays → Razorpay calls handler with { razorpay_payment_id, razorpay_order_id, razorpay_signature }
+#   4. Frontend sends those 3 fields to POST /api/payment/verify
+#   5. Backend verifies HMAC signature → stores pro status in Supabase → returns ok
+#
+# Env vars needed (Railway):
+#   RAZORPAY_KEY_ID      — from Razorpay dashboard (starts with rzp_live_ or rzp_test_)
+#   RAZORPAY_KEY_SECRET  — from Razorpay dashboard
+#   SUPABASE_URL         — your Supabase project URL
+#   SUPABASE_SERVICE_KEY — service role key (for server-side writes)
+
+_RZP_KEY_ID     = os.getenv("RAZORPAY_KEY_ID", "")
+_RZP_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
+_SB_URL         = os.getenv("SUPABASE_URL", "")
+_SB_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+
+PRO_AMOUNT_PAISE = 29900   # ₹299/month
+
+
+@app.post("/api/payment/create-order")
+async def payment_create_order(body: dict):
+    """
+    Create a Razorpay order. Frontend must send { chat_id } to link payment to subscriber.
+    Returns { order_id, key_id, amount } for the Razorpay checkout.
+    """
+    if not _RZP_KEY_ID or not _RZP_KEY_SECRET:
+        raise HTTPException(503, "Razorpay not configured on server")
+
+    import razorpay
+    client = razorpay.Client(auth=(_RZP_KEY_ID, _RZP_KEY_SECRET))
+    order = client.order.create({
+        "amount": PRO_AMOUNT_PAISE,
+        "currency": "INR",
+        "receipt": f"finstack_{body.get('chat_id', 'anon')}",
+        "notes": {"chat_id": str(body.get("chat_id", "")), "email": str(body.get("email", ""))},
+    })
+    return {"order_id": order["id"], "key_id": _RZP_KEY_ID, "amount": PRO_AMOUNT_PAISE}
+
+
+@app.post("/api/payment/verify")
+async def payment_verify(body: dict):
+    """
+    Verify Razorpay payment signature and grant Pro access.
+    Frontend sends { razorpay_payment_id, razorpay_order_id, razorpay_signature, chat_id, email }.
+    """
+    if not _RZP_KEY_SECRET:
+        raise HTTPException(503, "Razorpay not configured on server")
+
+    import hmac, hashlib, razorpay
+
+    payment_id = body.get("razorpay_payment_id", "")
+    order_id   = body.get("razorpay_order_id", "")
+    signature  = body.get("razorpay_signature", "")
+
+    # Verify HMAC-SHA256 signature
+    expected = hmac.new(
+        _RZP_KEY_SECRET.encode(),
+        f"{order_id}|{payment_id}".encode(),
+        hashlib.sha256,
+    ).hexdigest()
+
+    if not hmac.compare_digest(expected, signature):
+        raise HTTPException(400, "Payment signature verification failed")
+
+    # Store Pro status in Supabase (best-effort — don't fail payment if Supabase is down)
+    chat_id = str(body.get("chat_id", ""))
+    email   = str(body.get("email", ""))
+    if _SB_URL and _SB_SERVICE_KEY and (chat_id or email):
+        try:
+            import httpx as _httpx
+            sb_headers = {
+                "apikey": _SB_SERVICE_KEY,
+                "Authorization": f"Bearer {_SB_SERVICE_KEY}",
+                "Content-Type": "application/json",
+                "Prefer": "resolution=merge-duplicates,return=minimal",
+            }
+            async with _httpx.AsyncClient(timeout=5) as hc:
+                await hc.post(
+                    f"{_SB_URL}/rest/v1/pro_subscribers",
+                    headers=sb_headers,
+                    json={
+                        "chat_id": chat_id or None,
+                        "email": email or None,
+                        "payment_id": payment_id,
+                        "order_id": order_id,
+                        "active": True,
+                    },
+                )
+        except Exception:
+            pass  # Supabase failure does not block payment confirmation
+
+    return {"ok": True, "payment_id": payment_id, "message": "Pro access granted"}
+
+
+@app.get("/api/payment/status")
+async def payment_status(chat_id: str = "", email: str = ""):
+    """Check if a user has active Pro subscription."""
+    if not _SB_URL or not _SB_SERVICE_KEY:
+        return {"is_pro": False, "reason": "payment system not configured"}
+    if not chat_id and not email:
+        return {"is_pro": False}
+
+    try:
+        import httpx as _httpx
+        sb_headers = {
+            "apikey": _SB_SERVICE_KEY,
+            "Authorization": f"Bearer {_SB_SERVICE_KEY}",
+        }
+        params = {"active": "eq.true", "select": "chat_id,email,payment_id"}
+        if chat_id:
+            params["chat_id"] = f"eq.{chat_id}"
+        elif email:
+            params["email"] = f"eq.{email}"
+
+        async with _httpx.AsyncClient(timeout=5) as hc:
+            r = await hc.get(
+                f"{_SB_URL}/rest/v1/pro_subscribers",
+                headers=sb_headers,
+                params=params,
+            )
+        rows = r.json() if r.status_code == 200 else []
+        return {"is_pro": len(rows) > 0}
+    except Exception:
+        return {"is_pro": False, "reason": "lookup failed"}
 
 
 # ─── Health ───────────────────────────────────────────────────────────────────
