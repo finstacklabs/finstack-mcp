@@ -148,27 +148,23 @@ async def build_morning_brief() -> str:
         n50  = nifty.get("NIFTY50", {})
         bnk  = nifty.get("BANKNIFTY", {})
 
-        # VIX — handle both list and dict responses
-        vix_val = "—"
-        if isinstance(vix_data, list) and vix_data:
-            vix_val = fmt_num(vix_data[-1].get("close") or vix_data[-1].get("value"), 1)
-        elif isinstance(vix_data, dict):
-            vix_val = fmt_num(vix_data.get("current") or vix_data.get("value"), 1)
+        # VIX — actual field is current_vix
+        vix_val = fmt_num(vix_data.get("current_vix"), 1) if isinstance(vix_data, dict) else "—"
 
-        # FII net
+        # FII net — data is list with category field
         fii_net = "—"
-        if isinstance(fii, dict):
-            rows = fii.get("data") or fii.get("fii") or []
-            if rows:
-                latest = rows[-1] if isinstance(rows, list) else rows
-                fii_net = fmt_num(latest.get("net") or latest.get("fii_net"), 0)
+        fii_rows = fii.get("data", []) if isinstance(fii, dict) else []
+        for row in fii_rows:
+            if "FII" in str(row.get("category", "")):
+                fii_net = fmt_num(row.get("netValue"), 0)
+                break
 
         # Top gainers
         gainers = screen.get("results", [])[:3]
         gainer_lines = ""
         for g in gainers:
             sym = g.get("symbol", "")
-            chg = g.get("change_pct") or g.get("change_percent") or 0
+            chg = g.get("change_pct") or g.get("change_percent") or g.get("change") or 0
             gainer_lines += f"\n  • <b>{sym}</b> {fmt_chg(chg)}"
 
         now_ist = datetime.now(IST).strftime("%d %b %Y, %I:%M %p IST")
@@ -177,8 +173,8 @@ async def build_morning_brief() -> str:
             f"🌅 <b>FinStack Morning Brief</b>\n"
             f"<i>{now_ist}</i>\n\n"
             f"📊 <b>Indices</b>\n"
-            f"  NIFTY 50   <b>{fmt_num(n50.get('ltp'))}</b>  {fmt_chg(n50.get('change_percent'))}\n"
-            f"  BANKNIFTY  <b>{fmt_num(bnk.get('ltp'))}</b>  {fmt_chg(bnk.get('change_percent'))}\n\n"
+            f"  NIFTY 50   <b>{fmt_num(n50.get('value'))}</b>  {fmt_chg(n50.get('change_pct'))}\n"
+            f"  BANKNIFTY  <b>{fmt_num(bnk.get('value'))}</b>  {fmt_chg(bnk.get('change_pct'))}\n\n"
             f"🌡️ <b>India VIX</b>  {vix_val}\n\n"
             f"🏦 <b>FII Net (₹ Cr)</b>  {fii_net}\n\n"
         )
