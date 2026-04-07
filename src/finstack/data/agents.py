@@ -689,7 +689,7 @@ def get_stock_brief(symbol: str) -> dict:
             "one_liner": a["one_liner"],
         })
 
-    return {
+    result = {
         "symbol": symbol,
         "consensus": consensus,
         "debate": debate,
@@ -697,6 +697,21 @@ def get_stock_brief(symbol: str) -> dict:
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
         "disclaimer": "This is AI-generated analysis using public data. Not SEBI-registered advice.",
     }
+
+    # Auto-log signal for outcome tracking (fire-and-forget, never blocks)
+    try:
+        from finstack.data.signal_tracker import log_signal
+        log_signal(
+            symbol=symbol,
+            signal=consensus["signal"],
+            source="brief",
+            score=consensus.get("avg_score"),
+            agent_votes=consensus.get("votes"),
+        )
+    except Exception:
+        pass
+
+    return result
 
 
 def get_stock_debate(symbol: str) -> dict:
@@ -775,7 +790,7 @@ def get_stock_debate(symbol: str) -> dict:
                     })
                     break
 
-    return {
+    result = {
         "symbol": symbol,
         "mode":   "sequential_debate",
         "rounds": {
@@ -796,3 +811,18 @@ def get_stock_debate(symbol: str) -> dict:
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
         "disclaimer": "AI-generated analysis using public data. Not SEBI-registered investment advice.",
     }
+
+    # Auto-log signal for outcome tracking
+    try:
+        from finstack.data.signal_tracker import log_signal
+        log_signal(
+            symbol=symbol,
+            signal=final_consensus["signal"],
+            source="debate",
+            score=final_consensus.get("avg_score"),
+            agent_votes=final_consensus.get("votes"),
+        )
+    except Exception:
+        pass
+
+    return result

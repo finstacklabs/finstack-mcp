@@ -166,3 +166,78 @@ def register_phase4_tools(mcp: FastMCP) -> None:
         """
         from finstack.data.budget import get_budget_impact as _get
         return json.dumps(_get(year), indent=2, default=str)
+
+    # ── Signal Outcome Tracking ───────────────────────────────────────────────
+
+    @mcp.tool()
+    def get_signal_accuracy(
+        source: str = "",
+        symbol: str = "",
+        days: int = 30,
+    ) -> str:
+        """
+        Show how accurate FinStack signals have been — backed by real outcome data.
+
+        Signals are logged automatically every time get_stock_brief or get_stock_debate
+        runs. After 7 days, the actual stock price is checked and outcomes are labelled
+        correct / wrong / neutral.
+
+        Use this to:
+        - Prove to users/investors that the signals work
+        - Find which signal source (brief vs debate) is more accurate
+        - Find which stocks the model reads best
+
+        Args:
+            source: filter by source — 'brief', 'debate', 'score', or '' for all
+            symbol: filter by NSE symbol, or '' for all stocks
+            days:   look-back window in days (default 30)
+
+        Returns:
+            Accuracy %, avg 7-day return, breakdown by signal type, top symbols.
+        """
+        from finstack.data.signal_tracker import get_accuracy_stats
+        return json.dumps(
+            get_accuracy_stats(
+                source=source or None,
+                symbol=symbol or None,
+                days=days,
+            ),
+            indent=2, default=str,
+        )
+
+    @mcp.tool()
+    def get_signal_history(symbol: str = "", limit: int = 20) -> str:
+        """
+        View recent signals logged by FinStack with their actual outcomes.
+
+        Each row shows: symbol, signal (BUY/HOLD/SELL), price at signal time,
+        7-day actual return, and outcome label (correct/wrong/neutral).
+
+        Use this to audit the model, build trust with users, or export for analysis.
+
+        Args:
+            symbol: NSE symbol to filter (e.g. RELIANCE), or '' for all
+            limit:  number of rows to return (default 20, max 100)
+        """
+        from finstack.data.signal_tracker import get_signal_history as _get
+        return json.dumps(
+            _get(symbol=symbol or None, limit=min(limit, 100)),
+            indent=2, default=str,
+        )
+
+    @mcp.tool()
+    def check_signal_outcomes() -> str:
+        """
+        Manually trigger outcome checking for all pending signals.
+
+        Normally runs automatically, but you can call this to force-check any
+        signals whose 7-day or 30-day window has elapsed.
+
+        Returns how many signals were updated.
+        """
+        from finstack.data.signal_tracker import check_pending_outcomes
+        result = check_pending_outcomes()
+        return json.dumps(
+            {"status": "done", "updated": result},
+            indent=2,
+        )

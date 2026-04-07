@@ -1,6 +1,6 @@
 # FinStack MCP
 
-**90 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
+**93 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
 
 Open-source market intelligence for Indian equities, global markets, and MCP-native AI workflows.
 Ask one question like `Should I buy Reliance?` and get debate, sentiment, smart-money, risk, peer context, and ranking in one stack.
@@ -11,6 +11,12 @@ Ask one question like `Should I buy Reliance?` and get debate, sentiment, smart-
 
 ```bash
 pip install finstack-mcp
+```
+
+Or run without installing:
+
+```bash
+uvx finstack-mcp
 ```
 
 Ask Claude things like:
@@ -65,7 +71,12 @@ Ask Claude things like:
 pip install finstack-mcp
 ```
 
+### Claude Desktop
+
 Add to `claude_desktop_config.json`:
+
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -79,6 +90,34 @@ Add to `claude_desktop_config.json`:
 ```
 
 Restart Claude Desktop. Done.
+
+### Cursor / Windsurf / Cline
+
+```json
+{
+  "mcpServers": {
+    "finstack": {
+      "command": "python",
+      "args": ["-m", "finstack.server"]
+    }
+  }
+}
+```
+
+Add to your IDE's MCP config file and reload.
+
+### uvx (no install needed)
+
+```json
+{
+  "mcpServers": {
+    "finstack": {
+      "command": "uvx",
+      "args": ["finstack-mcp"]
+    }
+  }
+}
+```
 
 Works with: **Claude Desktop · Cursor · Windsurf · Cline · Continue.dev · Zed · Jan.ai · LibreChat · any MCP client**
 

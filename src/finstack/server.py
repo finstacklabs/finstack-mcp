@@ -121,6 +121,10 @@ TOOL_CATALOG = [
     {"name": "get_telegram_tracker", "description": "Dalal Street Telegram tip channel accuracy + pump-and-dump scoring", "tier": "free"},
     {"name": "analyze_budget_live", "description": "Real-time budget speech analyzer: paste FM text → instant sector/stock signals", "tier": "free"},
     {"name": "get_budget_impact", "description": "Historical Union Budget impact by year: winners, losers, key announcements", "tier": "free"},
+    # ── Signal outcome tracking (data moat) ──
+    {"name": "get_signal_accuracy", "description": "Accuracy stats for FinStack signals — backed by real 7d/30d outcome data [unique to finstack-mcp]", "tier": "free"},
+    {"name": "get_signal_history", "description": "View recent BUY/HOLD/SELL signals with actual 7-day returns and outcome labels", "tier": "free"},
+    {"name": "check_signal_outcomes", "description": "Trigger outcome check for pending signals (runs automatically, call manually to force)", "tier": "free"},
 ]
 
 TOTAL_TOOLS = len(TOOL_CATALOG) + 1

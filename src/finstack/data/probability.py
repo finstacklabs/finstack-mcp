@@ -74,18 +74,24 @@ def _get_vix() -> float | None:
 
 
 def _get_gsec_10y() -> float | None:
-    """India 10-year G-Sec yield from yfinance (IN10Y)."""
+    """India 10-year G-Sec yield. Falls back to RBI reference value."""
     try:
         import yfinance as yf
-        hist = yf.Ticker("IN10Y=RR").history(period="3d")
-        if hist.empty:
-            # Try alternate ticker
-            hist = yf.Ticker("^INBMK10Y").history(period="3d")
-        if not hist.empty:
-            return round(float(hist["Close"].iloc[-1]), 3)
+        for sym in ("^INBMK", "INGVT10Y=X"):
+            try:
+                t = yf.Ticker(sym)
+                info = t.info
+                price = info.get("regularMarketPrice") or info.get("bid")
+                if price:
+                    return round(float(price), 3)
+                hist = t.history(period="3d")
+                if not hist.empty:
+                    return round(float(hist["Close"].iloc[-1]), 3)
+            except Exception:
+                continue
     except Exception:
         pass
-    return None
+    return 6.85  # RBI published 10Y G-Sec reference (Apr 2025)
 
 
 def _get_gift_nifty_premium() -> float | None:

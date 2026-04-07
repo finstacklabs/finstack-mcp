@@ -11,6 +11,7 @@ Dashboard will auto-connect at http://localhost:8000
 """
 import sys
 import os
+import asyncio
 from pathlib import Path
 
 # Add finstack-mcp src to path so we can import data functions directly
@@ -20,7 +21,47 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import json
 
-app = FastAPI(title="FinStack Dashboard API", version="0.7.0")
+app = FastAPI(title="FinStack Dashboard API", version="0.9.0")
+
+# ─── Telegram bot startup ─────────────────────────────────────────────────────
+
+_tg_poll_task = None
+
+@app.on_event("startup")
+async def start_telegram_polling():
+    """Start Telegram long-polling in background when API starts."""
+    global _tg_poll_task
+    if os.getenv("TELEGRAM_BOT_TOKEN"):
+        from telegram_bot import poll_forever
+        _tg_poll_task = asyncio.create_task(poll_forever())
+        print("[startup] Telegram polling started")
+    else:
+        print("[startup] TELEGRAM_BOT_TOKEN not set — Telegram disabled")
+
+
+@app.on_event("startup")
+async def start_morning_brief_scheduler():
+    """Schedule morning brief at 9:00 AM IST every day."""
+    if not os.getenv("TELEGRAM_BOT_TOKEN"):
+        return
+
+    async def _scheduler():
+        from telegram_bot import broadcast_morning_brief
+        from datetime import datetime, timezone, timedelta
+        IST = timezone(timedelta(hours=5, minutes=30))
+        while True:
+            now = datetime.now(IST)
+            # Next 9:00 AM IST
+            target = now.replace(hour=9, minute=0, second=0, microsecond=0)
+            if now >= target:
+                target = target + timedelta(days=1)
+            wait_secs = (target - now).total_seconds()
+            print(f"[scheduler] Morning brief in {wait_secs/3600:.1f}h")
+            await asyncio.sleep(wait_secs)
+            await broadcast_morning_brief()
+
+    asyncio.create_task(_scheduler())
+    print("[startup] Morning brief scheduler started (9:00 AM IST daily)")
 
 # Allow dashboard.html (file:// or localhost) to call this API
 app.add_middleware(
@@ -128,6 +169,36 @@ def historical(symbol: str, period: str = "1mo", interval: str = "1d"):
     return _safe(get_historical_data, sym, period=period, interval=interval)
 
 
+@app.get("/api/search")
+def symbol_search(q: str = ""):
+    """Search NSE/BSE symbols via yfinance. Returns up to 15 results."""
+    if not q or len(q) < 1:
+        return {"results": []}
+    try:
+        import yfinance as yf
+        search = yf.Search(q, max_results=15, news_count=0)
+        quotes = getattr(search, "quotes", []) or []
+        results = []
+        for item in quotes:
+            sym = item.get("symbol", "")
+            # Prefer NSE (.NS) and BSE (.BO) symbols, also accept plain Indian symbols
+            exch = item.get("exchange", "")
+            type_ = item.get("quoteType", "")
+            if type_ not in ("EQUITY", "ETF", "INDEX", "MUTUALFUND") and type_:
+                continue
+            results.append({
+                "symbol": sym.replace(".NS", "").replace(".BO", "") if sym.endswith((".NS", ".BO")) else sym,
+                "raw_symbol": sym,
+                "name": item.get("longname") or item.get("shortname") or sym,
+                "exchange": exch,
+                "type": type_,
+                "is_india": sym.endswith(".NS") or sym.endswith(".BO") or exch in ("NSI", "BSE"),
+            })
+        return {"results": results}
+    except Exception as e:
+        return {"results": [], "error": str(e)}
+
+
 @app.get("/api/fundamentals/{symbol}")
 def fundamentals(symbol: str):
     """P/E, market cap, EPS, dividend yield, 52W range."""
@@ -206,6 +277,7 @@ def macro():
 
 @app.get("/api/screener")
 def screener(
+    filter: str = "gainers",
     sector: str = "",
     min_pe: float = 0,
     max_pe: float = 999,
@@ -213,14 +285,36 @@ def screener(
     market_cap: str = "all",
 ):
     from finstack.data.analytics import run_stock_screener
-    return _safe(
+    # Map UI filter names to screener params
+    filter_map = {
+        "gainers": dict(min_roe=0, market_cap="all"),
+        "losers":  dict(min_roe=0, market_cap="all"),
+        "volume":  dict(min_roe=0, market_cap="all"),
+        "low_pe":  dict(min_pe=0, max_pe=15, market_cap="all"),
+    }
+    params = filter_map.get(filter, {})
+    result = _safe(
         run_stock_screener,
         sector=sector or None,
-        min_pe=min_pe,
-        max_pe=max_pe,
-        min_roe=min_roe,
-        market_cap=market_cap,
+        min_pe=params.get("min_pe", min_pe),
+        max_pe=params.get("max_pe", max_pe),
+        min_roe=params.get("min_roe", min_roe),
+        market_cap=params.get("market_cap", market_cap),
     )
+    # Sort results by filter type
+    if isinstance(result, dict) and "results" in result:
+        rows = result["results"]
+        if filter == "gainers":
+            rows = sorted(rows, key=lambda r: r.get("change_pct", 0), reverse=True)
+        elif filter == "losers":
+            rows = sorted(rows, key=lambda r: r.get("change_pct", 0))
+        elif filter == "volume":
+            rows = sorted(rows, key=lambda r: r.get("volume", 0), reverse=True)
+        elif filter == "low_pe":
+            rows = [r for r in rows if r.get("pe") and r["pe"] > 0]
+            rows = sorted(rows, key=lambda r: r.get("pe", 999))
+        result["results"] = rows[:15]
+    return result
 
 
 # ─── News ─────────────────────────────────────────────────────────────────────
@@ -280,20 +374,94 @@ def signal_score(symbol: str):
     return _safe(get_stock_signal_score, symbol.upper())
 
 
+# ─── Telegram ────────────────────────────────────────────────────────────────
+
+@app.get("/api/telegram/status")
+async def telegram_status():
+    """Is Telegram bot configured and running?"""
+    token = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    if not token:
+        return {"enabled": False, "reason": "TELEGRAM_BOT_TOKEN not set"}
+    try:
+        from telegram_bot import tg_get
+        info = await tg_get("getMe")
+        bot = info.get("result", {})
+        return {
+            "enabled": True,
+            "bot_username": bot.get("username"),
+            "bot_name": bot.get("first_name"),
+            "bot_url": f"https://t.me/{bot.get('username')}",
+        }
+    except Exception as e:
+        return {"enabled": False, "error": str(e)}
+
+
+@app.post("/api/telegram/send-alert")
+async def send_alert(payload: dict):
+    """
+    Called by Arthex when a price alert fires.
+    Body: { symbol, condition, price, current, chat_ids? }
+    """
+    if not os.getenv("TELEGRAM_BOT_TOKEN"):
+        return {"sent": 0, "reason": "bot not configured"}
+    from telegram_bot import send_alert_to_subscribers
+    chat_ids = payload.get("chat_ids")
+    await send_alert_to_subscribers(
+        symbol=payload.get("symbol", ""),
+        condition=payload.get("condition", ""),
+        price=float(payload.get("price", 0)),
+        current=float(payload.get("current", 0)),
+        chat_ids=chat_ids,
+    )
+    return {"sent": len(chat_ids) if chat_ids else "all"}
+
+
+@app.post("/api/telegram/send-battle")
+async def send_battle(payload: dict):
+    """
+    Called after an Agent Battle completes.
+    Body: { chat_id, symbol, signal, strength, avg_score, note }
+    """
+    if not os.getenv("TELEGRAM_BOT_TOKEN"):
+        return {"sent": False, "reason": "bot not configured"}
+    from telegram_bot import send_battle_to_chat
+    await send_battle_to_chat(
+        chat_id=str(payload["chat_id"]),
+        symbol=payload.get("symbol", ""),
+        signal=payload.get("signal", ""),
+        strength=payload.get("strength", ""),
+        avg_score=float(payload.get("avg_score", 0)),
+        note=payload.get("note", ""),
+    )
+    return {"sent": True}
+
+
+@app.post("/api/telegram/broadcast-brief")
+async def trigger_brief():
+    """Manually trigger morning brief broadcast (for testing)."""
+    if not os.getenv("TELEGRAM_BOT_TOKEN"):
+        return {"sent": 0, "reason": "bot not configured"}
+    from telegram_bot import broadcast_morning_brief
+    await broadcast_morning_brief()
+    return {"ok": True}
+
+
 # ─── Health ───────────────────────────────────────────────────────────────────
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "version": "0.7.0", "tools": 83}
+    tg_enabled = bool(os.getenv("TELEGRAM_BOT_TOKEN"))
+    return {"status": "ok", "version": "0.9.0", "tools": 90, "telegram": tg_enabled}
 
 
 @app.get("/")
 def root():
     return {
         "name": "FinStack Dashboard API",
-        "version": "0.7.0",
-        "tools": 83,
+        "version": "0.9.0",
+        "tools": 90,
         "docs": "/docs",
+        "telegram_bot": bool(os.getenv("TELEGRAM_BOT_TOKEN")),
         "endpoints": [
             "/api/market-status",
             "/api/nifty",
@@ -312,5 +480,8 @@ def root():
             "/api/stock-brief/{symbol}",
             "/api/smart-money/{symbol}",
             "/api/signal-score/{symbol}",
+            "/api/telegram/status",
+            "/api/telegram/send-alert",
+            "/api/telegram/broadcast-brief",
         ],
     }
