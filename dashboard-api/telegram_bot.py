@@ -25,7 +25,7 @@ import asyncio
 import httpx
 from datetime import datetime, timezone, timedelta
 
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")  # service role key
 API_BASE = os.getenv("SELF_API_BASE", "http://localhost:8000")
