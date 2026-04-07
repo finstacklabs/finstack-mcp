@@ -351,6 +351,202 @@ def screener(
     return result
 
 
+# ─── F&O Signals (nifty-agent engine via finstack-mcp data) ──────────────────
+
+@app.get("/api/fno-signals")
+def fno_signals():
+    """
+    Nifty/BankNifty F&O signal engine.
+
+    Runs 8 indicators + VIX regime + PCR + OI analysis using finstack-mcp data.
+    Returns BUY CE / BUY PE signals with score, regime, reasons, and suggested strike.
+
+    VIX regimes:
+      Sweet spot (11-20) → score ≥ 5/10
+      Elevated  (20-28) → score ≥ 7/10
+      Fear      (28-40) → score ≥ 8/10
+    """
+    from datetime import datetime, timezone
+    import yfinance as yf
+
+    results = []
+
+    def _vix() -> float:
+        try:
+            hist = yf.Ticker("^INDIAVIX").history(period="2d")
+            if not hist.empty:
+                return round(float(hist["Close"].iloc[-1]), 2)
+        except Exception:
+            pass
+        return 0.0
+
+    def _pcr(symbol: str) -> float:
+        try:
+            from finstack.data.nse_advanced import get_options_chain
+            chain = get_options_chain(symbol)
+            if chain and isinstance(chain, dict):
+                return float(chain.get("pcr") or chain.get("put_call_ratio") or 0)
+        except Exception:
+            pass
+        return 0.0
+
+    def _technicals(yf_symbol: str) -> dict:
+        try:
+            from finstack.data.analytics import compute_technical_indicators
+            return compute_technical_indicators(yf_symbol) or {}
+        except Exception:
+            return {}
+
+    def _spot(yf_symbol: str) -> float:
+        try:
+            info = yf.Ticker(yf_symbol).fast_info
+            return round(float(getattr(info, "last_price", 0) or 0), 2)
+        except Exception:
+            return 0.0
+
+    def _vix_regime(vix: float) -> tuple[str, int, float]:
+        """Returns (regime_name, min_score, min_rr)"""
+        if vix <= 0:
+            return "unknown", 7, 2.5
+        if vix < 11:
+            return "dead", 99, 0       # will be blocked
+        if vix <= 20:
+            return "sweet", 5, 1.8
+        if vix <= 28:
+            return "elevated", 7, 2.5
+        if vix <= 40:
+            return "fear", 8, 3.0
+        return "panic", 99, 0          # will be blocked
+
+    def _atm_strike(spot: float, step: int) -> int:
+        return round(spot / step) * step
+
+    vix = _vix()
+    regime, min_score, min_rr = _vix_regime(vix)
+
+    # Block dead/panic regimes
+    if regime in ("dead", "panic"):
+        return {
+            "signals": [],
+            "vix": vix,
+            "regime": regime,
+            "message": f"VIX {vix} — {regime} zone. No trades recommended.",
+            "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        }
+
+    for symbol, yf_sym, step in [
+        ("NIFTY",     "^NSEI",    50),
+        ("BANKNIFTY", "^NSEBANK", 100),
+    ]:
+        tech  = _technicals(yf_sym)
+        spot  = _spot(yf_sym) or tech.get("current_price", 0)
+        pcr   = _pcr(symbol)
+
+        reasons, blocks = [], []
+        score = 0
+        direction = None
+
+        rsi = tech.get("rsi_14") or tech.get("rsi")
+
+        # ── Bull scoring ──────────────────────────────────────────────────────
+        bull = 0
+        if rsi and rsi < 45:
+            bull += 1; reasons.append(f"RSI {rsi:.1f} — oversold/recovering")
+        macd_line = tech.get("macd_line")
+        macd_sig  = tech.get("macd_signal")
+        if macd_line and macd_sig and macd_line > macd_sig:
+            bull += 1; reasons.append("MACD bullish crossover")
+        vwap = tech.get("vwap")
+        price = tech.get("current_price") or spot
+        if vwap and price and price > vwap:
+            bull += 1; reasons.append(f"Price above VWAP {vwap:.0f}")
+        if 0 < pcr <= 0.8:
+            bull += 1; reasons.append(f"PCR {pcr:.2f} — bullish sentiment")
+        bb_upper = tech.get("bb_upper")
+        bb_lower = tech.get("bb_lower")
+        if bb_lower and price and price < bb_lower * 1.01:
+            bull += 1; reasons.append("Near Bollinger lower band — bounce zone")
+        sma20 = tech.get("sma_20")
+        if sma20 and price and price > sma20:
+            bull += 1; reasons.append(f"Price above SMA20 {sma20:.0f}")
+        if vix > 20:
+            bull += 1; reasons.append(f"High VIX {vix:.1f} = contrarian buy on dip")
+
+        # ── Bear scoring ──────────────────────────────────────────────────────
+        bear = 0
+        bear_reasons: list = []
+        if rsi and rsi > 60:
+            bear += 1; bear_reasons.append(f"RSI {rsi:.1f} — overbought")
+        if macd_line and macd_sig and macd_line < macd_sig:
+            bear += 1; bear_reasons.append("MACD bearish crossover")
+        if vwap and price and price < vwap:
+            bear += 1; bear_reasons.append(f"Price below VWAP {vwap:.0f}")
+        if pcr >= 1.25:
+            bear += 1; bear_reasons.append(f"PCR {pcr:.2f} — bearish sentiment")
+        if bb_upper and price and price > bb_upper * 0.99:
+            bear += 1; bear_reasons.append("Near Bollinger upper band — reversal zone")
+        if sma20 and price and price < sma20:
+            bear += 1; bear_reasons.append(f"Price below SMA20 {sma20:.0f}")
+
+        # ── Determine direction ───────────────────────────────────────────────
+        if bull >= min_score and bull > bear:
+            direction = "BUY_CE"
+            score = bull
+        elif bear >= min_score and bear > bull:
+            direction = "BUY_PE"
+            score = bear
+            reasons = bear_reasons
+
+        if not direction:
+            results.append({
+                "symbol": symbol,
+                "direction": None,
+                "score": max(bull, bear),
+                "min_score": min_score,
+                "regime": regime,
+                "vix": vix,
+                "spot": spot,
+                "pcr": pcr,
+                "message": f"No signal — bull={bull} bear={bear} need={min_score}",
+            })
+            continue
+
+        atm = _atm_strike(spot, step)
+        option_type = "CE" if direction == "BUY_CE" else "PE"
+        suggested_strike = atm  # ATM for best balance
+        tradingsymbol = f"{symbol}{suggested_strike}{option_type}"
+
+        results.append({
+            "symbol": symbol,
+            "direction": direction,
+            "option_type": option_type,
+            "score": score,
+            "max_score": 7,
+            "min_score": min_score,
+            "confidence_pct": round(score / 7 * 100),
+            "regime": regime,
+            "vix": vix,
+            "min_rr": min_rr,
+            "spot": spot,
+            "pcr": pcr,
+            "atm_strike": atm,
+            "suggested_strike": suggested_strike,
+            "suggested_symbol": tradingsymbol,
+            "reasons": reasons,
+            "blocks": blocks,
+            "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        })
+
+    return {
+        "signals": results,
+        "vix": vix,
+        "regime": regime,
+        "min_score_needed": min_score,
+        "min_rr_needed": min_rr,
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+    }
+
+
 # ─── News ─────────────────────────────────────────────────────────────────────
 
 @app.get("/api/news/{symbol}")
