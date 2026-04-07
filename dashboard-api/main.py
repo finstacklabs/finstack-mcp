@@ -318,7 +318,7 @@ def screener(
     min_roe: float = 0,
     market_cap: str = "all",
 ):
-    from finstack.data.analytics import run_stock_screener
+    from finstack.data.analytics import screen_stocks
     # Map UI filter names to screener params
     filter_map = {
         "gainers": dict(min_roe=0, market_cap="all"),
@@ -328,7 +328,7 @@ def screener(
     }
     params = filter_map.get(filter, {})
     result = _safe(
-        run_stock_screener,
+        screen_stocks,
         sector=sector or None,
         min_pe=params.get("min_pe", min_pe),
         max_pe=params.get("max_pe", max_pe),

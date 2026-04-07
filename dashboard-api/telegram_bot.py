@@ -69,21 +69,23 @@ def _sb_headers():
 
 
 async def save_subscriber(chat_id: int, username: str, first_name: str):
-    """Upsert subscriber into telegram_subscribers table."""
+    """Upsert subscriber into telegram_subscribers table. Silent fail — never blocks reply."""
     if not SUPABASE_URL or not SUPABASE_KEY:
-        print(f"[telegram] Supabase not configured — skipping save for {chat_id}")
         return
-    async with httpx.AsyncClient(timeout=10) as client:
-        await client.post(
-            f"{SUPABASE_URL}/rest/v1/telegram_subscribers",
-            headers={**_sb_headers(), "Prefer": "resolution=merge-duplicates,return=minimal"},
-            json={
-                "chat_id": str(chat_id),
-                "username": username or "",
-                "first_name": first_name or "",
-                "active": True,
-            },
-        )
+    try:
+        async with httpx.AsyncClient(timeout=5) as client:
+            await client.post(
+                f"{SUPABASE_URL}/rest/v1/telegram_subscribers",
+                headers={**_sb_headers(), "Prefer": "resolution=merge-duplicates,return=minimal"},
+                json={
+                    "chat_id": str(chat_id),
+                    "username": username or "",
+                    "first_name": first_name or "",
+                    "active": True,
+                },
+            )
+    except Exception:
+        pass  # Supabase save is best-effort — welcome message still sends
 
 
 async def get_all_subscribers() -> list[dict]:
