@@ -414,10 +414,12 @@ def signal_score(symbol: str):
 async def telegram_webhook(update: dict):
     """
     Telegram pushes updates here in webhook mode.
-    Telegram servers call this endpoint — no outbound polling needed.
+    Returns inline reply so Railway never needs outbound calls to api.telegram.org.
     """
     from telegram_bot import handle_update
-    await handle_update(update)
+    reply = await handle_update(update)
+    if reply:
+        return reply  # Telegram reads this and sends the message on our behalf
     return {"ok": True}
 
 

@@ -230,10 +230,15 @@ WELCOME = (
 )
 
 
-async def handle_update(update: dict):
+async def handle_update(update: dict) -> dict | None:
+    """
+    Handle a Telegram update.
+    Returns an inline reply dict when called from webhook (Railway can't make outbound calls).
+    Returns None when called from polling (reply is sent via send_message instead).
+    """
     msg = update.get("message") or update.get("edited_message")
     if not msg:
-        return
+        return None
 
     chat_id = msg["chat"]["id"]
     text = (msg.get("text") or "").strip()
@@ -241,21 +246,49 @@ async def handle_update(update: dict):
     username = user.get("username", "")
     first_name = user.get("first_name", "")
 
+    def _inline(text: str) -> dict:
+        """Build inline webhook reply — no outbound HTTP needed."""
+        return {
+            "method": "sendMessage",
+            "chat_id": chat_id,
+            "text": text,
+            "parse_mode": "HTML",
+            "disable_web_page_preview": True,
+        }
+
     if text.startswith("/start"):
-        await save_subscriber(chat_id, username, first_name)
-        await send_message(chat_id, WELCOME)
+        try:
+            await save_subscriber(chat_id, username, first_name)
+        except Exception as e:
+            print(f"[telegram] save_subscriber error: {e}")
+        return _inline(WELCOME)
 
     elif text.startswith("/brief"):
-        await send_message(chat_id, "⏳ Fetching data…")
-        brief = await build_morning_brief()
-        await send_message(chat_id, brief)
+        # Can't do async fetch + inline reply simultaneously — send inline "fetching" first
+        # then fire-and-forget the actual brief via background task
+        asyncio.create_task(_send_brief_delayed(chat_id))
+        return _inline("⏳ Fetching morning brief… will arrive in a few seconds.")
 
     elif text.startswith("/stop"):
-        await mark_unsubscribed(chat_id)
-        await send_message(chat_id, "✅ Unsubscribed. Send /start to resubscribe.")
+        try:
+            await mark_unsubscribed(chat_id)
+        except Exception:
+            pass
+        return _inline("✅ Unsubscribed. Send /start to resubscribe.")
 
     elif text.startswith("/help"):
-        await send_message(chat_id, WELCOME)
+        return _inline(WELCOME)
+
+    return None
+
+
+async def _send_brief_delayed(chat_id: int):
+    """Fetch brief and send via outbound call (best-effort, may fail on Railway)."""
+    try:
+        brief = await build_morning_brief()
+        await send_message(chat_id, brief)
+    except Exception as e:
+        print(f"[telegram] Brief send error: {e}")
 
 
 # ─── Polling loop (runs when script executed directly) ────────────────────────
