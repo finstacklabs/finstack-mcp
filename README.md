@@ -329,18 +329,6 @@ Other brokers: Fyers, ICICI Breeze, Dhan, Upstox also supported.
 
 ---
 
-## Demo
-
-### Agent Battle — 6 AI agents debate a stock in real-time
-
-![Agent Battle Demo](docs/assets/agent-battle-demo.gif)
-
-### Claude UI integration
-
-*Claude UI demo coming soon*
-
----
-
 ## Data sources
 
 | Source | Covers | Key needed |
