@@ -31,3 +31,28 @@ def register_probability_tools(mcp: FastMCP) -> None:
         from finstack.data.probability import get_nifty_outlook as _get
         result = _get()
         return json.dumps(result, indent=2, default=str)
+
+    @mcp.tool()
+    def get_fno_trade_setup(symbol: str = "NIFTY") -> str:
+        """
+        Build a clean NIFTY / BANKNIFTY options setup for intraday decisions.
+
+        This packages the strongest nifty-agent behavior into one MCP call:
+        read trend, RSI, MACD, FII flows, PCR, VIX regime, and overnight
+        context, then return one clear action:
+
+        - BUY_CE
+        - BUY_PE
+        - NO_TRADE
+
+        Also returns:
+        - confidence_pct
+        - preferred ATM strike zone
+        - approve_message
+        - bull and bear factors
+        - risk flags
+        """
+        from finstack.data.probability import get_fno_trade_setup as _get
+
+        result = _get(symbol)
+        return json.dumps(result, indent=2, default=str)

@@ -5,6 +5,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.10.0] - 2026-04-09
+
+### Added
+- 95-tool release across Indian market data, debate, research, ranking, and F&O workflows
+- `get_fno_trade_setup` for NIFTY / BANKNIFTY options calls with `BUY_CE`, `BUY_PE`, or `NO_TRADE`
+- `get_morning_fno_brief` for 8:15 AM pre-market F&O summaries
+- research and ranking layer: `scan_watchlist`, `get_stock_timeline`, `get_stock_signal_score`, `get_sector_peer_context`
+- signal proof layer: `evaluate_signal_quality`
+- demo asset coverage in the README for stock brief and agent battle workflows
+
+### Changed
+- README repositioned around daily-use hooks, MCP-native workflows, and launch-ready product copy
+- probability module refactored into a cleaner reusable signal surface for Nifty/F&O workflows
+- BottomTabs and InfoPanel live wiring in the Arthex companion app were aligned to real backend shapes
+
+### Fixed
+- local yfinance cache setup hardened through the FinStack package init path
+- morning F&O brief now degrades gracefully when live upstream market feeds are unavailable
+
+---
+
 ## [0.3.1] - 2026-03-25
 
 ### Fixed

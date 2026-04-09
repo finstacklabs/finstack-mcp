@@ -369,6 +369,96 @@ def get_morning_brief() -> dict:
     return brief
 
 
+def get_morning_fno_brief() -> dict:
+    """
+    8:15 AM F&O-focused brief for NIFTY and BANKNIFTY traders.
+    """
+    from finstack.data.market_intelligence import get_gift_nifty, get_india_vix
+    from finstack.data.probability import get_fno_trade_setup, get_nifty_outlook
+
+    gift = {}
+    vix = {}
+    nifty_outlook = {}
+    nifty_setup = {}
+    banknifty_setup = {}
+
+    try:
+        gift = get_gift_nifty() or {}
+    except Exception:
+        pass
+    try:
+        vix = get_india_vix() or {}
+    except Exception:
+        pass
+    try:
+        nifty_outlook = get_nifty_outlook() or {}
+    except Exception:
+        pass
+    try:
+        nifty_setup = get_fno_trade_setup("NIFTY") or {}
+    except Exception:
+        pass
+    try:
+        banknifty_setup = get_fno_trade_setup("BANKNIFTY") or {}
+    except Exception:
+        pass
+
+    brief_date = date.today().isoformat()
+    gift_val = gift.get("gift_nifty") or gift.get("value")
+    vix_val = vix.get("vix") or vix.get("current")
+
+    def _compact_line(label: str, payload: dict) -> str:
+        if payload.get("error"):
+            return f"{label}: data unavailable right now"
+        signal = payload.get("signal", "N/A")
+        contract_hint = _safe_dict(payload.get("execution_hint")).get("contract_hint", "N/A")
+        confidence = payload.get("confidence_pct", "N/A")
+        return f"{label}: {signal} | {contract_hint} | {confidence}% confidence"
+
+    morning_text = "\n".join(
+        [
+            f"FinStack F&O Brief | {brief_date}",
+            "",
+            f"GIFT Nifty: {gift_val if gift_val is not None else 'N/A'} | India VIX: {vix_val if vix_val is not None else 'N/A'}",
+            f"Nifty direction: {nifty_outlook.get('signal', 'N/A')} ({nifty_outlook.get('probability_up', 'N/A')}% up probability)",
+            "",
+            _compact_line("NIFTY", nifty_setup),
+            f"Approval note: {nifty_setup.get('approve_message') or nifty_setup.get('error', 'N/A')}",
+            "",
+            _compact_line("BANKNIFTY", banknifty_setup),
+            f"Approval note: {banknifty_setup.get('approve_message') or banknifty_setup.get('error', 'N/A')}",
+            "",
+            "Not investment advice.",
+        ]
+    )
+
+    return {
+        "brief_type": "indian_market_morning_fno_brief",
+        "generated_at": datetime.now().isoformat(),
+        "brief_date": brief_date,
+        "pre_market": {
+            "gift_nifty": gift,
+            "india_vix": vix,
+            "nifty_direction": {
+                "probability_up": nifty_outlook.get("probability_up"),
+                "signal": nifty_outlook.get("signal"),
+                "bull_factors": nifty_outlook.get("bull_factors", [])[:2],
+                "bear_factors": nifty_outlook.get("bear_factors", [])[:2],
+            },
+        },
+        "fno_setups": {
+            "nifty": nifty_setup,
+            "banknifty": banknifty_setup,
+        },
+        "morning_text": morning_text,
+        "telegram_markdown": morning_text,
+        "delivery_formats": {
+            "plain_text": morning_text,
+            "telegram_markdown": morning_text,
+        },
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate an Indian market daily brief.")
     parser.add_argument(

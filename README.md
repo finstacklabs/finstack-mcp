@@ -1,6 +1,6 @@
 # FinStack MCP
 
-**93 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
+**95 free tools for Indian + global markets. Works inside Claude, Cursor, and any MCP client.**
 
 Open-source market intelligence for Indian equities, global markets, and MCP-native AI workflows.
 Ask one question like `Should I buy Reliance?` and get debate, sentiment, smart-money, risk, peer context, and ranking in one stack.
@@ -35,12 +35,40 @@ Ask Claude things like:
 "Will Nifty go up tomorrow?"
 -> RSI + FII flow + PCR + VIX + G-Sec + GIFT Nifty -> 63% probability up
 
+"Should I take a NIFTY CE or PE today?"
+-> Intraday F&O setup -> BUY_CE / BUY_PE / NO_TRADE with ATM strike zone, confidence, and approval-ready summary
+
+"Give me the 8:15 AM F&O brief"
+-> GIFT Nifty + VIX + NIFTY setup + BANKNIFTY setup -> ready-to-forward morning note
+
 "Scan my portfolio for risk"
 -> Sector concentration, pledged promoters, FII exposure, XIRR, diversification score
 
 "Is this Telegram stock tip channel a scam?"
 -> Accuracy %, avg return %, pump-and-dump probability scored
 ```
+
+## Demo preview
+
+### Stock brief in action
+
+![Stock Brief Demo](docs/assets/stock-brief-demo.gif)
+
+### Agent battle visualization
+
+![Agent Battle Demo](docs/assets/agent-battle-demo.gif)
+
+### Example outputs
+
+![Stock Brief Output](docs/assets/demo-brief.png)
+
+![FII Flow Output](docs/assets/demo-fii.png)
+
+## Launch resources
+
+- [Proof and accuracy notes](docs/PROOF_AND_ACCURACY.md)
+- [GitHub launch copy and positioning](docs/GITHUB_LAUNCH_KIT.md)
+- [Release checklist](docs/RELEASE_CHECKLIST.md)
 
 ## Why this is different
 
@@ -171,7 +199,7 @@ This keeps MCP as the execution layer and your own frontend as the premium exper
 
 ---
 
-## 90 tools across 10 categories
+## 95 tools across 10 categories
 
 ### Indian Markets (live data)
 - NSE/BSE real-time quotes, OHLCV history, market status
@@ -186,8 +214,10 @@ This keeps MCP as the execution layer and your own frontend as the premium exper
 - **`get_social_sentiment`** — StockTwits + Reddit + ET RSS → sentiment signal
 - **`detect_unusual_activity`** — OI buildup + block deals + promoter change + volume spike
 - **`get_nifty_outlook`** — 6-signal probability model for next session direction
+- **`get_fno_trade_setup`** — NIFTY / BANKNIFTY options call: BUY_CE, BUY_PE, or NO_TRADE with ATM strike guidance
 - **`predict_earnings`** — beat/miss probability before quarterly results
 - **`get_fii_retail_divergence`** — highest-conviction Indian market signal
+- **`get_morning_fno_brief`** — daily NIFTY/BANKNIFTY F&O brief with approval-ready setup summary
 
 ### Research & Ranking
 - **`scan_watchlist`** — batch-rank a watchlist so automation can surface top buys and top risks

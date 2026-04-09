@@ -140,6 +140,21 @@ def register_intelligence_tools(mcp: FastMCP) -> None:
         from finstack.briefs import get_morning_brief as _get
         return json.dumps(_get(), indent=2, default=str)
 
+    @mcp.tool()
+    def get_morning_fno_brief() -> str:
+        """
+        8:15 AM F&O-focused morning brief for NIFTY and BANKNIFTY traders.
+
+        Compiles in one call:
+          - GIFT Nifty and India VIX
+          - Nifty direction probability
+          - NIFTY options setup
+          - BANKNIFTY options setup
+          - ready-to-send morning_text for Telegram / WhatsApp style delivery
+        """
+        from finstack.briefs import get_morning_fno_brief as _get
+        return json.dumps(_get(), indent=2, default=str)
+
     # ── Promoter pledge alert ─────────────────────────────────────────────────
 
     @mcp.tool()
