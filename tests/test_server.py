@@ -4,8 +4,8 @@ from finstack.server import TOOL_CATALOG, TOTAL_TOOLS, finstack_info, health_che
 
 
 def test_tool_catalog_matches_expected_total():
-    assert len(TOOL_CATALOG) == 89
-    assert TOTAL_TOOLS == 90
+    assert len(TOOL_CATALOG) == 94
+    assert TOTAL_TOOLS == 95
 
 
 def test_finstack_info_reports_catalog_count():
